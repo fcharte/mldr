@@ -27,53 +27,54 @@ mldr <- function(
       count = integer(),
       stringsAsFactors = FALSE
     ),
-    dataset = data.frame(),
-    features = data.frame(
-      name = character(),
-      index = integer(),
-      type = character(),
-      values = factor(), ########### ?
-      stringsAsFactors = FALSE
-    )
+    dataset = data.frame()#,
+    #features = data.frame(
+    #  name = character(),
+    #  index = integer(),
+    #  type = character(),
+    #  values = factor(), ########### ?
+    #  stringsAsFactors = FALSE
+    #)
   )
 
   if (!is.null(filename)) {
+    # Parameter check
+    if (!is.character(filename))
+      stop("Argument 'filename' must be a character string.")
+    if (!is.null(xml_file) && !is.character(xml_file))
+      stop("Argument 'xml_file' must be a character string.")
+
     # Calculate names of files
     arff_file <- if (auto_extension)
         paste(filename, ".arff", sep="")
       else
         filename
 
-    xml_file <- if (auto_extension && is.null(xml_file))
+    if (is.null(xml.file)) xml_file <- if (auto_extension)
         paste(filename, ".xml", sep="")
       else {
         noext <- unlist(strsplit(filename, ".", fixed=TRUE))
         paste(noext[1:length(noext)], ".xml", sep="")
       }
 
-    # Get attributes from file
-    attrs <- read_attributes(arff_file)
+    # Get file contents
+    list[attrs, dataset] <- read_arff(arff_file)
 
     if (use_xml) {
       # Read labels from XML file
       labelnames <- read_xml(xml_file)
+      labels <- attrs[attrs$name %in% labelnames]
 
-      spl <- split(attrs, attrs$name %in% labelnames)
-      labels <- spl$`TRUE`
-      features <- spl$`FALSE`
+      #spl <- split(attrs, attrs$name %in% labelnames)
+      #labels <- spl$`TRUE`
+      #features <- spl$`FALSE`
     } else {
       # Read label amount from Meka parameters
       toplabel <- read_meka_header(arff_file) - 1
 
       labels <- attrs[0:toplabel,]
-      features <- attrs[toplabel+1:length(attrs),]
+      #features <- attrs[toplabel+1:length(attrs),]
     }
-
-    # Read data section of dataset
-    dataset <- if (detect_sparsity(arff_file))
-        read_sparse_data(arff_file)
-      else
-        read_nonsparse_data(arff_file)
 
     obj <- list(labels=labels, dataset=dataset, features=features)
   }

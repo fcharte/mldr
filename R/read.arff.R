@@ -3,13 +3,60 @@
 #' different formats (sparse, nonsparse...)
 #'
 
+read_arff <- function(arff_file) {
+  file_con <- file(arff_file, "r")
+  on.exit(close(file_con))
+
+  if (!isOpen(file_con))
+    open(file_con, "r")
+
+  file_data <- readLines(file_con) # Reads whole file
+
+  # Split into relation, attributes and data
+  relation_at <- pmatch("@relation", tt)
+  data_start <- pmatch("@data", tt)
+
+  if (is.na(relation_at)) stop("Missing @relation or not unique.")
+  if (is.na(data_start)) stop("Missing @data mark or not unique.")
+
+  relation <- file_data[relation_at]
+  attributes <- file_data[relation_at + 1:data_start-1]
+  dataset <- file_data[data_start:length(file_data)]
+
+  return(list(
+    relation = relation
+    attributes = parse_attributes(attributes),
+    data = if (detect_sparsity(dataset))
+        parse_sparse_data(dataset)
+      else
+        parse_nonsparse_data(dataset)
+    )
+  )
+}
+
 #' Reads the attributes section of an ARFF file
 #'
-#' @param arff_file Name of the file to be read
-#' @return A data.frame containing, for each
+#' @param arff_attrs Lines containing the attributes
+#' @return A vector containing, for each
 #'  attribute, its name and its type
-read_attributes <- function(arff_file) {
+parse_attributes <- function(arff_attrs) {
+  # Extract attribute definitions
+  att_list <- strsplit(arff_attrs, "\\b\\s+", perl=T)
 
+  # Structure by rows
+  att_mat <- matrix(unlist(att_list[lapply(att_list, length) == 3]),
+                    ncol = 3, byrow=T)
+  rm(att_list)
+
+  # Filter any data that is not an attribute
+  att_mat <- att_mat[grepl("\\s*@attribute", att_mat[, 1]), 2:3]
+
+  # Create the named vector
+  att_v <- att_mat[, 2]
+  names(att_v) <- att_mat[, 1]
+
+  rm(att_mat)
+  return(att_v)
 }
 
 #' Reads the associated XML file for a ML dataset
@@ -29,14 +76,19 @@ read_xml <- function(xml_file) {
 #' Reads the Meka parameters in the header of an
 #' ARFF file
 #'
-#' @param arff_file Path to the ARFF file
+#' @param arff_relation "@relation" line of the ARFF file
 #' @return Number of labels in the dataset
-read_meka_header <- function(arff_file) {
+read_meka_header <- function(arff_relation) {
+  rgx <- regexpr("-C\\s*(\\d+)", arff_relation, perl = T)
+  as.integer(strsplit(regmatches(arff_relation, rgx), "-C\\s*")[[1]][2])
+}
+
+detect_sparsity <- function(arff_data) {
 
 }
-read_nonsparse_data <- function(arff_file) {
+parse_nonsparse_data <- function(arff_data) {
 
 }
-read_sparse_data <- function(arff_file) {
+parse_sparse_data <- function(arff_data) {
 
 }
