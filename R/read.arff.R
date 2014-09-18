@@ -20,16 +20,23 @@ read_arff <- function(arff_file) {
   if (is.na(data_start)) stop("Missing @data mark or not unique.")
 
   relation <- file_data[relation_at]
-  attributes <- file_data[relation_at + 1:data_start-1]
-  dataset <- file_data[data_start:length(file_data)]
+
+  # Get attribute vector
+  attributes <- parse_attributes(file_data[relation_at + 1:data_start-1])
+  num_attrs <- length(attributes)
+
+  # Build data.frame with data
+  rawdata <- file_data[data_start+1:length(file_data)]
+  dataset <- if (detect_sparsity(rawdata))
+      parse_sparse_data(rawdata, num_attrs)
+    else
+      parse_nonsparse_data(rawdata, num_attrs)
+  names(dataset) <- names(attributes)
 
   return(list(
     relation = relation
-    attributes = parse_attributes(attributes),
-    data = if (detect_sparsity(dataset))
-        parse_sparse_data(dataset)
-      else
-        parse_nonsparse_data(dataset)
+    attributes = attributes,
+    data = dataset
     )
   )
 }
@@ -79,16 +86,20 @@ read_xml <- function(xml_file) {
 #' @param arff_relation "@relation" line of the ARFF file
 #' @return Number of labels in the dataset
 read_meka_header <- function(arff_relation) {
-  rgx <- regexpr("-C\\s*(\\d+)", arff_relation, perl = T)
+  rgx <- regexpr("-C\\s*\\d+", arff_relation, perl = T)
   as.integer(strsplit(regmatches(arff_relation, rgx), "-C\\s*")[[1]][2])
 }
 
 detect_sparsity <- function(arff_data) {
 
 }
-parse_nonsparse_data <- function(arff_data) {
-
+parse_nonsparse_data <- function(arff_data, num_attrs) {
+  data.frame(matrix(
+    unlist(strsplit(arff_data, ",", fixed = T)),
+    ncol = num_attrs,
+    byrow = T
+  ))
 }
-parse_sparse_data <- function(arff_data) {
+parse_sparse_data <- function(arff_data, num_attrs) {
 
 }
