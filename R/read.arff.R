@@ -3,6 +3,13 @@
 #' different formats (sparse, nonsparse...)
 #'
 
+#' Extracts all useful data from an ARFF file in
+#' R objects
+#'
+#' @param arff_file Path to the file
+#' @return List containing the @relation string,
+#'  a named vector for attributes and a data.frame
+#'  for the data section
 read_arff <- function(arff_file) {
   file_con <- file(arff_file, "r")
   on.exit(close(file_con))
@@ -13,8 +20,8 @@ read_arff <- function(arff_file) {
   file_data <- readLines(file_con) # Reads whole file
 
   # Split into relation, attributes and data
-  relation_at <- pmatch("@relation", tt)
-  data_start <- pmatch("@data", tt)
+  relation_at <- pmatch("@relation", file_data)
+  data_start <- pmatch("@data", file_data)
 
   if (is.na(relation_at)) stop("Missing @relation or not unique.")
   if (is.na(data_start)) stop("Missing @data mark or not unique.")
@@ -22,10 +29,15 @@ read_arff <- function(arff_file) {
   relation <- file_data[relation_at]
 
   # Get attribute vector
-  attributes <- parse_attributes(file_data[relation_at + 1:data_start-1])
+  attributes <- parse_attributes(file_data[relation_at + 1:data_start - 1])
   num_attrs <- length(attributes)
 
-  # Build data.frame with data
+  # Ignore blank lines before data
+  data_start <- data_start + 1
+  while (grepl("^\\s*$", file_data[data_start]))
+    data_start <- data_start + 1
+
+  # Build data.frame with @data section
   rawdata <- file_data[data_start+1:length(file_data)]
   dataset <- if (detect_sparsity(rawdata))
       parse_sparse_data(rawdata, num_attrs)
@@ -90,9 +102,18 @@ read_meka_header <- function(arff_relation) {
   as.integer(strsplit(regmatches(arff_relation, rgx), "-C\\s*")[[1]][2])
 }
 
+#' Detects whether an ARFF file is in sparse format
+#'
+#' @param arff_data Content of the @data section
+#' @return Boolean, TRUE when the file is sparse
 detect_sparsity <- function(arff_data) {
-
+  grepl("^\\s*\\{", arff_data[1])
 }
+
+#' Builds a data.frame out of non-sparse ARFF data
+#'
+#' @param arff_data Content of the @data section
+#' @return data.frame containing data values
 parse_nonsparse_data <- function(arff_data, num_attrs) {
   data.frame(matrix(
     unlist(strsplit(arff_data, ",", fixed = T)),
@@ -100,6 +121,30 @@ parse_nonsparse_data <- function(arff_data, num_attrs) {
     byrow = T
   ))
 }
-parse_sparse_data <- function(arff_data, num_attrs) {
 
+#' Builds a data.frame out of sparse ARFF data
+#'
+#' @param arff_data Content of the @data section
+#' @return data.frame containing data values
+parse_sparse_data <- function(arff_data, num_attrs) {
+  # Extract data items
+  arff_data <- strsplit(gsub("[\\{\\}]", "", arff_data), ",")
+  arff_data <- lapply(arff_data, function(item) {
+    strsplit(item, " ")
+  })
+
+  # Convert data into a list of matrices (with pairs)
+  arff_data <- lapply(arff_data, function(row){
+    matrix(unlist(row), ncol=2, byrow=T)
+  })
+
+  # Build complete matrix with data
+  dataset <- sapply(arff_data, function(row) {
+    m <- matrix(ncol = num_attrs, nrow = 1)
+    m[as.integer(row[,1])] <- row[,2]
+    m
+  })
+
+  # Create and return data.frame
+  data.frame(t(dataset))
 }
