@@ -11,12 +11,10 @@
 #'  provided, the filename ending in ".xml" will be
 #'  assumed
 
-mldr <- function(
-  filename = NULL,
-  auto_extension = TRUE,
-  use_xml = FALSE,
-  xml_file = NULL
-  ) {
+mldr <- function(filename = NULL,
+                 auto_extension = TRUE,
+                 use_xml = FALSE,
+                 xml_file = NULL) {
 
   # Creation of a prototypic multilabel dataset
   obj <- list(
@@ -50,7 +48,7 @@ mldr <- function(
       else
         filename
 
-    if (is.null(xml.file)) xml_file <- if (auto_extension)
+    if (is.null(xml_file)) xml_file <- if (auto_extension)
         paste(filename, ".xml", sep="")
       else {
         noext <- unlist(strsplit(filename, ".", fixed=TRUE))
@@ -58,25 +56,36 @@ mldr <- function(
       }
 
     # Get file contents
-    list[attrs, dataset] <- read_arff(arff_file)
+    relation <- NULL
+    attrs <- NULL
+    contents <- read_arff(arff_file)
+    relation <- contents$relation
+    attrs <- contents$attributes
+    dataset <- contents$dataset
+    rm(contents)
 
     if (use_xml) {
       # Read labels from XML file
       labelnames <- read_xml(xml_file)
-      labels <- attrs[attrs$name %in% labelnames]
+      labels <- attrs[names(attrs) %in% labelnames]
 
       #spl <- split(attrs, attrs$name %in% labelnames)
       #labels <- spl$`TRUE`
       #features <- spl$`FALSE`
     } else {
       # Read label amount from Meka parameters
-      toplabel <- read_meka_header(arff_file) - 1
+      toplabel <- read_meka_header(relation)
 
-      labels <- attrs[0:toplabel,]
+      labels <- attrs[1:toplabel]
       #features <- attrs[toplabel+1:length(attrs),]
     }
 
-    obj <- list(labels=labels, dataset=dataset, features=features)
+    # TODO
+    # - Type of labels in dataset must be a {0,1} factor
+    # - Calculate measures and add them to labels
+    # - Add dataset generic measures
+
+    obj <- list(labels=labels, dataset=dataset)
   }
 
   class(obj) <- "mldr"

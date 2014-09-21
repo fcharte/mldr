@@ -12,12 +12,15 @@
 #'  for the data section
 read_arff <- function(arff_file) {
   file_con <- file(arff_file, "r")
-  on.exit(close(file_con))
 
   if (!isOpen(file_con))
     open(file_con, "r")
 
   file_data <- readLines(file_con) # Reads whole file
+
+  print("Archivo cargado")
+
+  close(file_con)
 
   # Split into relation, attributes and data
   relation_at <- pmatch("@relation", file_data)
@@ -38,17 +41,19 @@ read_arff <- function(arff_file) {
     data_start <- data_start + 1
 
   # Build data.frame with @data section
-  rawdata <- file_data[data_start+1:length(file_data)]
+  rawdata <- file_data[data_start:length(file_data)]
   dataset <- if (detect_sparsity(rawdata))
       parse_sparse_data(rawdata, num_attrs)
     else
       parse_nonsparse_data(rawdata, num_attrs)
+
+  rm(rawdata)
   names(dataset) <- names(attributes)
 
   return(list(
-    relation = relation
+    relation = relation,
     attributes = attributes,
-    data = dataset
+    dataset = dataset
     )
   )
 }
@@ -87,6 +92,7 @@ read_xml <- function(xml_file) {
   library(XML)
   parsed_xml <- xmlParse(xml_file)
   label_list <- xmlToList(parsed_xml, simplify = T)
+  rm(parsed_xml)
 
   # Extract label names
   unname(unlist(label_list[names(label_list) == "label.name"]))
@@ -134,17 +140,48 @@ parse_sparse_data <- function(arff_data, num_attrs) {
   })
 
   # Convert data into a list of matrices (with pairs)
-  arff_data <- lapply(arff_data, function(row){
-    matrix(unlist(row), ncol=2, byrow=T)
-  })
+  #arff_data <- sapply(arff_data, function(row) {
+  #  matrix(unlist(row)[c(F, T)], ncol=1, byrow=T,
+  #         dimnames = list(unlist(row)[c(T, F)]))
+  #})
+
+  #arff_data <- sapply(arff_data, function(row) { sapply(row, unlist) })
+
+  arff_data <- sapply(arff_data, unlist)
+
+  print(length(arff_data))
+
+  #filler <- function(dat, cols) {
+  #  sapply(dat, function(row) {
+  #    # Memory black hole here !!
+  #    indexes <- c(as.integer(row[, 1]))
+  #    matrix(indexes = row[, 2], ncol = cols, nrow = 1)
+  #  })
+  #}
+  #print(arff_data[[1]])
+
+  #extractor <- function(i,j) {
+  #  arff_data[i][[1]][,1][as.character(j)]
+  #}
+
+  #combos <- expand.grid(i = 1:length(arff_data), j = 1:num_attrs)
+
+  #dataset <- matrix((function(i,j) {
+  #    arff_data[i][[1]][,1][as.character(j)]
+  #  })(combos$i, combos$j), ncol = num_attrs, byrow = T)
+
+  #print(dataset)
 
   # Build complete matrix with data
-  dataset <- sapply(arff_data, function(row) {
-    m <- matrix(ncol = num_attrs, nrow = 1)
-    m[as.integer(row[,1])] <- row[,2]
-    m
+  arff_data <- sapply(arff_data, function(row) {
+    # Memory black hole here !!
+    complete <- NA[1:num_attrs]
+    complete[as.integer(row[c(T, F)])] <- row[c(F, T)]
+    complete
   })
 
+  #rm(arff_data)
+
   # Create and return data.frame
-  data.frame(t(dataset))
+  data.frame(t(arff_data))
 }
