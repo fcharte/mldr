@@ -121,10 +121,12 @@ detect_sparsity <- function(arff_data) {
 #' @param arff_data Content of the @data section
 #' @return data.frame containing data values
 parse_nonsparse_data <- function(arff_data, num_attrs) {
+  print(length(arff_data))
   print(num_attrs)
   data.frame(matrix(
     unlist(strsplit(arff_data, ",", fixed = T)),
     ncol = num_attrs,
+    nrow = length(arff_data),
     byrow = T
   ))
 }
@@ -137,41 +139,11 @@ parse_sparse_data <- function(arff_data, num_attrs) {
   # Extract data items
   arff_data <- strsplit(gsub("[\\{\\}]", "", arff_data), ",")
   arff_data <- lapply(arff_data, function(item) {
-    strsplit(item, " ")
+    unlist(strsplit(item, " "))
   })
 
-  # Convert data into a list of matrices (with pairs)
-  #arff_data <- sapply(arff_data, function(row) {
-  #  matrix(unlist(row)[c(F, T)], ncol=1, byrow=T,
-  #         dimnames = list(unlist(row)[c(T, F)]))
-  #})
-
-  #arff_data <- sapply(arff_data, function(row) { sapply(row, unlist) })
-
-  arff_data <- sapply(arff_data, unlist)
-
   print(length(arff_data))
-
-  #filler <- function(dat, cols) {
-  #  sapply(dat, function(row) {
-  #    # Memory black hole here !!
-  #    indexes <- c(as.integer(row[, 1]))
-  #    matrix(indexes = row[, 2], ncol = cols, nrow = 1)
-  #  })
-  #}
-  #print(arff_data[[1]])
-
-  #extractor <- function(i,j) {
-  #  arff_data[i][[1]][,1][as.character(j)]
-  #}
-
-  #combos <- expand.grid(i = 1:length(arff_data), j = 1:num_attrs)
-
-  #dataset <- matrix((function(i,j) {
-  #    arff_data[i][[1]][,1][as.character(j)]
-  #  })(combos$i, combos$j), ncol = num_attrs, byrow = T)
-
-  #print(dataset)
+  print(num_attrs)
 
   # Build complete matrix with data
   arff_data <- sapply(arff_data, function(row) {
@@ -180,8 +152,6 @@ parse_sparse_data <- function(arff_data, num_attrs) {
     complete[as.integer(row[c(T, F)]) + 1] <- row[c(F, T)]
     complete
   })
-
-  #rm(arff_data)
 
   # Create and return data.frame
   data.frame(t(arff_data))

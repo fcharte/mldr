@@ -2,18 +2,18 @@
 #' dataset
 #'
 #' @param filename Name of the dataset
-#' @param auto.extension Specifies whether to add
+#' @param use_xml Specifies whether to use an
+#'  associated XML file to identify the labels.
+#' @param auto_extension Specifies whether to add
 #'  the '.arff' and '.xml' extensions to the filename
 #'  where appropriate
-#' @param use.xml Specifies whether to use an
-#'  associated XML file to identify the labels.
-#' @param xml.file Path to the XML file. If not
+#' @param xml_file Path to the XML file. If not
 #'  provided, the filename ending in ".xml" will be
 #'  assumed
 
 mldr <- function(filename = NULL,
-                 auto_extension = TRUE,
                  use_xml = FALSE,
+                 auto_extension = TRUE,
                  xml_file = NULL) {
 
   # Creation of a prototypic multilabel dataset
@@ -64,7 +64,7 @@ mldr <- function(filename = NULL,
     dataset <- contents$dataset
     rm(contents)
 
-    if (use_xml) {
+    if (use_xml || !is.null(xml_file)) {
       # Read labels from XML file
       labelnames <- read_xml(xml_file)
       labels <- attrs[names(attrs) %in% labelnames]
