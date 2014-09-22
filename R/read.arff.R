@@ -16,7 +16,7 @@ read_arff <- function(arff_file) {
   if (!isOpen(file_con))
     open(file_con, "r")
 
-  file_data <- readLines(file_con) # Reads whole file
+  file_data <- readLines(file_con, warn = F) # Reads whole file
 
   print("Archivo cargado")
 
@@ -32,7 +32,7 @@ read_arff <- function(arff_file) {
   relation <- file_data[relation_at]
 
   # Get attribute vector
-  attributes <- parse_attributes(file_data[relation_at + 1:data_start - 1])
+  attributes <- parse_attributes(file_data[(relation_at + 1):(data_start - 1)])
   num_attrs <- length(attributes)
 
   # Ignore blank lines before data
@@ -65,11 +65,11 @@ read_arff <- function(arff_file) {
 #'  attribute, its name and its type
 parse_attributes <- function(arff_attrs) {
   # Extract attribute definitions
-  att_list <- strsplit(arff_attrs, "\\b\\s+", perl=T)
+  att_list <- strsplit(arff_attrs, "(?<!^)(?<!,)(?<! )\\s+", perl=T)
 
   # Structure by rows
-  att_mat <- matrix(unlist(att_list[lapply(att_list, length) == 3]),
-                    ncol = 3, byrow=T)
+  att_mat <- matrix(unlist(att_list[sapply(att_list, function(row){length(row) == 3})]),
+                    ncol = 3, byrow = T)
   rm(att_list)
 
   # Filter any data that is not an attribute
@@ -121,6 +121,7 @@ detect_sparsity <- function(arff_data) {
 #' @param arff_data Content of the @data section
 #' @return data.frame containing data values
 parse_nonsparse_data <- function(arff_data, num_attrs) {
+  print(num_attrs)
   data.frame(matrix(
     unlist(strsplit(arff_data, ",", fixed = T)),
     ncol = num_attrs,
@@ -176,7 +177,7 @@ parse_sparse_data <- function(arff_data, num_attrs) {
   arff_data <- sapply(arff_data, function(row) {
     # Memory black hole here !!
     complete <- NA[1:num_attrs]
-    complete[as.integer(row[c(T, F)])] <- row[c(F, T)]
+    complete[as.integer(row[c(T, F)]) + 1] <- row[c(F, T)]
     complete
   })
 
