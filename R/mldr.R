@@ -61,13 +61,13 @@ mldr <- function(filename = NULL,
     contents <- read_arff(arff_file)
     relation <- contents$relation
     attrs <- contents$attributes
-    dataset <- contents$dataset
+    obj$dataset <- contents$dataset
     rm(contents)
 
-    if (use_xml || !is.null(xml_file)) {
+    if (use_xml) {
       # Read labels from XML file
       labelnames <- read_xml(xml_file)
-      labels <- attrs[names(attrs) %in% labelnames]
+      labeli <- which(names(attrs) %in% labelnames)
 
       #spl <- split(attrs, attrs$name %in% labelnames)
       #labels <- spl$`TRUE`
@@ -76,16 +76,27 @@ mldr <- function(filename = NULL,
       # Read label amount from Meka parameters
       toplabel <- read_meka_header(relation)
 
-      labels <- attrs[1:toplabel]
+      labeli <- 1:toplabel
       #features <- attrs[toplabel+1:length(attrs),]
     }
+
+    # Convert labels to {0,1} factor
+    # Problem: NA == 1 -> NA
+    'obj$dataset[, labeli] <- as.factor(as.numeric(obj$dataset[, labeli] == 1))'
+
+    obj$labels <- data.frame(name = names(attrs[labeli]),
+                             index = labeli,
+                             IRLbl = 0,
+                             count = colSums(obj$dataset[labeli] == 1))
+
+    # Change type from factor of strings to numeric
+    'obj$dataset[, which(attrs == "numeric")] <-
+      sapply(obj$dataset[, which(attrs == "numeric")], as.numeric)'
 
     # TODO
     # - Type of labels in dataset must be a {0,1} factor
     # - Calculate measures and add them to labels
     # - Add dataset generic measures
-
-    obj <- list(labels=labels, dataset=dataset)
   }
 
   class(obj) <- "mldr"
