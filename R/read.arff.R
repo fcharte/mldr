@@ -126,9 +126,8 @@ parse_nonsparse_data <- function(arff_data, num_attrs) {
   data.frame(matrix(
     unlist(strsplit(arff_data, ",", fixed = T)),
     ncol = num_attrs,
-    nrow = length(arff_data),
     byrow = T
-  ))
+  ), stringsAsFactors = F)
 }
 
 #' Builds a data.frame out of sparse ARFF data
