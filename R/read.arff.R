@@ -16,7 +16,10 @@ read_arff <- function(arff_file) {
   if (!isOpen(file_con))
     open(file_con, "r")
 
-  file_data <- readLines(file_con, warn = F) # Reads whole file
+  # Read whole file
+  #file_data <- readLines(file_con, warn = F)
+  file_data <- strsplit(readChar(file_con, nchars = file.info(arff_file)$size, useBytes = T),
+                        "\n", fixed = T, useBytes = T)[[1]]
 
   print("Archivo cargado")
 
@@ -145,13 +148,23 @@ parse_sparse_data <- function(arff_data, num_attrs) {
   print(num_attrs)
 
   # Build complete matrix with data
-  arff_data <- sapply(arff_data, function(row) {
-    # Memory black hole here !!
+  '
+  dataset <- sapply(arff_data, function(row) {
     complete <- NA[1:num_attrs]
     complete[as.integer(row[c(T, F)]) + 1] <- row[c(F, T)]
     complete
   })
+  '
+
+  #'
+  arff_data <- do.call(rbind, arff_data)
+
+  dataset <- matrix(NA, ncol = num_attrs, nrow = length(arff_data[,1]))
+
+  ############ ??
+  dataset[, as.integer(arff_data[, c(T, F)])] <- arff_data[, c(F, T)]
+  #'
 
   # Create and return data.frame
-  data.frame(t(arff_data))
+  data.frame(dataset, stringsAsFactors = F)
 }

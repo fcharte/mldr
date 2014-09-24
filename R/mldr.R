@@ -94,7 +94,6 @@ mldr <- function(filename = NULL,
       lapply(obj$dataset[, which(attrs == "numeric")], as.numeric)
 
     # TODO
-    # - Type of labels in dataset must be a {0,1} factor
     # - Calculate measures and add them to labels
     # - Add dataset generic measures
   }
