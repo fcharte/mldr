@@ -80,9 +80,9 @@ mldr <- function(filename = NULL,
       #features <- attrs[toplabel+1:length(attrs),]
     }
 
-    # Convert labels to {0,1} factor
-    # Problem: NA == 1 -> NA
-    'obj$dataset[, labeli] <- as.factor(as.numeric(obj$dataset[, labeli] == 1))'
+    # Convert labels to numeric
+    obj$dataset[, labeli] <- lapply(obj$dataset[, labeli],
+                                    function(col) as.numeric(!is.na(as.numeric(col) | NA)))
 
     obj$labels <- data.frame(name = names(attrs[labeli]),
                              index = labeli,
@@ -90,8 +90,8 @@ mldr <- function(filename = NULL,
                              count = colSums(obj$dataset[labeli] == 1))
 
     # Change type from factor of strings to numeric
-    'obj$dataset[, which(attrs == "numeric")] <-
-      sapply(obj$dataset[, which(attrs == "numeric")], as.numeric)'
+    obj$dataset[, which(attrs == "numeric")] <-
+      lapply(obj$dataset[, which(attrs == "numeric")], as.numeric)
 
     # TODO
     # - Type of labels in dataset must be a {0,1} factor
