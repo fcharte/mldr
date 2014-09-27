@@ -87,11 +87,13 @@ mldr <- function(filename = NULL,
     obj$labels <- data.frame(name = names(attrs[labeli]),
                              index = labeli,
                              IRLbl = 0,
-                             count = colSums(obj$dataset[labeli] == 1))
+                             count = colSums(obj$dataset[labeli]))
 
     # Change type from factor of strings to numeric
     obj$dataset[, which(attrs == "numeric")] <-
       lapply(obj$dataset[, which(attrs == "numeric")], as.numeric)
+
+    obj$dataset$labelcount <- rowSums(obj$dataset[, labeli])
 
     # TODO
     # - Calculate measures and add them to labels

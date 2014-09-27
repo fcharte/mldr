@@ -147,24 +147,42 @@ parse_sparse_data <- function(arff_data, num_attrs) {
   print(length(arff_data))
   print(num_attrs)
 
+  # library(parallel)
+
   # Build complete matrix with data
-  '
+  #'
   dataset <- sapply(arff_data, function(row) {
     complete <- NA[1:num_attrs]
     complete[as.integer(row[c(T, F)]) + 1] <- row[c(F, T)]
     complete
   })
-  '
-
   #'
+
+  '
   arff_data <- do.call(rbind, arff_data)
 
   dataset <- matrix(NA, ncol = num_attrs, nrow = length(arff_data[,1]))
 
   ############ ??
-  dataset[, as.integer(arff_data[, c(T, F)])] <- arff_data[, c(F, T)]
-  #'
+  dataset[, as.integer(arff_data[, c(T, F)]) + 1] <- arff_data[, c(F, T)]
+  '
+
+  '
+  ind_matrix <- sapply(arff_data, function(row, index) {
+    expand.grid(index, as.integer(row[c(T,F)]) + 1)
+  }, index = 1)
+  print(head(ind_matrix))
+
+  val_matrix <- sapply(arff_data, function(row) row[c(F,T)])
+
+  print(head(val_matrix))
+
+  dataset <- matrix(NA, ncol = num_attrs, nrow = length(arff_data[,1]))
+
+  dataset[ind_matrix] <- val_matrix
+
+  '
 
   # Create and return data.frame
-  data.frame(dataset, stringsAsFactors = F)
+  data.frame(t(dataset), stringsAsFactors = F)
 }
