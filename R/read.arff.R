@@ -17,11 +17,8 @@ read_arff <- function(arff_file) {
     open(file_con, "r")
 
   # Read whole file
-  #file_data <- readLines(file_con, warn = F)
   file_data <- strsplit(readChar(file_con, nchars = file.info(arff_file)$size, useBytes = T),
                         "\n", fixed = T, useBytes = T)[[1]]
-
-  print("Archivo cargado")
 
   close(file_con)
 
@@ -124,8 +121,6 @@ detect_sparsity <- function(arff_data) {
 #' @param arff_data Content of the @data section
 #' @return data.frame containing data values
 parse_nonsparse_data <- function(arff_data, num_attrs) {
-  print(length(arff_data))
-  print(num_attrs)
   data.frame(matrix(
     unlist(strsplit(arff_data, ",", fixed = T)),
     ncol = num_attrs,
@@ -144,44 +139,12 @@ parse_sparse_data <- function(arff_data, num_attrs) {
     unlist(strsplit(item, " "))
   })
 
-  print(length(arff_data))
-  print(num_attrs)
-
-  # library(parallel)
-
   # Build complete matrix with data
-  #'
   dataset <- sapply(arff_data, function(row) {
     complete <- NA[1:num_attrs]
     complete[as.integer(row[c(T, F)]) + 1] <- row[c(F, T)]
     complete
   })
-  #'
-
-  '
-  arff_data <- do.call(rbind, arff_data)
-
-  dataset <- matrix(NA, ncol = num_attrs, nrow = length(arff_data[,1]))
-
-  ############ ??
-  dataset[, as.integer(arff_data[, c(T, F)]) + 1] <- arff_data[, c(F, T)]
-  '
-
-  '
-  ind_matrix <- sapply(arff_data, function(row, index) {
-    expand.grid(index, as.integer(row[c(T,F)]) + 1)
-  }, index = 1)
-  print(head(ind_matrix))
-
-  val_matrix <- sapply(arff_data, function(row) row[c(F,T)])
-
-  print(head(val_matrix))
-
-  dataset <- matrix(NA, ncol = num_attrs, nrow = length(arff_data[,1]))
-
-  dataset[ind_matrix] <- val_matrix
-
-  '
 
   # Create and return data.frame
   data.frame(t(dataset), stringsAsFactors = F)
