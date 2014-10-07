@@ -95,8 +95,9 @@ mldr <- function(filename = NULL,
     obj$measures <- measures(obj)
 
     # TODO
-    # - Calculate measures and add them to labels
     # - Add dataset generic measures
+    # - Add instance specific measures
+    # - Add generics: summary, plot
   }
 
   class(obj) <- "mldr"
