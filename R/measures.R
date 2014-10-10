@@ -23,7 +23,8 @@ measures <- function(mld) {
 
     cardinality = mean(mld$dataset$.labelcount),
     density = mean(mld$dataset$.labelcount) / nrow(mld$labels),
-    meanIR = mean(mld$labels$IRLbl)
+    meanIR = mean(mld$labels$IRLbl),
+    scumble = mean(mld$dataset$.Atkinson)
   )
 }
 
@@ -42,11 +43,19 @@ label_measures <- function(data, indexes) {
 dataset_measures <- function(mld) {
   mld$dataset$.labelcount <- rowSums(mld$dataset[, mld$labels$index])
 
+  # Atkinson index for IR in each instance
   IRs <- data.frame(t(t(mld$dataset[, mld$labels$index]) * mld$labels$IRLbl))
-  means <- rowSums(IRs) / mld$dataset$.labelcount
-  IRs[IRs == 0] <- 1 # Identity element for (R, *)
-  IRprod <- Reduce("*", IRs)
-  mld$dataset$.Atkinson <- 1 - (IRprod)^(1/mld$dataset$.labelcount) / means
+  IRmeans <- rowSums(IRs) / mld$dataset$.labelcount
+
+  # Atkinson = 1 - exp(mean(log(IRs))) / mean(IRs)
+  # Applying properties of the logarithm:
+  # Atkinson = 1 - exp(log(prod(IRs)^(1/n))) / mean(IRs)
+  # Atkinson = 1 - prod(IRs)^(1/n) / mean(IRs)
+  IRs[IRs == 0] <- 1            # Identity element for (R, *)
+  IRprod <- Reduce("*", IRs)    # Row products
+  mld$dataset$.Atkinson <- ifelse(mld$dataset$.labelcount > 0,
+                                  1 - (IRprod)^(1/mld$dataset$.labelcount) / IRmeans,
+                                  0)
 
   mld$dataset
 }
