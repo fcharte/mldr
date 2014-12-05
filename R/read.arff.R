@@ -65,7 +65,10 @@ read_arff <- function(arff_file) {
 #'  attribute, its name and its type
 parse_attributes <- function(arff_attrs) {
   # Extract attribute definitions
-  att_list <- strsplit(arff_attrs, "(?<!^)(?<!,)(?<! )\\s+", perl=T)
+  # att_list <- strsplit(arff_attrs, "(?:[^']\\w)*(?<!^)(?<!,)(?<! )\\s+(?:')?", perl=T)
+  #att_list <- strsplit(arff_attrs, "(?:[^\\s']+|'[^']*')+", perl=T)
+  #arff_attrs <- strsplit(arff_attrs, "\n")
+  att_list <- regmatches(arff_attrs, gregexpr("([^\\s']+|'([^']|\\')*(?:'))", arff_attrs, perl = T))
 
   # Structure by rows
   att_mat <- matrix(unlist(att_list[sapply(att_list, function(row){length(row) == 3})]),
@@ -74,6 +77,9 @@ parse_attributes <- function(arff_attrs) {
 
   # Filter any data that is not an attribute
   att_mat <- att_mat[grepl("\\s*@attribute", att_mat[, 1]), 2:3]
+  att_mat <- gsub("\\'", "'", att_mat, fixed = T)
+  att_mat <- gsub("^'(.*?)'$", "\\1", att_mat, perl = T)
+
 
   # Create the named vector
   att_v <- att_mat[, 2]
