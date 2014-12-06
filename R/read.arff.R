@@ -65,9 +65,6 @@ read_arff <- function(arff_file) {
 #'  attribute, its name and its type
 parse_attributes <- function(arff_attrs) {
   # Extract attribute definitions
-  # att_list <- strsplit(arff_attrs, "(?:[^']\\w)*(?<!^)(?<!,)(?<! )\\s+(?:')?", perl=T)
-  #att_list <- strsplit(arff_attrs, "(?:[^\\s']+|'[^']*')+", perl=T)
-  #arff_attrs <- strsplit(arff_attrs, "\n")
   att_list <- regmatches(arff_attrs, gregexpr("([^\\s']+|'([^']|\\')*(?:'))", arff_attrs, perl = T))
 
   # Structure by rows

@@ -88,6 +88,8 @@ mldr <- function(filename = NULL,
     obj$dataset[, which(attrs == "numeric")] <-
       lapply(obj$dataset[, which(attrs == "numeric")], as.numeric)
 
+    obj$attributes <- attrs
+
     obj$labels <- label_measures(obj$dataset, labeli)
 
     obj$labelsets <-   table(as.factor(do.call(paste, c(obj$dataset[, obj$labels$index], sep = ""))))
