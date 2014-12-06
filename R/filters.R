@@ -9,10 +9,10 @@
 #' @param expression to filter the rows
 #' @return a new mldr object with the selected rows
 
-"[.mldr" <- function(mldrObject, rowFilter, ...) {
+"[.mldr" <- function(mldrObject, rowFilter = T, ...) {
   rowFilter <- substitute(rowFilter)
   rows <- eval(rowFilter, mldrObject$dataset, parent.frame())
   newDataset <- mldrObject$dataset[rows,]
-  print("Hooola")
+
   return(updateMldr(mldrObject, newDataset))
 }

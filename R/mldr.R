@@ -71,18 +71,15 @@ mldr <- function(filename = NULL,
     dataset[, which(attrs == "numeric")] <-
       lapply(dataset[, which(attrs == "numeric")], as.numeric)
 
-    obj <- list()
-    obj$name <- header$name
-    obj$dataset <- dataset
-    obj$attributes <- attrs
-    obj$labels <- label_measures(dataset, labeli)
-    obj$labelsets <-   sort(table(as.factor(do.call(paste, c(obj$dataset[, obj$labels$index], sep = "")))))
-    obj$dataset <- dataset_measures(obj)
-    obj$measures <- measures(obj)
+    obj <- updateMldr(list(
+      name = header$name,
+      attributes = attrs,
+      labels = t(dataset[1, labeli])
+      ), dataset
+    )
+  } else {
+    NULL
   }
-
-  class(obj) <- "mldr"
-  return(obj)
 }
 
 updateMldr <- function(mldr, dataset) {
@@ -91,10 +88,11 @@ updateMldr <- function(mldr, dataset) {
   newMldr$dataset <- dataset
   newMldr$attributes <- mldr$attributes
   newMldr$labels <- label_measures(dataset, which(names(mldr$attributes) %in% rownames(mldr$labels)))
-  newMldr$labelsets <-   sort(table(as.factor(do.call(paste, c(dataset[, mldr$labels$index], sep = "")))))
+  newMldr$labelsets <-   sort(table(as.factor(do.call(paste, c(dataset[, newMldr$index], sep = "")))))
   newMldr$dataset <- dataset_measures(newMldr)
   newMldr$measures <- measures(newMldr)
+
   class(newMldr) <- "mldr"
-  print("Pasooo")
+
   return(newMldr)
 }
