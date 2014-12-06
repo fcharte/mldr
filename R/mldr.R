@@ -64,6 +64,8 @@ mldr <- function(filename = NULL,
     obj$dataset <- contents$dataset
     rm(contents)
 
+    header <- read_header(relation)
+
     if (use_xml) {
       # Read labels from XML file
       labelnames <- read_xml(xml_file)
@@ -74,11 +76,12 @@ mldr <- function(filename = NULL,
       #features <- spl$`FALSE`
     } else {
       # Read label amount from Meka parameters
-      toplabel <- read_meka_header(relation)
 
-      labeli <- 1:toplabel
+      labeli <- 1:header$toplabel
       #features <- attrs[toplabel+1:length(attrs),]
     }
+
+    obj$name <- header$name
 
     # Convert labels to numeric
     obj$dataset[, labeli] <- lapply(obj$dataset[, labeli],

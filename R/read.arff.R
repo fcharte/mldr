@@ -101,14 +101,25 @@ read_xml <- function(xml_file) {
   unname(unlist(label_list[names(label_list) == "label.name"]))
 }
 
-#' Reads the Meka parameters in the header of an
+#' Reads the name and Meka parameters in the header of an
 #' ARFF file
 #'
 #' @param arff_relation "@relation" line of the ARFF file
 #' @return Number of labels in the dataset
-read_meka_header <- function(arff_relation) {
-  rgx <- regexpr("-C\\s*\\d+", arff_relation, perl = T)
-  as.integer(strsplit(regmatches(arff_relation, rgx), "-C\\s*")[[1]][2])
+read_header <- function(arff_relation) {
+  if (grepl("^@relation\\s*'(.*?)'$", arff_relation, perl = T)) {
+    rgx <- regexpr("(\\w+)\\s*:\\s*-[Cc]\\s*\\d+", arff_relation, perl = T)
+    hdr <- strsplit(regmatches(arff_relation, rgx), "\\s*:\\s*-[Cc]\\s*")[[1]]
+    return(list(
+      name = hdr[1],
+      toplabel = as.numeric(hdr[2])
+    ))
+  } else {
+    nm <- regmatches(arff_relation, regexpr("(?<=\\s)(\\w+)", arff_relation, perl = T))
+    return(list(
+      name = nm
+    ))
+  }
 }
 
 #' Detects whether an ARFF file is in sparse format
