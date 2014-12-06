@@ -8,7 +8,7 @@ measures <- function(mld) {
   labelsets <- table(as.factor(labelsets))
 
   list(
-    num.attributes = length(names(mld$dataset)),
+    num.attributes = length(names(mld$dataset)) - 2, # 2 columns are measures!
     num.instances = nrow(mld$dataset),
     num.labels = nrow(mld$labels),
 
