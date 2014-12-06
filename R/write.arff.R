@@ -1,7 +1,9 @@
+#' Writes an ARFF and an XML file for
+#' a mldr object
 #'
-#'
-
-write.mldr <- function(obj, filename) {
+#' @param obj 'mldr' object
+#' @param filename base name for the files (without extension)
+write_arff <- function(obj, filename) {
   # Open file
   connection <- file(paste(filename, ".arff"))
 
