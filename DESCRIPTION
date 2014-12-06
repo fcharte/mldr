@@ -1,8 +1,9 @@
 Package: mldr
-Title: What the package does (one line)
+Title: Exploratory data analysis for multilabel datasets
 Version: 0.1
-Authors@R: "First Last <first.last@example.com> [aut, cre]"
-Description: What the package does (one paragraph)
+Author: "Francisco Charte <francisco@fcharte.com>", "David Charte <fdavidcl@outlook.com>"
+Description: Exploratory data analysis functions for multilabel datasets along with interactive Shiny application to ease their use.
 Depends: R (>= 3.1.0)
+Imports: shiny
 License: What license is it under?
 LazyData: true

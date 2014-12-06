@@ -92,7 +92,7 @@ mldr <- function(filename = NULL,
 
     obj$labels <- label_measures(obj$dataset, labeli)
 
-    obj$labelsets <-   table(as.factor(do.call(paste, c(obj$dataset[, obj$labels$index], sep = ""))))
+    obj$labelsets <-   sort(table(as.factor(do.call(paste, c(obj$dataset[, obj$labels$index], sep = "")))))
 
     obj$dataset <- dataset_measures(obj)
 
