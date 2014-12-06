@@ -16,26 +16,7 @@ mldr <- function(filename = NULL,
                  auto_extension = TRUE,
                  xml_file = NULL) {
 
-  # Creation of a prototypic multilabel dataset
-  obj <- list(
-    labels = data.frame(
-      name = character(),
-      index = integer(),
-      IRLbl = numeric(),
-      count = integer(),
-      stringsAsFactors = FALSE
-    ),
-    dataset = data.frame()#,
-    #features = data.frame(
-    #  name = character(),
-    #  index = integer(),
-    #  type = character(),
-    #  values = factor(), ########### ?
-    #  stringsAsFactors = FALSE
-    #)
-  )
-
-  if (!is.null(filename)) {
+   if (!is.null(filename)) {
     # Parameter check
     if (!is.character(filename))
       stop("Argument 'filename' must be a character string.")
@@ -61,7 +42,7 @@ mldr <- function(filename = NULL,
     contents <- read_arff(arff_file)
     relation <- contents$relation
     attrs <- contents$attributes
-    obj$dataset <- contents$dataset
+    dataset <- contents$dataset
     rm(contents)
 
     header <- read_header(relation)
@@ -81,32 +62,39 @@ mldr <- function(filename = NULL,
       #features <- attrs[toplabel+1:length(attrs),]
     }
 
-    obj$name <- header$name
 
     # Convert labels to numeric
-    obj$dataset[, labeli] <- lapply(obj$dataset[, labeli],
+    dataset[, labeli] <- lapply(dataset[, labeli],
                                     function(col) as.numeric(!is.na(as.numeric(col) | NA)))
 
     # Change type from factor of strings to numeric
-    obj$dataset[, which(attrs == "numeric")] <-
-      lapply(obj$dataset[, which(attrs == "numeric")], as.numeric)
+    dataset[, which(attrs == "numeric")] <-
+      lapply(dataset[, which(attrs == "numeric")], as.numeric)
 
+    obj <- list()
+    obj$name <- header$name
+    obj$dataset <- dataset
     obj$attributes <- attrs
-
-    obj$labels <- label_measures(obj$dataset, labeli)
-
+    obj$labels <- label_measures(dataset, labeli)
     obj$labelsets <-   sort(table(as.factor(do.call(paste, c(obj$dataset[, obj$labels$index], sep = "")))))
-
     obj$dataset <- dataset_measures(obj)
-
     obj$measures <- measures(obj)
-
-    # TODO
-    # - Add dataset generic measures
-    # - Add instance specific measures
-    # - Add generics: summary, plot
   }
 
   class(obj) <- "mldr"
   return(obj)
+}
+
+updateMldr <- function(mldr, dataset) {
+  newMldr <- list()
+  newMldr$name <- mldr$name
+  newMldr$dataset <- dataset
+  newMldr$attributes <- mldr$attributes
+  newMldr$labels <- label_measures(dataset, which(names(mldr$attributes) %in% rownames(mldr$labels)))
+  newMldr$labelsets <-   sort(table(as.factor(do.call(paste, c(dataset[, mldr$labels$index], sep = "")))))
+  newMldr$dataset <- dataset_measures(newMldr)
+  newMldr$measures <- measures(newMldr)
+  class(newMldr) <- "mldr"
+  print("Pasooo")
+  return(newMldr)
 }
