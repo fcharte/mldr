@@ -12,7 +12,7 @@
 #'  assumed
 
 mldr <- function(filename = NULL,
-                 use_xml = FALSE,
+                 use_xml = TRUE,
                  auto_extension = TRUE,
                  xml_file = NULL) {
 
