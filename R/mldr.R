@@ -88,7 +88,7 @@ updateMldr <- function(mldr, dataset) {
   newMldr$dataset <- dataset
   newMldr$attributes <- mldr$attributes
   newMldr$labels <- label_measures(dataset, which(names(mldr$attributes) %in% rownames(mldr$labels)))
-  newMldr$labelsets <-   sort(table(as.factor(do.call(paste, c(dataset[, newMldr$index], sep = "")))))
+  newMldr$labelsets <-   sort(table(as.factor(do.call(paste, c(dataset[, newMldr$labels$index], sep = "")))))
   newMldr$dataset <- dataset_measures(newMldr)
   newMldr$measures <- measures(newMldr)
 
