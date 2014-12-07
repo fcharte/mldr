@@ -9,5 +9,5 @@ Depends:
     R (>= 3.1.0)
 Imports:
     shiny
-License: What license is it under?
+License: LGPL-3
 LazyData: true
