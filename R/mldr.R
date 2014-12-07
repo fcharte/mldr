@@ -71,7 +71,7 @@ mldr <- function(filename = NULL,
     dataset[, which(attrs == "numeric")] <-
       lapply(dataset[, which(attrs == "numeric")], as.numeric)
 
-    obj <- updateMldr(list(
+    updateMldr(list(
       name = header$name,
       attributes = attrs,
       labels = t(dataset[1, labeli])
@@ -94,5 +94,5 @@ updateMldr <- function(mldr, dataset) {
 
   class(newMldr) <- "mldr"
 
-  return(newMldr)
+  newMldr
 }

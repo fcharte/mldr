@@ -14,5 +14,5 @@
   rows <- eval(rowFilter, mldrObject$dataset, parent.frame())
   newDataset <- mldrObject$dataset[rows,]
 
-  return(updateMldr(mldrObject, newDataset))
+  updateMldr(mldrObject, newDataset)
 }
