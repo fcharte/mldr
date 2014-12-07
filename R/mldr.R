@@ -96,3 +96,18 @@ updateMldr <- function(mldr, dataset) {
 
   newMldr
 }
+
+#' Launchs the web-based GUI for mldr
+#' @title Launchs the web-based GUI for mldr
+#' @return Nothing
+#' @description mldrGUI starts loads the web browser an interactive user interface built using R shiny.
+#' @examples
+#' \dontrun{
+#' library(mldr)
+#' mldrGUI()
+#' }
+#' @export
+
+mldrGUI <- function() {
+  shiny::runApp(appDir = system.file("shiny", package="mldr"))
+}

@@ -1,8 +1,3 @@
-#'
-#' Contains operators to manipulate mldr objects
-#'
-
-
 #' Checks if two mldr objects have the same structure
 #'
 #' @param mldr1, mldr2 mldr objects to comare
