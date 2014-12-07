@@ -1,14 +1,13 @@
 #'
-#' Contains functions to filter rows
+#' Contains functions to filter rows (instances) and columns (attributes)
 #'
 
 #' Generates a new mldr object containing the
 #' selected rows
 #'
-#' @param original mldr object
-#' @param expression to filter the rows
+#' @param mldrObject original mldr object
+#' @param rowFilter expression to filter the rows
 #' @return a new mldr object with the selected rows
-
 "[.mldr" <- function(mldrObject, rowFilter = T, ...) {
   rowFilter <- substitute(rowFilter)
   rows <- eval(rowFilter, mldrObject$dataset, parent.frame())
