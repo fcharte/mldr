@@ -65,7 +65,12 @@ read_arff <- function(arff_file) {
 #'  attribute, its name and its type
 parse_attributes <- function(arff_attrs) {
   # Extract attribute definitions
-  att_list <- regmatches(arff_attrs, gregexpr("([^\\s']+|'([^']|\\')*(?:'))", arff_attrs, perl = T))
+
+  # Regex matches strings separated by spaces not containing '
+  # or {, }; strings within single quotes or strings within
+  # curly braces
+  rgx <- "([^\\s'\\{\\}]+|'([^']|\\')*'|\\{([^}])*\\})"
+  att_list <- regmatches(arff_attrs, gregexpr(rgx, arff_attrs, perl = T))
 
   # Structure by rows
   att_mat <- matrix(unlist(att_list[sapply(att_list, function(row){length(row) == 3})]),
