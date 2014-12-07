@@ -112,3 +112,4 @@ updateMldr <- function(mldr, dataset) {
 mldrGUI <- function() {
   shiny::runApp(appDir = system.file("shiny", package="mldr"))
 }
+

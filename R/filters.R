@@ -1,7 +1,3 @@
-#'
-#' Contains functions to filter rows (instances) and columns (attributes)
-#'
-
 #' Generates a new mldr object containing the
 #' selected rows
 #'
