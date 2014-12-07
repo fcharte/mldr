@@ -2,6 +2,7 @@
 #'
 #' @param mldr1, mldr2 mldr objects to comare
 #' @return true if the two mldr have the same structure
+#' @export
 "==.mldr" <- function(mldr1, mldr2) {
   length(mldr1$attributes) == length(mldr2$attributes) &&
     names(mldr1$attributes) == names(mldr2$attributes) &&
@@ -13,6 +14,7 @@
 #'
 #' @param mldr1, mldr2 original mldr objects
 #' @return a new mldr object with all rows in the two parameters
+#' @export
 "+.mldr" <- function(mldr1, mldr2) {
   # Check the two mldr's structure
   if(mldr1 == mldr2)

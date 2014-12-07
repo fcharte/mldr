@@ -1,4 +1,4 @@
-
+#' @export
 summary.mldr <- function(mld) {
   print(data.frame(mld$measures))
 }

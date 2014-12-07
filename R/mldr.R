@@ -10,6 +10,7 @@
 #' @param xml_file Path to the XML file. If not
 #'  provided, the filename ending in ".xml" will be
 #'  assumed
+#' @export
 
 mldr <- function(filename = NULL,
                  use_xml = TRUE,

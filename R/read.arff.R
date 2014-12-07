@@ -1,15 +1,15 @@
-#'
-#' Contains necessary functions to read ARFF files in
-#' different formats (sparse, nonsparse...)
-#'
-
-#' Extracts all useful data from an ARFF file in
-#' R objects
-#'
-#' @param arff_file Path to the file
-#' @return List containing the relation string,
-#'  a named vector for attributes and a data.frame
-#'  for the data section
+#
+# Contains necessary functions to read ARFF files in
+# different formats (sparse, nonsparse...)
+#
+#
+# Extracts all useful data from an ARFF file in
+# R objects
+#
+# @param arff_file Path to the file
+# @return List containing the relation string,
+#  a named vector for attributes and a data.frame
+#  for the data section
 read_arff <- function(arff_file) {
   file_con <- file(arff_file, "r")
 
@@ -58,11 +58,11 @@ read_arff <- function(arff_file) {
   )
 }
 
-#' Reads the attributes section of an ARFF file
-#'
-#' @param arff_attrs Lines containing the attributes
-#' @return A vector containing, for each
-#'  attribute, its name and its type
+# Reads the attributes section of an ARFF file
+#
+# @param arff_attrs Lines containing the attributes
+# @return A vector containing, for each
+#  attribute, its name and its type
 parse_attributes <- function(arff_attrs) {
   # Extract attribute definitions
 
@@ -91,11 +91,11 @@ parse_attributes <- function(arff_attrs) {
   return(att_v)
 }
 
-#' Reads the associated XML file for a ML dataset
-#'
-#' @param xml_file Path to the XMl file
-#' @return A vector of strings containing the name
-#'  of each label
+# Reads the associated XML file for a ML dataset
+#
+# @param xml_file Path to the XMl file
+# @return A vector of strings containing the name
+#  of each label
 read_xml <- function(xml_file) {
   library(XML)
   parsed_xml <- xmlParse(xml_file)
@@ -106,11 +106,11 @@ read_xml <- function(xml_file) {
   unname(unlist(label_list[names(label_list) == "label.name"]))
 }
 
-#' Reads the name and Meka parameters in the header of an
-#' ARFF file
-#'
-#' @param arff_relation "relation" line of the ARFF file
-#' @return Number of labels in the dataset
+# Reads the name and Meka parameters in the header of an
+# ARFF file
+#
+# @param arff_relation "relation" line of the ARFF file
+# @return Number of labels in the dataset
 read_header <- function(arff_relation) {
   if (grepl("^@relation\\s*'(.*?)'$", arff_relation, perl = T)) {
     rgx <- regexpr("(\\w+)\\s*:\\s*-[Cc]\\s*\\d+", arff_relation, perl = T)
@@ -127,18 +127,18 @@ read_header <- function(arff_relation) {
   }
 }
 
-#' Detects whether an ARFF file is in sparse format
-#'
-#' @param arff_data Content of the data section
-#' @return Boolean, TRUE when the file is sparse
+# Detects whether an ARFF file is in sparse format
+#
+# @param arff_data Content of the data section
+# @return Boolean, TRUE when the file is sparse
 detect_sparsity <- function(arff_data) {
   grepl("^\\s*\\{", arff_data[1])
 }
 
-#' Builds a data.frame out of non-sparse ARFF data
-#'
-#' @param arff_data Content of the data section
-#' @return data.frame containing data values
+# Builds a data.frame out of non-sparse ARFF data
+#
+# @param arff_data Content of the data section
+# @return data.frame containing data values
 parse_nonsparse_data <- function(arff_data, num_attrs) {
   data.frame(matrix(
     unlist(strsplit(arff_data, ",", fixed = T)),
@@ -147,10 +147,10 @@ parse_nonsparse_data <- function(arff_data, num_attrs) {
   ), stringsAsFactors = F)
 }
 
-#' Builds a data.frame out of sparse ARFF data
-#'
-#' @param arff_data Content of the data section
-#' @return data.frame containing data values
+# Builds a data.frame out of sparse ARFF data
+#
+# @param arff_data Content of the data section
+# @return data.frame containing data values
 parse_sparse_data <- function(arff_data, num_attrs) {
   # Extract data items
   arff_data <- strsplit(gsub("[\\{\\}]", "", arff_data), ",")

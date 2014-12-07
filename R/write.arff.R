@@ -3,6 +3,7 @@
 #'
 #' @param obj 'mldr' object
 #' @param filename base name for the files (without extension)
+#' @export
 write_arff <- function(obj, filename) {
   # Open file
   connection <- file(paste(filename, ".arff"))
