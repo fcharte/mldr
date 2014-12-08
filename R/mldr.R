@@ -110,6 +110,9 @@ updateMldr <- function(mldr, dataset) {
 #' @export
 
 mldrGUI <- function() {
-  shiny::runApp(appDir = system.file("shiny", package="mldr"))
+  if(require(shiny))
+    shiny::runApp(appDir = system.file("shiny", package="mldr"))
+
+  invisible()
 }
 

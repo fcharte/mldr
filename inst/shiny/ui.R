@@ -1,3 +1,5 @@
+library(shiny)
+
 shinyUI(
   navbarPage(
     "mldr: EDA for multilabel datasets",
