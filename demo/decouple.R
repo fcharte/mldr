@@ -5,18 +5,22 @@ decoupleImbalancedLabels <- function(mld) {
   mldbase <- mld[.Atkinson <= mld$measures$scumble]
   mldhigh <- mld[.Atkinson > mld$measures$scumble]  # Samples with coocurrence of highly imbalanced labels
 
+  # Indexes of minority and majority labels
   minIndexes <- mld$labels[mld$labels$IRLbl > mld$measures$meanIR,"index"]
   majIndexes <- mld$labels[mld$labels$IRLbl <= mld$measures$meanIR,"index"]
 
+  # Duplicate rows affected by coocurrence of highly imbalanced labels
   ninstances <- mldhigh$measures$num.instances
   mldhigh$dataset[(ninstances+1):(ninstances*2),] <- mldhigh$dataset
 
+  # Decouple majority and minority labels
   mldhigh$dataset[1:ninstances, minIndexes] <- 0
   mldhigh$dataset[(ninstances+1):(ninstances*2), majIndexes] <- 0
 
   mldbase + mldhigh
 }
 
+# Test de function with emotions multilabel dataset
 decoupled.emotions <- decoupleImbalancedLabels(emotions)
 
 summary(emotions)
