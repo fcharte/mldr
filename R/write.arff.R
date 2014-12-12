@@ -12,7 +12,7 @@ write_arff <- function(obj, filename, write.xml = FALSE) {
   header <- paste("@relation ", obj$name, sep = "")
   attributes <- paste("@attribute ", names(obj$attributes), " ", obj$attributes, sep = "")
   data <- obj$dataset[, 1:obj$measures$num.attributes]
-  data[is.na(data)] <- '?' # Change NAs by '?'
+  data[is.na(data)] <- '0' # NAs aren't missing values ('?') but 0
   data <- apply(data, 1, function(c) paste(c, collapse = ','))
 
   # Write header, attributes and data
