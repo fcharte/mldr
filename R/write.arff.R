@@ -6,12 +6,14 @@
 #' @export
 write_arff <- function(obj, filename, write.xml = FALSE) {
   # Open file
-  connection <- file(paste(filename, ".arff"))
+  connection <- file(paste(filename, ".arff", sep = ""))
 
   # Create header an attribute lines
   header <- paste("@relation ", obj$name, sep = "")
   attributes <- paste("@attribute ", names(obj$attributes), " ", obj$attributes, sep = "")
-  data <- apply(obj$dataset[, 1:obj$measures$num.attributes], 1, function(c) paste(c, collapse = ','))
+  data <- obj$dataset[, 1:obj$measures$num.attributes]
+  data[is.na(data)] <- '?' # Change NAs by '?'
+  data <- apply(data, 1, function(c) paste(c, collapse = ','))
 
   # Write header, attributes and data
   writeLines(c(header, "", attributes, "", "@data", data), connection)
