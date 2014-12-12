@@ -23,7 +23,7 @@ measures <- function(mld) {
 
     cardinality = mean(mld$dataset$.labelcount),
     density = mean(mld$dataset$.labelcount) / nrow(mld$labels),
-    meanIR = mean(mld$labels$IRLbl),
+    meanIR = mean(mld$labels$IRLbl, na.rm = TRUE),  # Avoid NA IRLbls
     scumble = mean(mld$dataset$.Atkinson)
   )
 }
@@ -35,6 +35,7 @@ label_measures <- function(data, indexes) {
   )
 
   msr$IRLbl <- max(msr$count) / msr$count
+  msr$IRLbl[msr$IRLbl == Inf] <- 0 # Avoid Inf values for labels with 0 samples
   msr$freq <- msr$count / nrow(data)
 
   msr
