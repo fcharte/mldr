@@ -17,7 +17,7 @@ decoupleImbalancedLabels <- function(mld) {
   mldhigh$dataset[1:ninstances, minIndexes] <- 0
   mldhigh$dataset[(ninstances+1):(ninstances*2), majIndexes] <- 0
 
-  mldbase + mldhigh
+  mldbase + mldhigh # Join the instances without changes with the filtered ones
 }
 
 # Test de function with emotions multilabel dataset
