@@ -1,9 +1,14 @@
 #
 # Shows how to implement a filter over a MLD to decouple highly imbalanced labels
 #
-decoupleImbalancedLabels <- function(mld) {
-  mldbase <- mld[.Atkinson <= mld$measures$scumble]
-  mldhigh <- mld[.Atkinson > mld$measures$scumble]  # Samples with coocurrence of highly imbalanced labels
+# Process instances with .Atkinson > Scumble (mean)
+#
+dilMean <- function(mld) decoupleImbalancedLabels(mld, mld$measures$scumble)
+dilThirdQ <- function(mld) decoupleImbalancedLabels(mld, summary(mld$dataset$.Atkinson)["3rd Qu."])
+
+decoupleImbalancedLabels <- function(mld, atkLevel) {
+  mldbase <- mld[.Atkinson <= atkLevel]
+  mldhigh <- mld[.Atkinson > atkLevel]  # Samples with coocurrence of highly imbalanced labels
 
   # Indexes of minority and majority labels
   minIndexes <- mld$labels[mld$labels$IRLbl > mld$measures$meanIR,"index"]
@@ -20,7 +25,10 @@ decoupleImbalancedLabels <- function(mld) {
   mldbase + mldhigh # Join the instances without changes with the filtered ones
 }
 
-deactivateImbalancedLabels <- function(mld) {
+#
+# Shows how to implement a filter over a MLD to deactivate majority labels
+#
+deactivateMajorityLabels <- function(mld) {
   mldbase <- mld[.Atkinson <= mld$measures$scumble]
   mldhigh <- mld[.Atkinson > mld$measures$scumble]  # Samples with coocurrence of highly imbalanced labels
 
@@ -33,12 +41,14 @@ deactivateImbalancedLabels <- function(mld) {
 }
 
 # Test de function with emotions multilabel dataset
-decoupled.emotions <- decoupleImbalancedLabels(emotions)
+decoupled.emotions <- dilMean(emotions)
+decoupled2.emotions <- dilThirdQ(emotions)
 
 summary(emotions)
 summary(decoupled.emotions) # Reduced number of labelsets and lower cardinality, density and scumble
+summary(decoupled2.emotions)
 
-deactivated.emotions <- deactivateImbalancedLabels(emotions)
 
+deactivated.emotions <- deactivateMajorityLabels(emotions)
 summary(emotions)
 summary(deactivated.emotions)
