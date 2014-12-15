@@ -1,11 +1,17 @@
 #
 # Shows how to implement a filter over a MLD to decouple highly imbalanced labels
 #
+
 # Process instances with .Atkinson > Scumble (mean)
 #
 dilMean <- function(mld) decoupleImbalancedLabels(mld, mld$measures$scumble)
+
+# Process instances with .Atkinson > ThirdQuartile(Scumble)
+#
 dilThirdQ <- function(mld) decoupleImbalancedLabels(mld, summary(mld$dataset$.Atkinson)["3rd Qu."])
 
+# Process instances with .Atkinson > atkLevel
+#
 decoupleImbalancedLabels <- function(mld, atkLevel) {
   mldbase <- mld[.Atkinson <= atkLevel]
   mldhigh <- mld[.Atkinson > atkLevel]  # Samples with coocurrence of highly imbalanced labels
@@ -47,7 +53,6 @@ decoupled2.emotions <- dilThirdQ(emotions)
 summary(emotions)
 summary(decoupled.emotions) # Reduced number of labelsets and lower cardinality, density and scumble
 summary(decoupled2.emotions)
-
 
 deactivated.emotions <- deactivateMajorityLabels(emotions)
 summary(emotions)
