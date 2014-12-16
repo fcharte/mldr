@@ -11,14 +11,14 @@
 #  a named vector for attributes and a data.frame
 #  for the data section
 read_arff <- function(arff_file) {
-  file_con <- file(arff_file, "r")
+  file_con <- file(arff_file, "rb")
 
   if (!isOpen(file_con))
-    open(file_con, "r")
+    open(file_con, "rb")
 
   # Read whole file
   file_data <- strsplit(readChar(file_con, nchars = file.info(arff_file)$size, useBytes = T),
-                        "\n", fixed = T, useBytes = T)[[1]]
+                        "\\\r\n|\\\r|\\\n", fixed = F, useBytes = T)[[1]]
 
   close(file_con)
 
