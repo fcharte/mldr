@@ -17,8 +17,8 @@ read_arff <- function(arff_file) {
     open(file_con, "rb")
 
   # Read whole file
-  file_data <- strsplit(readChar(file_con, nchars = file.info(arff_file)$size, useBytes = T),
-                        "\\\r\n|\\\r|\\\n", fixed = F, useBytes = T)[[1]]
+  file_data <- strsplit(readChar(file_con, nchars = file.info(arff_file)$size, useBytes = TRUE),
+                        "\\\r\n|\\\r|\\\n", fixed = FALSE, useBytes = TRUE)[[1]]
 
   close(file_con)
 

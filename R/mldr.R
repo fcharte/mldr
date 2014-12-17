@@ -1,15 +1,27 @@
 #' Creates an object representing a multilabel
 #' dataset
-#'
+#' @description Reads a multilabel dataset from a file and returns an \code{mldr} object
+#' containing the data and additional measures. The file has to be in arff format.
+#' The label information could be in a separate XML file (MULAN style) or in the
+#' the arff header (MEKA style)
 #' @param filename Name of the dataset
 #' @param use_xml Specifies whether to use an
-#'  associated XML file to identify the labels.
+#'  associated XML file to identify the labels. Defaults to TRUE
 #' @param auto_extension Specifies whether to add
 #'  the '.arff' and '.xml' extensions to the filename
-#'  where appropriate
+#'  where appropriate. Defaults to TRUE
 #' @param xml_file Path to the XML file. If not
 #'  provided, the filename ending in ".xml" will be
 #'  assumed
+#' @return An mldr object containing the multilabel dataset
+#' @seealso \code{\link{summary.mldr}}
+#' @examples
+#' \dontrun{
+#' library(mldr)
+#' mymld <- mldr("yeast") # Read "yeast.arff" and labels from "yeast.xml"
+#' mymld <- mldr("yeast-tra", xml_file = "yeast.xml") # Read "yeast-tra.arff" and labels from "yeast.xml"
+#' mymld <- mldr("IMDB.arff", use_xml = FALSE, auto_extension = FALSE)
+#' }
 #' @export
 
 mldr <- function(filename = NULL,
@@ -31,10 +43,10 @@ mldr <- function(filename = NULL,
         filename
 
     if (is.null(xml_file)) xml_file <- if (auto_extension)
-        paste(filename, ".xml", sep="")
+        paste(filename, ".xml", sep = "")
       else {
-        noext <- unlist(strsplit(filename, ".", fixed=TRUE))
-        paste(noext[1:length(noext)], ".xml", sep="")
+        noext <- unlist(strsplit(filename, ".", fixed = TRUE))
+        paste(noext[1:length(noext)], ".xml", sep = "")
       }
 
     # Get file contents
@@ -52,17 +64,10 @@ mldr <- function(filename = NULL,
       # Read labels from XML file
       labelnames <- read_xml(xml_file)
       labeli <- which(names(attrs) %in% labelnames)
-
-      #spl <- split(attrs, attrs$name %in% labelnames)
-      #labels <- spl$`TRUE`
-      #features <- spl$`FALSE`
     } else {
       # Read label amount from Meka parameters
-
       labeli <- 1:header$toplabel
-      #features <- attrs[toplabel+1:length(attrs),]
     }
-
 
     # Convert labels to numeric
     dataset[, labeli] <- lapply(dataset[, labeli],
@@ -82,6 +87,10 @@ mldr <- function(filename = NULL,
     NULL
   }
 }
+
+#' Updates the mldr state after changing the internal dataset
+#' @title Updates the mldr state after changing the internal dataset
+#' @return A new mldr
 
 updateMldr <- function(mldr, dataset) {
   newMldr <- list()

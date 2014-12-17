@@ -8,6 +8,7 @@ Description: Exploratory data analysis functions for multilabel datasets along
 Depends:
     R (>= 3.1.0)
 Imports:
-    shiny, XML
+    shiny,
+    XML
 License: LGPL-3
 LazyData: true

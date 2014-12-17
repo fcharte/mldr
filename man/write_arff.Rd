@@ -4,7 +4,7 @@
 \title{Writes an ARFF and an XML file for
 a mldr object}
 \usage{
-write_arff(obj, filename)
+write_arff(obj, filename, write.xml = FALSE)
 }
 \arguments{
 \item{obj}{'mldr' object}
