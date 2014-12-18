@@ -1,7 +1,7 @@
 #' Creates an object representing a multilabel
 #' dataset
 #' @description Reads a multilabel dataset from a file and returns an \code{mldr} object
-#' containing the data and additional measures. The file has to be in arff format.
+#' containing the data and additional measures. The file has to be in ARFF format.
 #' The label information could be in a separate XML file (MULAN style) or in the
 #' the arff header (MEKA style)
 #' @param filename Name of the dataset
@@ -16,12 +16,12 @@
 #' @return An mldr object containing the multilabel dataset
 #' @seealso \code{\link{summary.mldr}}
 #' @examples
-#' \dontrun{
+#'
 #' library(mldr)
 #' mymld <- mldr("yeast") # Read "yeast.arff" and labels from "yeast.xml"
 #' mymld <- mldr("yeast-tra", xml_file = "yeast.xml") # Read "yeast-tra.arff" and labels from "yeast.xml"
 #' mymld <- mldr("IMDB.arff", use_xml = FALSE, auto_extension = FALSE)
-#' }
+#'
 #' @export
 
 mldr <- function(filename = NULL,
