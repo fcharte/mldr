@@ -8,4 +8,4 @@ print.mldr <- function(mld) {
   print(mld$dataset[,1:(ncol(mld$dataset)-2)])
 }
 
-plot.mldr <- function(mld) 0
+
