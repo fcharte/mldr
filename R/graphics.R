@@ -21,8 +21,39 @@ plot.mldr <- function(mld, type = "LC", title = NULL, ...)  {
          )
 }
 
-labelCoocurrencePlot <- function(mld, title) {
-  labels <- mld$dataset[ , mld$labels$index]
+#' Plots a graphic with co-occurrence ratio between pairs of labels
+#' @description Draws a circular plot with sectors representing each label
+#' and links between them depicting label co-occurrences
+#' @param mld An \code{mldr} object with the information to plot
+#' @param title A title to show above the plot. Defaults to the name of the dataset passed as first argument
+#' @param labelCount Samples the labels in the dataset to show information of only \code{labelCount} of them
+#' @param labelIndices Establishes the labels to show in the plot
+#' @return The circular plot
+#' @seealso \code{\link{plot.mldr}}
+#' @examples
+#'
+#' library(mldr)
+#' yeast <- mldr("yeast") # Read "yeast.arff" and labels from "yeast.xml"
+#' labelCoocurrencePlot(yeast) # Plots all labels
+#' plot(yeast, type = "LC") # Same that above
+#' plot(yeast) # Same that above
+#' plot(yeast, title = "Yeast dataset") # Changes the title
+#' plot(yeast, labelCount = 10) # Randomly selects 10 labels to plot
+#' plot(yeast, labelIndices = yeast$label$index[1:10]) # Plots info of first 10 labels
+#'
+#' @import circlize
+#' @export
+
+labelCoocurrencePlot <- function(mld, title, labelCount, labelIndices) {
+
+  if(missing(labelIndices)) {
+    labelIndices <- if(!missing(labelCount))
+      sample(mld$labels$index, labelCount)
+    else
+      mld$labels$index
+  }
+
+  labels <- mld$dataset[ , labelIndices]
   nlabels <- ncol(labels)
 
   # Prepare table with labels as columns and rows
@@ -33,9 +64,15 @@ labelCoocurrencePlot <- function(mld, title) {
   colnames(tbl) <- colnames(labels)
   row.names(tbl) <- colnames(tbl)
 
+  tbl <- tbl[apply(tbl, 1, function(r) !all(r == 0)), ]
+  tbl <- tbl[,apply(tbl, 2, function(r) !all(r == 0))]
+
+  color.sector <- rainbow(length(union(colnames(tbl), row.names(tbl))))
+  color.links <- rainbow(nrow(tbl) * ncol(tbl))
   circos.par(gap.degree = 1)
   chordDiagram(tbl, annotationTrack = "grid", transparency = 0.5,
-               preAllocateTracks = list(track.height = 0.2))
+               preAllocateTracks = list(track.height = 0.2),
+               grid.col = color.sector, col = color.links)
   for(si in get.all.sector.index()) {
     circos.axis(h = "top", labels.cex = 0.4, sector.index = si,
                 track.index = 2, direction = "inside", labels = FALSE,
