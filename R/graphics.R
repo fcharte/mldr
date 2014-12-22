@@ -33,7 +33,7 @@ labelCoocurrencePlot <- function(mld, title) {
   colnames(tbl) <- colnames(labels)
   row.names(tbl) <- colnames(tbl)
 
-  circos.par(gap.degree = 2)
+  circos.par(gap.degree = 1)
   chordDiagram(tbl, annotationTrack = "grid", transparency = 0.5,
                preAllocateTracks = list(track.height = 0.2))
   for(si in get.all.sector.index()) {
@@ -48,8 +48,8 @@ labelCoocurrencePlot <- function(mld, title) {
     sector.name <- get.cell.meta.data("sector.index")
     name.length <- nchar(sector.name)
 
-    title <- if(name.length <= 7)
-      title
+    sector.name <- if(name.length <= 7)
+      sector.name
     else
      paste(substr(sector.name, 1, 3), substr(sector.name, name.length - 3, name.length), sep = "-")
 
@@ -61,7 +61,7 @@ labelCoocurrencePlot <- function(mld, title) {
       }
 
     circos.text(mean(xlim), 0, xr, cex = 0.7, niceFacing = TRUE)
-    circos.text(mean(xlim), 0.8, title, cex = 0.7, niceFacing = TRUE, facing = "clockwise")
+    circos.text(mean(xlim), 0.8, sector.name, cex = 0.7, niceFacing = TRUE, facing = "clockwise")
   }, bg.border = NA)
   text(0, 1, title, cex = 1.3, pos = 3)
   text(0, -1, paste("Scumble =", mld$measures$scumble), pos = 1, cex = 0.8)
