@@ -11,14 +11,17 @@
 #' @import circlize
 #' @export
 
-plot.mldr <- function(mld, type = "LC")  {
+plot.mldr <- function(mld, type = "LC", title = NULL, ...)  {
+  if(missing(title))
+    title <- substitute(mld)
+
   switch(type,
-         LC = labelCoocurrencePlot(mld),
-         HC = labelHistogram(mld)
+         LC = labelCoocurrencePlot(mld, title, ...),
+         HC = labelHistogram(mld, ...)
          )
 }
 
-labelCoocurrencePlot <- function(mld) {
+labelCoocurrencePlot <- function(mld, title) {
   labels <- mld$dataset[ , mld$labels$index]
   nlabels <- ncol(labels)
 
@@ -60,6 +63,8 @@ labelCoocurrencePlot <- function(mld) {
     circos.text(mean(xlim), 0, xr, cex = 0.7, niceFacing = TRUE)
     circos.text(mean(xlim), 0.8, title, cex = 0.7, niceFacing = TRUE, facing = "clockwise")
   }, bg.border = NA)
+  text(0, 1, title, cex = 1.3, pos = 3)
+  text(0, -1, paste("Scumble =", mld$measures$scumble), pos = 1, cex = 0.8)
   circos.clear()
 
 }
