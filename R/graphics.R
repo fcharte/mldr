@@ -34,7 +34,9 @@ labelCoocurrencePlot <- function(mld) {
   chordDiagram(tbl, annotationTrack = "grid", transparency = 0.5,
                preAllocateTracks = list(track.height = 0.2))
   for(si in get.all.sector.index()) {
-    circos.axis(h = "top", labels.cex = 0.4, sector.index = si, track.index = 2, direction = "inside", labels = FALSE)
+    circos.axis(h = "top", labels.cex = 0.4, sector.index = si,
+                track.index = 2, direction = "inside", labels = FALSE,
+                major.tick.percentage = 0.25)
   }
   circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
     xlim = get.cell.meta.data("xlim")
@@ -42,9 +44,11 @@ labelCoocurrencePlot <- function(mld) {
     xr <- get.cell.meta.data("xrange")
     sector.name <- get.cell.meta.data("sector.index")
     name.length <- nchar(sector.name)
-    first.part <- if(name.length <= 3) name.length else 3
-    second.part <- name.length - 3
-    title <- paste(substr(sector.name, 1, first.part), substr(sector.name, second.part, name.length), sep = "-")
+
+    title <- if(name.length <= 7)
+      title
+    else
+     paste(substr(sector.name, 1, 3), substr(sector.name, name.length - 3, name.length), sep = "-")
 
     circos.lines(xlim, c(mean(ylim) - 0.4, mean(ylim) - 0.4), lty = 3)
     if(xr > 15)
