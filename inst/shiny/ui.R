@@ -1,17 +1,17 @@
 library(shiny)
 
 shinyUI(
-  navbarPage(
-    "mldr: EDA for multilabel datasets",
+  navbarPage("mldr: EDA for multilabel datasets",
     tabPanel("Main", fluidPage(
-      sidebarLayout(
-        sidebarPanel(sliderInput("n", "Bins", 5, 100, 20)),
-        mainPanel(plotOutput("hist"))
-      )
+      titlePanel("Basic information"),
+      #sidebarLayout(
+        sidebarPanel(selectInput("mldrs", "Select a dataset", c())),
+        mainPanel(tableOutput("summary"))
     )),
 
     tabPanel("Labels", fluidPage(
-      titlePanel("Label information")
+      titlePanel("Label information"),
+      mainPanel(tableOutput("labels"))
     ))
   )
 )
