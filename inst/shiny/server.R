@@ -11,6 +11,8 @@ shinyServer(function(input, output, session) {
   })
 
   summaryTable <- reactive({
+    input$loadButton
+
     if(!is.null(input$mldrs) && input$mldrs != "") {
       mld <- get(input$mldrs)
       table <- data.frame(Measure = names(mld$measures), Value = unlist(mld$measures))
