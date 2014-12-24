@@ -48,19 +48,20 @@ shinyServer(function(input, output, session) {
   labelsTable <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
       mld <- get(input$mldrs)
-      mld$labels
+      tbl <-  cbind(Label = rownames(mld$labels), mld$labels)
+      tbl
     }
   })
-  output$labels <- renderTable(labelsTable())
+  output$labels <- renderDataTable(labelsTable())
 
   # Table with data about the attributes in the mldr
   attributesTable <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
       mld <- get(input$mldrs)
-      tbl <- as.matrix(mld$attributes[-mld$labels$index])
-      dimnames(tbl)[[2]] <- "Type"
+      tbl <- mld$attributes[-mld$labels$index]
+      tbl <- data.frame(Attribute = names(tbl), Type = tbl)
       tbl
     }
   })
-  output$attributes <- renderTable(attributesTable())
+  output$attributes <- renderDataTable(attributesTable())
 })

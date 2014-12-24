@@ -19,12 +19,12 @@ shinyUI(
 
     tabPanel("Labels", fluidPage(
       titlePanel("Labels information"),
-      mainPanel(tableOutput("labels"))
+      mainPanel(dataTableOutput("labels"))
     )),
 
     tabPanel("Attributes", fluidPage(
       titlePanel("Attributes information"),
-      mainPanel(tableOutput("attributes"))
+      mainPanel(dataTableOutput("attributes"))
     ))
   )
 )
