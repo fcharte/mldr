@@ -112,15 +112,18 @@ read_xml <- function(xml_file) {
 # @param arff_relation "relation" line of the ARFF file
 # @return Number of labels in the dataset
 read_header <- function(arff_relation) {
-  if (grepl("^@relation\\s*'(.*?)'$", arff_relation, perl = TRUE)) {
-    rgx <- regexpr("(\\w+)\\s*:\\s*-[Cc]\\s*\\d+", arff_relation, perl = TRUE)
-    hdr <- strsplit(regmatches(arff_relation, rgx), "\\s*:\\s*-[Cc]\\s*")[[1]]
+  rgx <- regexpr("(\\w+)\\s*:\\s*-[Cc]\\s*\\d+", arff_relation, perl = TRUE)
+  hdr <- strsplit(regmatches(arff_relation, rgx), "\\s*:\\s*-[Cc]\\s*")
+
+  if (length(hdr) > 0) {
+    # Meka header
     return(list(
-      name = hdr[1],
-      toplabel = as.numeric(hdr[2])
+      name = hdr[[1]][1],
+      toplabel = as.numeric(hdr[[1]][2])
     ))
   } else {
-    nm <- regmatches(arff_relation, regexpr("(?<=\\s)(\\w+)", arff_relation, perl = TRUE))
+    # Mulan header
+    nm <- regmatches(arff_relation, regexpr("(?<=\\s)'?[\\w\\-\\._]+'?", arff_relation, perl = TRUE))
     return(list(
       name = nm
     ))
