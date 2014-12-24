@@ -112,7 +112,7 @@ read_xml <- function(xml_file) {
 # @param arff_relation "relation" line of the ARFF file
 # @return Number of labels in the dataset
 read_header <- function(arff_relation) {
-  rgx <- regexpr("(\\w+)\\s*:\\s*-[Cc]\\s*\\d+", arff_relation, perl = TRUE)
+  rgx <- regexpr("[\\w\\-\\._]+\\s*:\\s*-[Cc]\\s*\\d+", arff_relation, perl = TRUE)
   hdr <- strsplit(regmatches(arff_relation, rgx), "\\s*:\\s*-[Cc]\\s*")
 
   if (length(hdr) > 0) {
