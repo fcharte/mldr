@@ -59,7 +59,20 @@ shinyServer(function(input, output, session) {
     if(!is.null(input$mldrs) && input$mldrs != "") {
       mld <- get(input$mldrs)
       tbl <- mld$attributes[-mld$labels$index]
-      tbl <- data.frame(Attribute = names(tbl), Type = tbl)
+      sum <- lapply(names(mld$dataset[-c(mld$labels$index,(length(mld$dataset)-1):length(mld$dataset))]),
+                    function(column.name) {
+                      tmpsum <- if(mld$attributes[column.name] == 'numeric')
+                        summary(mld$dataset[,column.name])
+                      else
+                        summary(as.factor(mld$dataset[,column.name]))
+                      paste('<table><tr><td>',
+                            paste(names(tmpsum), collapse = '</td><td>'),
+                            '</td></tr><tr><td>',
+                            paste(tmpsum, collapse = '</td><td>'),
+                            '</td></tr></table>')
+                    })
+
+      tbl <- data.frame(Attribute = names(tbl), Type = tbl, Summary = unlist(sum))
       tbl
     }
   })
