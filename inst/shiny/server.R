@@ -2,35 +2,28 @@ library(shiny)
 library(mldr)
 
 shinyServer(function(input, output, session) {
+  selected <- NULL
+
   observe({
     if(input$loadButton != 0) {
-      arfffile <- input$arffname
-      xmlfile <- input$xmlname
-      if(!is.null(arfffile) && !is.null(xmlfile)) {
-        .GlobalEnv[[arfffile$name]] <- mldr(arfffile$datapath, auto_extension = FALSE, xml_file = xmlfile$datapath)
-        updateSelectInput(session, "mldrs",
-                          choices = availableMLDs,
-                          selected = arfffile$name)
-      }
+      isolate({
+        arfffile <- input$arffname
+        xmlfile <- input$xmlname
+        if(!is.null(arfffile) && !is.null(xmlfile)) {
+          .GlobalEnv[[arfffile$name]] <-
+            mldr(arfffile$datapath, auto_extension = FALSE, xml_file = xmlfile$datapath)
+
+          selected <- arfffile$name
+        }
+      })
     }
 
     availableMLDs <- as.list(ls(.GlobalEnv)[unlist(sapply(ls(.GlobalEnv), function(obj) class(get(obj)) == "mldr"))])
 
+    if(is.null(selected)) selected <- availableMLDs[[1]]
     updateSelectInput(session, "mldrs",
                       choices = availableMLDs,
-                      selected = availableMLDs[[1]])
-  })
-
-  loader <- reactive({
-    print(input$loadButton)
-    if(input$loadButton != 0) {
-      print("loadButton")
-      arfffile <- input$arffname
-      xmlfile <- input$xmlname
-      if(!is.null(arffile) && !is.null(xmlfile)) {
-        print(paste(arfffile$datapath, xmlfile$datapath))
-      }
-    }
+                      selected = selected)
   })
 
   summaryTable <- reactive({
@@ -42,7 +35,7 @@ shinyServer(function(input, output, session) {
       table
     }
   })
-  output$summary <- renderTable(summaryTable(), include.rownames = FALSE)
+  output$summary <- renderTable(summaryTable(), include.rownames = FALSE, digits = 4)
 
   labelsTable <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
@@ -51,4 +44,14 @@ shinyServer(function(input, output, session) {
     }
   })
   output$labels <- renderTable(labelsTable())
+
+  attributesTable <- reactive({
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      mld <- get(input$mldrs)
+      tbl <- as.matrix(mld$attributes[-mld$labels$index])
+      dimnames(tbl)[[2]] <- "Type"
+      tbl
+    }
+  })
+  output$attributes <- renderTable(attributesTable())
 })

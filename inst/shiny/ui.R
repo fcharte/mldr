@@ -18,8 +18,13 @@ shinyUI(
     )),
 
     tabPanel("Labels", fluidPage(
-      titlePanel("Label information"),
+      titlePanel("Labels information"),
       mainPanel(tableOutput("labels"))
+    )),
+
+    tabPanel("Attributes", fluidPage(
+      titlePanel("Attributes information"),
+      mainPanel(tableOutput("attributes"))
     ))
   )
 )
