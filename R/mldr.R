@@ -112,10 +112,11 @@ updateMldr <- function(mldr, dataset) {
 #' @return Nothing
 #' @description mldrGUI starts loads the web browser an interactive user interface built using R shiny.
 #' @examples
-#' \dontrun{
+#'
 #' library(mldr)
 #' mldrGUI()
-#' }
+#'
+#' @import shiny
 #' @export
 
 mldrGUI <- function() {

@@ -17,7 +17,7 @@ plot.mldr <- function(mld, type = "LC", title = NULL, ...)  {
 
   switch(type,
          LC = labelCoocurrencePlot(mld, title, ...),
-         HC = labelHistogram(mld, ...)
+         HC = labelHistogram(mld, title, ...)
          )
 }
 
@@ -106,6 +106,16 @@ labelCoocurrencePlot <- function(mld, title, labelCount, labelIndices) {
 
 }
 
-labelHistogram <- function(mld) {
-
+labelHistogram <- function(mld, title) {
+  end_point = 0.5 + nrow(mld$labels) + nrow(mld$labels)-1
+  interval = round(max(mld$labels$count) / 25)
+  barplot(mld$labels$count, axes=FALSE,
+          ylab = "Number of samples",
+          col = rainbow(length(mld$labels$count)),
+          space = 1)
+  axis(2, at = seq(0, max(mld$labels$count), interval), las = 2)
+  title(main = title, sub = "Instances per label")
+  text(seq(1.5, end_point, by=2), par("usr")[3]-0.25,
+       srt = 60, adj= 1, xpd = TRUE,
+       labels = paste(rownames(mld$labels)), cex=0.65)
 }
