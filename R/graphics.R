@@ -11,13 +11,20 @@
 #' @import circlize
 #' @export
 
-plot.mldr <- function(mld, type = "LC", title = NULL, ...)  {
+plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, ...)  {
   if(missing(title))
     title <- substitute(mld)
 
+  if(missing(labelIndices)) {
+    labelIndices <- if(!missing(labelCount))
+      sample(mld$labels$index, labelCount)
+    else
+      mld$labels$index
+  }
+
   switch(type,
-         LC = labelCoocurrencePlot(mld, title, ...),
-         HC = labelHistogram(mld, title, ...)
+         LC = labelCoocurrencePlot(mld, title, labelIndices, ...),
+         HC = labelHistogram(mld, title, labelIndices, ...)
          )
 }
 
@@ -44,14 +51,7 @@ plot.mldr <- function(mld, type = "LC", title = NULL, ...)  {
 #' @import circlize
 #' @export
 
-labelCoocurrencePlot <- function(mld, title, labelCount, labelIndices) {
-
-  if(missing(labelIndices)) {
-    labelIndices <- if(!missing(labelCount))
-      sample(mld$labels$index, labelCount)
-    else
-      mld$labels$index
-  }
+labelCoocurrencePlot <- function(mld, title, labelIndices) {
 
   labels <- mld$dataset[ , labelIndices]
   nlabels <- ncol(labels)
@@ -106,16 +106,18 @@ labelCoocurrencePlot <- function(mld, title, labelCount, labelIndices) {
 
 }
 
-labelHistogram <- function(mld, title) {
-  end_point = 0.5 + nrow(mld$labels) + nrow(mld$labels)-1
-  interval = round(max(mld$labels$count) / 25)
-  barplot(mld$labels$count, axes=FALSE,
+labelHistogram <- function(mld, title, labelIndices) {
+  labels <- mld$labels[mld$labels$index %in% labelIndices, ]
+
+  end_point = 0.5 + nrow(labels) + nrow(labels)-1
+  interval = round(max(labels$count) / 25)
+  barplot(labels$count, axes=FALSE,
           ylab = "Number of samples",
-          col = rainbow(length(mld$labels$count)),
+          col = rainbow(length(labels$count)),
           space = 1)
-  axis(2, at = seq(0, max(mld$labels$count), interval), las = 2)
+  axis(2, at = seq(0, max(labels$count), interval), las = 2)
   title(main = title, sub = "Instances per label")
   text(seq(1.5, end_point, by=2), par("usr")[3]-0.25,
        srt = 60, adj= 1, xpd = TRUE,
-       labels = paste(rownames(mld$labels)), cex=0.65)
+       labels = paste(rownames(labels)), cex=0.65)
 }
