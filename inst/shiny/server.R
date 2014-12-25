@@ -54,6 +54,15 @@ shinyServer(function(input, output, session) {
   })
   output$labels <- renderDataTable(labelsTable())
 
+  # Table with data about labelsets in the mldr
+  labelsetsTable <- reactive({
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      mld <- get(input$mldrs)
+      data.frame(LabelSet = names(mld$labelsets), Count = mld$labelsets)
+    }
+  })
+  output$labelsets <- renderDataTable(labelsetsTable())
+
   # Table with data about the attributes in the mldr
   attributesTable <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
@@ -65,8 +74,8 @@ shinyServer(function(input, output, session) {
                         summary(mld$dataset[,column.name])
                       else
                         summary(as.factor(mld$dataset[,column.name]))
-                      paste('<table><tr><td>',
-                            paste(names(tmpsum), collapse = '</td><td>'),
+                      paste('<table><tr><td><b>',
+                            paste(names(tmpsum), collapse = '</b></td><td><b>'),
                             '</td></tr><tr><td>',
                             paste(tmpsum, collapse = '</td><td>'),
                             '</td></tr></table>')
