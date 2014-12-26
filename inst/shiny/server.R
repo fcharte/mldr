@@ -54,6 +54,14 @@ shinyServer(function(input, output, session) {
   })
   output$labels <- renderDataTable(labelsTable())
 
+  labelHC <- reactive({
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      mld <- get(input$mldrs)
+      plot(mld, title = mld$name, type = "HC")
+    }
+  })
+  output$labelHC <- renderPlot(labelHC(), height = 800, width = 1024)
+
   # Table with data about labelsets in the mldr
   labelsetsTable <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
