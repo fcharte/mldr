@@ -115,9 +115,9 @@ labelHistogram <- function(mld, title, labelIndices) {
           ylab = "Number of samples",
           col = rainbow(length(labels$count)),
           space = 1)
-  axis(2, at = seq(0, max(labels$count), interval), las = 2)
+  axis(2, at = seq(0, max(labels$count), interval), las = 2, cex = 1.25)
   title(main = title, sub = "Instances per label")
   text(seq(1.5, end_point, by=2), par("usr")[3]-0.25,
        srt = 60, adj= 1, xpd = TRUE,
-       labels = paste(rownames(labels)), cex=0.65)
+       labels = paste(rownames(labels)), cex=1)
 }
