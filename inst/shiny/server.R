@@ -54,10 +54,25 @@ shinyServer(function(input, output, session) {
   })
   output$labels <- renderDataTable(labelsTable())
 
-  labelHC <- reactive({
+  labelsNum <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
       mld <- get(input$mldrs)
-      plot(mld, title = mld$name, type = "HC")
+      mld$measures$num.labels
+    }
+  })
+  output$labelRange <- renderUI({
+    sliderInput("labelRange", label = h5("Choose range of labels to plot"),
+              min = 1, max = labelsNum(), step = 1,
+              value = c(1, if(labelsNum() < 25) labelsNum() else 25),
+              width = "100%")
+  })
+
+  labelHC <- reactive({
+    if(!is.null(input$mldrs) && input$mldrs != "" && !is.null(input$labelRange)) {
+      mld <- get(input$mldrs)
+      labelRange <- input$labelRange
+      plot(mld, title = mld$name, type = "HC",
+           labelIndices = (labelRange[1] + mld$labels$index[1] - 1):(labelRange[2] + mld$labels$index[1] -1))
     }
   })
   output$labelHC <- renderPlot(labelHC(), height = 800, width = 1024)

@@ -20,9 +20,11 @@ shinyUI(
     tabPanel("Labels", fluidPage(
       titlePanel("Labels information"),
       fluidRow(
-        column(5, wellPanel(mainPanel(dataTableOutput("labels")))
-               ),
-        column(7, wellPanel(plotOutput("labelHC"), width = "100%"))
+        column(5, wellPanel(dataTableOutput("labels"))),
+        column(7, wellPanel(
+          uiOutput("labelRange"),
+          plotOutput("labelHC",height="auto"))
+               )
       )
     )),
 
