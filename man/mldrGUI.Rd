@@ -15,9 +15,7 @@ mldrGUI starts loads the web browser an interactive user interface built using R
 Launchs the web-based GUI for mldr
 }
 \examples{
-\dontrun{
 library(mldr)
 mldrGUI()
-}
 }
 

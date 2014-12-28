@@ -3,7 +3,8 @@
 \alias{plot.mldr}
 \title{Generates graphic repreentations of an mldr object}
 \usage{
-\method{plot}{mldr}(mld, type = "LC", title = NULL, ...)
+\method{plot}{mldr}(mld, type = "LC", labelCount, labelIndices,
+  title = NULL, ...)
 }
 \arguments{
 \item{type}{Indicates the type of plot to produce. Possible types are:

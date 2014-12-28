@@ -3,16 +3,16 @@
 \alias{labelCoocurrencePlot}
 \title{Plots a graphic with co-occurrence ratio between pairs of labels}
 \usage{
-labelCoocurrencePlot(mld, title, labelCount, labelIndices)
+labelCoocurrencePlot(mld, title, labelIndices)
 }
 \arguments{
 \item{mld}{An \code{mldr} object with the information to plot}
 
 \item{title}{A title to show above the plot. Defaults to the name of the dataset passed as first argument}
 
-\item{labelCount}{Samples the labels in the dataset to show information of only \code{labelCount} of them}
-
 \item{labelIndices}{Establishes the labels to show in the plot}
+
+\item{labelCount}{Samples the labels in the dataset to show information of only \code{labelCount} of them}
 }
 \value{
 The circular plot

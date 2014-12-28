@@ -19,6 +19,11 @@ shinyServer(function(input, output, session) {
       })
     }
 
+    # Make sample datasets in package mldr available in global environment
+    for(obj in ls("package:mldr"))
+      if(class(get(obj, "package:mldr")) == "mldr")
+        assign(obj, get(obj, "package:mldr"), .GlobalEnv)
+
     # Get available mldr objects in the global environment
     availableMLDs <- as.list(
       ls(.GlobalEnv)[unlist(sapply(ls(.GlobalEnv),
