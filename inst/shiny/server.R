@@ -61,10 +61,12 @@ shinyServer(function(input, output, session) {
     }
   })
   output$labelRange <- renderUI({
-    sliderInput("labelRange", label = h5("Choose range of labels to plot"),
-              min = 1, max = labelsNum(), step = 1,
-              value = c(1, if(labelsNum() < 25) labelsNum() else 25),
-              width = "100%")
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      sliderInput("labelRange", label = h5("Choose range of labels to plot"),
+                min = 1, max = labelsNum(), step = 1,
+                value = c(1, if(labelsNum() < 25) labelsNum() else 25),
+                width = "100%")
+    }
   })
 
   labelHC <- reactive({
