@@ -9,10 +9,23 @@ mldrGUI()
 Nothing
 }
 \description{
-mldrGUI starts loads the web browser an interactive user interface built using R shiny.
+Loads in the web browser an interactive user interface built using R shiny.
 }
 \details{
-Launchs the web-based GUI for mldr
+The \code{mldr} package provides a basic, Shiny-based GUI to work with multilabel datasets.
+You have to install the \code{shiny} package to be able to use this GUI.
+
+The user interface allows working with any of the previous loaded datasets, as well as loading
+new ones. The GUI is structured into the following pages:
+\itemize{
+  \item{\strong{Main:}}{This page is divided into two sections.
+  The one at the left can be used to choose apreviously loaded dataset,
+  as well as to load datasets from files. The right part shows some basic
+  statistics about the selected multilabel dataset.}
+  \item{\strong{Labels:}}{}
+  \item{\strong{Labelsets:}}{}
+  \item{\strong{Attributes:}}{}
+}
 }
 \examples{
 library(mldr)

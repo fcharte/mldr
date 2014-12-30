@@ -18,8 +18,14 @@
 #' @examples
 #'
 #' library(mldr)
-#' mymld <- mldr("yeast") # Read "yeast.arff" and labels from "yeast.xml"
-#' mymld <- mldr("yeast-tra", xml_file = "yeast.xml") # Read "yeast-tra.arff" and labels from "yeast.xml"
+#'
+#' # Read "yeast.arff" and labels from "yeast.xml"
+#' mymld <- mldr("yeast")
+#'
+#' # Read "yeast-tra.arff" and labels from "yeast.xml"
+#' mymld <- mldr("yeast-tra", xml_file = "yeast.xml")
+#'
+#' # Read MEKA style dataset, without XML file and giving extension
 #' mymld <- mldr("IMDB.arff", use_xml = FALSE, auto_extension = FALSE)
 #'
 #' @export
@@ -107,10 +113,23 @@ updateMldr <- function(mldr, dataset) {
   newMldr
 }
 
-#' Launchs the web-based GUI for mldr
+#' The \code{mldr} package provides a basic, Shiny-based GUI to work with multilabel datasets.
+#' You have to install the \code{shiny} package to be able to use this GUI.
+#'
+#' The user interface allows working with any of the previous loaded datasets, as well as loading
+#' new ones. The GUI is structured into the following pages:
+#' \itemize{
+#'   \item{\strong{Main:}}{This page is divided into two sections.
+#'   The one at the left can be used to choose apreviously loaded dataset,
+#'   as well as to load datasets from files. The right part shows some basic
+#'   statistics about the selected multilabel dataset.}
+#'   \item{\strong{Labels:}}{}
+#'   \item{\strong{Labelsets:}}{}
+#'   \item{\strong{Attributes:}}{}
+#' }
 #' @title Launchs the web-based GUI for mldr
 #' @return Nothing
-#' @description mldrGUI starts loads the web browser an interactive user interface built using R shiny.
+#' @description Loads in the web browser an interactive user interface built using R shiny.
 #' @examples
 #'
 #' library(mldr)

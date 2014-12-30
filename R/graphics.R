@@ -121,3 +121,4 @@ labelHistogram <- function(mld, title, labelIndices) {
        srt = 60, adj= 1, xpd = TRUE,
        labels = paste(rownames(labels)), cex=1)
 }
+
