@@ -24,7 +24,7 @@ measures <- function(mld) {
     cardinality = mean(mld$dataset$.labelcount),
     density = mean(mld$dataset$.labelcount) / nrow(mld$labels),
     meanIR = mean(mld$labels$IRLbl, na.rm = TRUE),  # Avoid NA IRLbls
-    scumble = mean(mld$dataset$.Atkinson)
+    scumble = mean(mld$dataset$.SCUMBLE)
   )
 }
 
@@ -54,7 +54,7 @@ dataset_measures <- function(mld) {
   # Atkinson = 1 - prod(IRs)^(1/n) / mean(IRs)
   IRs[IRs == 0] <- 1            # Identity element for (R, *)
   IRprod <- Reduce("*", IRs)    # Row products
-  mld$dataset$.Atkinson <- ifelse(mld$dataset$.labelcount > 0,
+  mld$dataset$.SCUMBLE <- ifelse(mld$dataset$.labelcount > 0,
                                   1 - (IRprod)^(1/mld$dataset$.labelcount) / IRmeans,
                                   0)
 

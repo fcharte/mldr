@@ -24,7 +24,7 @@ plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, 
 
   switch(type,
          LC = labelCoocurrencePlot(mld, title, labelIndices, ...),
-         HC = labelHistogram(mld, title, labelIndices, ...)
+         LH = labelHistogram(mld, title, labelIndices, ...)
          )
 }
 

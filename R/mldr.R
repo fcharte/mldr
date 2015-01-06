@@ -94,6 +94,33 @@ mldr <- function(filename = NULL,
   }
 }
 
+#'
+#' @export
+#'
+mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
+  new_mldr <- list()
+  new_mldr$name <- if(missing(name)) substitute(dataframe) else name
+  new_mldr$dataset <- dataframe
+
+  new_mldr$attributes <- sapply(new_mldr$dataset, class)
+  new_mldr$attributes[labelIndices] <- "{0,1}"
+  factorIndexes <- which(new_mldr$attributes == "factor")
+  if(length(factorIndexes > 0))
+    new_mldr$attributes[factorIndexes] <- sapply(factorIndexes,
+      function(idx) paste("{", paste(
+        levels(new_mldr$dataset[, names(new_mldr$attributes)[idx]]),
+        collapse = ","), "}", sep = ""))
+
+  new_mldr$labels <- label_measures(dataset, labelIndices)
+  new_mldr$labelsets <- sort(table(as.factor(do.call(paste, c(dataset[, new_mldr$labels$index], sep = "")))))
+  new_mldr$dataset <- dataset_measures(new_mldr)
+  new_mldr$measures <- measures(new_mldr)
+
+  class(new_mldr) <- "mldr"
+
+  new_mldr
+}
+
 #' Updates the mldr state after changing the internal dataset
 #' @title Updates the mldr state after changing the internal dataset
 #' @return A new mldr
