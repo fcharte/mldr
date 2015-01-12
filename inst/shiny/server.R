@@ -78,7 +78,7 @@ shinyServer(function(input, output, session) {
     if(!is.null(input$mldrs) && input$mldrs != "" && !is.null(input$labelRange)) {
       mld <- get(input$mldrs)
       labelRange <- input$labelRange
-      plot(mld, title = mld$name, type = "HC",
+      plot(mld, title = mld$name, type = "LH",
            labelIndices = (labelRange[1] + mld$labels$index[1] - 1):(labelRange[2] + mld$labels$index[1] -1))
     }
   })
@@ -116,4 +116,11 @@ shinyServer(function(input, output, session) {
     }
   })
   output$attributes <- renderDataTable(attributesTable())
+
+  observe({
+    if (is.null(input$pages) || input$pages != "finish")
+      return()
+
+    stopApp(0)
+  })
 })

@@ -94,7 +94,7 @@ mldr <- function(filename = NULL,
   }
 }
 
-#'
+#' @title Generates an mldr object from a data.frame and a vector with label indices
 #' @export
 #'
 mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {

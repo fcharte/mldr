@@ -2,6 +2,8 @@ library(shiny)
 
 shinyUI(
   navbarPage("mldr: EDA for multilabel datasets",
+   tabsetPanel(id = "pages", type = "pills", selected = "Main",
+    tabPanel(HTML("<b>EXIT</b>"), value = "finish"),
     tabPanel("Main", fluidPage(
       titlePanel("Basic information"),
       sidebarLayout(
@@ -37,5 +39,5 @@ shinyUI(
       titlePanel("Attributes information"),
       mainPanel(dataTableOutput("attributes"))
     ))
-  )
+  ))
 )
