@@ -38,6 +38,12 @@ shinyUI(
     tabPanel("Attributes", fluidPage(
       titlePanel("Attributes information"),
       mainPanel(dataTableOutput("attributes"))
+    )),
+
+    tabPanel("Concurrence", fluidPage(
+      titlePanel("Label concurrence information"),
+      sidebarPanel(dataTableOutput("tblConcurrence"), width = 4),
+      mainPanel(textOutput('selectedLabels'), width = 8)
     ))
   ))
 )

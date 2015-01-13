@@ -117,6 +117,31 @@ shinyServer(function(input, output, session) {
   })
   output$attributes <- renderDataTable(attributesTable())
 
+  # Table with data about the labels in the mldr
+  concurrenceTable <- reactive({
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      mld <- get(input$mldrs)
+      tbl <- data.frame(Label = rownames(mld$labels), Count = mld$labels$count)
+      tbl <- tbl[order(tbl$Count),]
+      tbl
+    }
+  })
+  output$tblConcurrence <- renderDataTable(
+    concurrenceTable(),
+    options = list(paging = FALSE, searching = FALSE, ordering = FALSE, info = FALSE),
+    callback = "function(table) {
+      table.on('click.dt', 'tr', function() {
+        $(this).toggleClass('selected');
+        Shiny.onInputChange('labels',
+          table.rows('.selected').indexes().toArray());
+      });
+    }")
+
+  output$selectedLabels <- renderText({
+    paste(c('You selected these labels:', input$labels),
+          collapse = ' ')
+  })
+
   observe({
     if (is.null(input$pages) || input$pages != "finish")
       return()
