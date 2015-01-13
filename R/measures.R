@@ -34,9 +34,9 @@ label_measures <- function(data, indexes) {
     count = colSums(data[indexes])
   )
 
+  msr$freq <- msr$count / nrow(data)
   msr$IRLbl <- max(msr$count) / msr$count
   msr$IRLbl[msr$IRLbl == Inf] <- 0 # Avoid Inf values for labels with 0 samples
-  msr$freq <- msr$count / nrow(data)
 
   msr
 }
@@ -44,7 +44,7 @@ label_measures <- function(data, indexes) {
 dataset_measures <- function(mld) {
   mld$dataset$.labelcount <- rowSums(mld$dataset[, mld$labels$index])
 
-  # Atkinson index for IR in each instance
+  # Atkinson index (aka SCUMBLE) for IR in each instance
   IRs <- data.frame(t(t(mld$dataset[, mld$labels$index]) * mld$labels$IRLbl))
   IRmeans <- rowSums(IRs) / mld$dataset$.labelcount
 

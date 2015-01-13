@@ -83,12 +83,7 @@ mldr <- function(filename = NULL,
     dataset[, which(attrs == "numeric")] <-
       lapply(dataset[, which(attrs == "numeric")], as.numeric)
 
-    updateMldr(list(
-      name = header$name,
-      attributes = attrs,
-      labels = t(dataset[1, labeli])
-      ), dataset
-    )
+    mldr_from_dataframe(dataset, labeli, header$name)
   } else {
     NULL
   }
@@ -111,10 +106,12 @@ mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
         levels(new_mldr$dataset[, names(new_mldr$attributes)[idx]]),
         collapse = ","), "}", sep = ""))
 
-  new_mldr$labels <- label_measures(dataset, labelIndices)
-  new_mldr$labelsets <- sort(table(as.factor(do.call(paste, c(dataset[, new_mldr$labels$index], sep = "")))))
+  new_mldr$labels <- label_measures(dataframe, labelIndices)
+  new_mldr$labelsets <- sort(table(as.factor(do.call(paste, c(dataframe[, new_mldr$labels$index], sep = "")))))
   new_mldr$dataset <- dataset_measures(new_mldr)
   new_mldr$measures <- measures(new_mldr)
+  new_mldr$labels$SCUMBLE <- sapply(new_mldr$labels$index, function(idx)
+    mean(new_mldr$dataset$.SCUMBLE[new_mldr$dataset[,idx] == 1]))
 
   class(new_mldr) <- "mldr"
 
