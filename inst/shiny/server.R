@@ -150,12 +150,15 @@ shinyServer(function(input, output, session) {
             }")
     }
   })
+  tblConcurrenceOptions <- reactive({
+    list(paging = FALSE, searching = FALSE,
+         ordering = FALSE, info = FALSE,
+         initComplete = I(highScumbleLabels()))
+  })
 
   output$tblConcurrence <- renderDataTable(
     concurrenceTable()[,-1],
-    options = list(paging = FALSE, searching = FALSE,
-                   ordering = FALSE, info = FALSE,
-                   initComplete = I(highScumbleLabels())),
+    options = tblConcurrenceOptions,
     callback = "function(table) {
       table.on('click.dt', 'tr', function() {
         $(this).toggleClass('selected');
