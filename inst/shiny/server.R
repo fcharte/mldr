@@ -121,14 +121,41 @@ shinyServer(function(input, output, session) {
   concurrenceTable <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
       mld <- get(input$mldrs)
-      tbl <- data.frame(Label = rownames(mld$labels), Count = mld$labels$count)
-      tbl <- tbl[order(tbl$Count),]
+      tbl <- data.frame(Index = mld$labels$index,
+                        Label = rownames(mld$labels),
+                        Count = mld$labels$count,
+                        SCUMBLE = mld$labels$SCUMBLE)
+      tbl <- tbl[order(tbl$Count, tbl$SCUMBLE),]
+
       tbl
     }
   })
+
+  highScumbleLabels <- reactive({
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      mld <- get(input$mldrs)
+      tbl <- data.frame(Label = rownames(mld$labels),
+                        Count = mld$labels$count,
+                        SCUMBLE = mld$labels$SCUMBLE)
+      tbl <- tbl[order(tbl$Count, tbl$SCUMBLE),]
+
+      ScumbleList <- sort(tbl$SCUMBLE, decreasing = TRUE)
+      ScumbleList <- ScumbleList[1:10]
+      ScumbleList <- ScumbleList[!is.na(ScumbleList)]
+      ScumbleList <- paste(which(tbl$SCUMBLE %in% ScumbleList) - 1, collapse = ",")
+
+      paste("function(settings, json) {
+            $('.dataTable').DataTable().rows([", ScumbleList, "]).nodes().to$().addClass('selected');
+            Shiny.onInputChange('labels', $('.dataTable').DataTable().rows('.selected').indexes().toArray());
+            }")
+    }
+  })
+
   output$tblConcurrence <- renderDataTable(
-    concurrenceTable(),
-    options = list(paging = FALSE, searching = FALSE, ordering = FALSE, info = FALSE),
+    concurrenceTable()[,-1],
+    options = list(paging = FALSE, searching = FALSE,
+                   ordering = FALSE, info = FALSE,
+                   initComplete = I(highScumbleLabels())),
     callback = "function(table) {
       table.on('click.dt', 'tr', function() {
         $(this).toggleClass('selected');
@@ -136,6 +163,15 @@ shinyServer(function(input, output, session) {
           table.rows('.selected').indexes().toArray());
       });
     }")
+
+  labelLC <- reactive({
+    if(!is.null(input$mldrs) && input$mldrs != "" && !is.null(input$labels)) {
+      mld <- get(input$mldrs)
+      labels <- concurrenceTable()[input$labels+1,1]
+      plot(mld, title = mld$name, labelIndices = labels)
+    }
+  })
+  output$labelLC <- renderPlot(labelLC(), height = 800, width = 800)
 
   output$selectedLabels <- renderText({
     paste(c('You selected these labels:', input$labels),

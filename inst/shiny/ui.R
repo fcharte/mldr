@@ -42,8 +42,11 @@ shinyUI(
 
     tabPanel("Concurrence", fluidPage(
       titlePanel("Label concurrence information"),
-      sidebarPanel(dataTableOutput("tblConcurrence"), width = 4),
-      mainPanel(textOutput('selectedLabels'), width = 8)
+      fluidRow(
+        column(5, wellPanel(dataTableOutput("tblConcurrence"))),
+        column(7, wellPanel(plotOutput("labelLC",height="auto"))
+        )
+      )
     ))
   ))
 )
