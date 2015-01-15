@@ -2,7 +2,14 @@ library(shiny)
 
 shinyUI(
   fluidPage(
-
+    tags$head(
+      tags$style(
+        HTML(".tab-pane {
+             border: 2px solid black;
+             background: #FAF8D9 !important;
+             box-shadow: 10px 10px 5px #888888;
+             margin-bottom: 3em;")
+      )),
   titlePanel("mldrGUI - EDA for multilabel datasets"),
   h4(textOutput("selectedMLD")),
   hr(),
