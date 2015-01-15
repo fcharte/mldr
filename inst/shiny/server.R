@@ -176,11 +176,6 @@ shinyServer(function(input, output, session) {
   })
   output$labelLC <- renderPlot(labelLC(), height = 800, width = 800)
 
-  output$selectedLabels <- renderText({
-    paste(c('You selected these labels:', input$labels),
-          collapse = ' ')
-  })
-
   observe({
     if (is.null(input$pages) || input$pages != "finish")
       return()
