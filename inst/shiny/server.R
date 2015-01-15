@@ -36,6 +36,8 @@ shinyServer(function(input, output, session) {
                       choices = availableMLDs,
                       selected = selected)
   })
+  selectedMLD <- reactive({ paste("Currently selected MLD is '", input$mldrs, "'", sep = "") })
+  output$selectedMLD <- renderText(selectedMLD())
 
   # Table with summary information about the mldr
   summaryTable <- reactive({

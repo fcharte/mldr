@@ -1,6 +1,11 @@
 library(shiny)
 
 shinyUI(
+  fluidPage(
+
+  titlePanel("mldrGUI - EDA for multilabel datasets"),
+  h4(textOutput("selectedMLD")),
+  hr(),
   mainPanel(
    tabsetPanel(id = "pages", type = "pills", selected = "Main",
     tabPanel(HTML("<b>EXIT</b>"), value = "finish"),
@@ -45,4 +50,4 @@ shinyUI(
       )
     ))
   ), width = 12)
-)
+))
