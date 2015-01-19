@@ -6,10 +6,10 @@
 \method{==}{mldr}(mldr1, mldr2)
 }
 \arguments{
-\item{mldr1,}{mldr2 mldr objects to comare}
+\item{mldr1,}{mldr2 mldr objects to compare}
 }
 \value{
-true if the two mldr have the same structure
+true if the two mldr objects have the same structure
 }
 \description{
 Checks if two mldr objects have the same structure

@@ -1,5 +1,4 @@
-#' Creates an object representing a multilabel
-#' dataset
+#' @title Creates an object representing a multilabel dataset
 #' @description Reads a multilabel dataset from a file and returns an \code{mldr} object
 #' containing the data and additional measures. The file has to be in ARFF format.
 #' The label information could be in a separate XML file (MULAN style) or in the
@@ -14,7 +13,7 @@
 #'  provided, the filename ending in ".xml" will be
 #'  assumed
 #' @return An mldr object containing the multilabel dataset
-#' @seealso \code{\link{summary.mldr}}
+#' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{summary.mldr}}
 #' @examples
 #'
 #' library(mldr)
@@ -90,6 +89,26 @@ mldr <- function(filename = NULL,
 }
 
 #' @title Generates an mldr object from a data.frame and a vector with label indices
+#' @description This function creates a new \code{mldr} object from the data
+#' stored in a \code{data.frame}, taking as labels the columns pointed by the
+#' indexes given in a vector.
+#' @param dataframe The \code{data.frame} containing the dataset attributes and labels.
+#' @param labelIndices Vector containing the indexes of attributes acting as labels. Usually the
+#' labels will be at the end (right-most columns) or the beginning (left-most columns) of the \code{data.frame}
+#' @param name Name of the dataset. The name of the dataset given as first parameter will be used by default
+#' @return An mldr object containing the multilabel dataset
+#' @seealso \code{\link{mldr}}, \code{\link{summary.mldr}}
+#' @examples
+#'
+#' library(mldr)
+#'
+#' df <- data.frame(matrix(rnorm(1000), ncol = 10))
+#' df$Label1 <- c(sample(c(0,1), 100, replace = TRUE))
+#' df$Label2 <- c(sample(c(0,1), 100, replace = TRUE))
+#' mymldr <- mldr_from_dataframe(df, labelIndices = c(11, 12), name = "testMLDR")
+#'
+#' summary(mymldr)
+#'
 #' @export
 #'
 mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
@@ -116,25 +135,6 @@ mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
   class(new_mldr) <- "mldr"
 
   new_mldr
-}
-
-#' Updates the mldr state after changing the internal dataset
-#' @title Updates the mldr state after changing the internal dataset
-#' @return A new mldr
-
-updateMldr <- function(mldr, dataset) {
-  newMldr <- list()
-  newMldr$name <- mldr$name
-  newMldr$dataset <- dataset
-  newMldr$attributes <- mldr$attributes
-  newMldr$labels <- label_measures(dataset, which(names(mldr$attributes) %in% rownames(mldr$labels)))
-  newMldr$labelsets <-   sort(table(as.factor(do.call(paste, c(dataset[, newMldr$labels$index], sep = "")))))
-  newMldr$dataset <- dataset_measures(newMldr)
-  newMldr$measures <- measures(newMldr)
-
-  class(newMldr) <- "mldr"
-
-  newMldr
 }
 
 #' The \pkg{mldr} package provides a basic, Shiny-based GUI to work with multilabel datasets.

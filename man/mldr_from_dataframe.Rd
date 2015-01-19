@@ -5,7 +5,33 @@
 \usage{
 mldr_from_dataframe(dataframe, labelIndices, name = NULL)
 }
+\arguments{
+\item{dataframe}{The \code{data.frame} containing the dataset attributes and labels.}
+
+\item{labelIndices}{Vector containing the indexes of attributes acting as labels. Usually the
+labels will be at the end (right-most columns) or the beginning (left-most columns) of the \code{data.frame}}
+
+\item{name}{Name of the dataset. The name of the dataset given as first parameter will be used by default}
+}
+\value{
+An mldr object containing the multilabel dataset
+}
 \description{
-Generates an mldr object from a data.frame and a vector with label indices
+This function creates a new \code{mldr} object from the data
+stored in a \code{data.frame}, taking as labels the columns pointed by the
+indexes given in a vector.
+}
+\examples{
+library(mldr)
+
+df <- data.frame(matrix(rnorm(1000), ncol = 10))
+df$Label1 <- c(sample(c(0,1), 100, replace = TRUE))
+df$Label2 <- c(sample(c(0,1), 100, replace = TRUE))
+mymldr <- mldr_from_dataframe(df, labelIndices = c(11, 12), name = "testMLDR")
+
+summary(mymldr)
+}
+\seealso{
+\code{\link{mldr}}, \code{\link{summary.mldr}}
 }
 
