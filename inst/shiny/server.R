@@ -36,6 +36,7 @@ shinyServer(function(input, output, session) {
                       choices = availableMLDs,
                       selected = selected)
   })
+
   selectedMLD <- reactive({ paste("Currently selected MLD is '", input$mldrs, "'", sep = "") })
   output$selectedMLD <- renderText(selectedMLD())
 
@@ -169,14 +170,19 @@ shinyServer(function(input, output, session) {
       });
     }")
 
-  labelLC <- reactive({
-    if(!is.null(input$mldrs) && input$mldrs != "" && !is.null(input$labels)) {
-      mld <- get(input$mldrs)
-      labels <- concurrenceTable()[input$labels+1,1]
-      plot(mld, title = mld$name, labelIndices = labels)
-    }
+  observe({
+    input$labels
+    labelLC <- reactive({
+      if(!is.null(input$mldrs) && input$mldrs != "" && !is.null(input$labels)) {
+        mld <- get(input$mldrs)
+        labels <- concurrenceTable()[input$labels+1,1]
+        plot(mld, title = mld$name, labelIndices = labels)
+      }
+    })
+
+    output$labelLC <- renderPlot(labelLC(), height = 800, width = 800)
   })
-  output$labelLC <- renderPlot(labelLC(), height = 800, width = 800)
+
 
   observe({
     if (is.null(input$pages) || input$pages != "finish")
