@@ -167,7 +167,7 @@ updateMldr <- function(mldr, dataset) {
 
 mldrGUI <- function() {
   if(require(shiny))
-    shiny::runApp(appDir = system.file("shiny", package="mldr"))
+    shiny::runApp(appDir = system.file("shiny", package="mldr"), launch.browser = TRUE)
 
   invisible()
 }
