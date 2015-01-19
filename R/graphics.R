@@ -53,6 +53,8 @@ plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, 
 
 labelCoocurrencePlot <- function(mld, title, labelIndices) {
 
+  labelIndices <- labelIndices[labelIndices %in% mld$labels$index]
+
   labels <- mld$dataset[ , labelIndices]
   nlabels <- ncol(labels)
 
@@ -97,8 +99,8 @@ labelCoocurrencePlot <- function(mld, title, labelIndices) {
                     mean(ylim) - 0.4, p, cex = 0.5, adj = c(0.5, -0.2), niceFacing = TRUE)
       }
 
-    circos.text(mean(xlim), 0, xr, cex = 0.7, niceFacing = TRUE)
-    circos.text(mean(xlim), 0.8, sector.name, cex = 0.7, niceFacing = TRUE, facing = "clockwise")
+    circos.text(mean(xlim), 0, xr, cex = 1, niceFacing = TRUE)
+    circos.text(mean(xlim), 0.8, sector.name, cex = 1, niceFacing = TRUE, facing = "clockwise")
   }, bg.border = NA)
   text(0, 1, title, cex = 1.3, pos = 3)
   text(0, -1, paste("Scumble =", mld$measures$scumble), pos = 1, cex = 0.8)
