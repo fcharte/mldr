@@ -33,8 +33,8 @@ shinyUI(
     tabPanel("Labels", fluidPage(
       titlePanel("Labels information"),
       fluidRow(
-        column(5, wellPanel(dataTableOutput("labels"))),
-        column(7, wellPanel(
+        column(6, wellPanel(dataTableOutput("labels"))),
+        column(6, wellPanel(
           uiOutput("labelRange"),
           plotOutput("labelHC",height="auto"))
                )
