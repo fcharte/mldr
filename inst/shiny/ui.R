@@ -10,6 +10,11 @@ shinyUI(
              box-shadow: 10px 10px 5px #888888;
              margin-bottom: 3em;")
       )),
+    tagList(
+      singleton(tags$head(tags$script(src='//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js',type='text/javascript'))),
+      singleton(tags$head(tags$script(src='//cdn.datatables.net/tabletools/2.2.2/js/dataTables.tableTools.min.js',type='text/javascript'))),
+      singleton(tags$head(tags$link(href='//cdn.datatables.net/tabletools/2.2.2/css/dataTables.tableTools.css',rel='stylesheet',type='text/css')))
+    ),
     titlePanel("mldrGUI - EDA for multilabel datasets"),
     h4(textOutput("selectedMLD")),
     hr(),

@@ -114,7 +114,20 @@ shinyServer(function(input, output, session) {
       tbl
     }
   })
-  output$labels <- renderDataTable(labelsTable())
+  output$labels <- renderDataTable(labelsTable(), options = list(
+    "dom" = 'T<"clear">lfrtip',
+    "oTableTools" = list(
+      "sSwfPath" = "//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/swf/copy_csv_xls.swf",
+      "aButtons" = list(
+        "copy",
+        "print",
+        list("sExtends" = "collection",
+             "sButtonText" = "Save",
+             "aButtons" = c("csv","xls")
+        )
+      )
+    )
+  ))
 
   labelsNum <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
@@ -148,7 +161,20 @@ shinyServer(function(input, output, session) {
       data.frame(LabelSet = names(mld$labelsets), Count = mld$labelsets)
     }
   })
-  output$labelsets <- renderDataTable(labelsetsTable())
+  output$labelsets <- renderDataTable(labelsetsTable(), options = list(
+    "dom" = 'T<"clear">lfrtip',
+    "oTableTools" = list(
+      "sSwfPath" = "//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/swf/copy_csv_xls.swf",
+      "aButtons" = list(
+        "copy",
+        "print",
+        list("sExtends" = "collection",
+             "sButtonText" = "Save",
+             "aButtons" = c("csv","xls")
+        )
+      )
+    )
+  ))
 
   # Table with data about the attributes in the mldr
   attributesTable <- reactive({
@@ -172,7 +198,20 @@ shinyServer(function(input, output, session) {
       tbl
     }
   })
-  output$attributes <- renderDataTable(attributesTable())
+  output$attributes <- renderDataTable(attributesTable(), options = list(
+    "dom" = 'T<"clear">lfrtip',
+    "oTableTools" = list(
+      "sSwfPath" = "//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/swf/copy_csv_xls.swf",
+      "aButtons" = list(
+        "copy",
+        "print",
+        list("sExtends" = "collection",
+             "sButtonText" = "Save",
+             "aButtons" = c("csv","xls")
+        )
+      )
+    )
+  ))
 
   # Table with data about the labels in the mldr
   concurrenceTable <- reactive({
