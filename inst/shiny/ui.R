@@ -28,7 +28,21 @@ shinyUI(
               [class*='span'] {
                 margin-left: 0;
               }")
-      )),
+      ),
+      tags$script(HTML("
+          $(document).ready(function () {
+            var graph = $('.shiny-plot-output').parent();
+            var origOffsetY = $('.well').offset().top + $(window).scrollTop();
+
+            document.onscroll = function () {
+                if ($(window).scrollTop() >= origOffsetY) {
+                    graph.css('margin-top', ($(window).scrollTop() - origOffsetY) + 'px');
+                } else {
+                    graph.css('margin-top', '0px');
+                }
+            };
+        });
+      "))),
     tagList(
       singleton(tags$head(tags$script(src='//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js',type='text/javascript'))),
       singleton(tags$head(tags$script(src='//cdn.datatables.net/tabletools/2.2.2/js/dataTables.tableTools.min.js',type='text/javascript'))),
