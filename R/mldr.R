@@ -116,6 +116,8 @@ mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
   new_mldr$name <- if(missing(name)) substitute(dataframe) else name
   new_mldr$dataset <- dataframe
 
+  new_mldr$attributesIndexes <- 1:length(dataframe)
+  new_mldr$attributesIndexes <- new_mldr$attributesIndexes[! new_mldr$attributesIndexes %in% labelIndices]
   new_mldr$attributes <- sapply(new_mldr$dataset, class)
   new_mldr$attributes[labelIndices] <- "{0,1}"
   factorIndexes <- which(new_mldr$attributes == "factor")

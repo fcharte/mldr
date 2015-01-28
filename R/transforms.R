@@ -5,10 +5,11 @@
 #'  "BR" Produces one or more binary datasets, each one with one label
 #'  "LP" Produces a multiclass dataset using each labelset as class label
 #' @param labels Vector with the label indexes to include in the transformation. All labels will be used if not specified
+#' @return A list containing the resulting datasets
 #' @examples
 #'
 #' library(mldr)
-#' plot(emotions, type = "LC")
+#' emotionsbr <- mldr_transform(emotions, type = "BR")
 #'
 #' @export
 
@@ -31,6 +32,7 @@ mldr_transform <- function(mldr,  type = 'BR', labels) {
 }
 
 mldr_to_BR <- function(mldr, labels) {
+  lapply(labels, function(aLabel) mldr$dataset[,c(mldr$attributesIndexes, aLabel)])
 }
 
 mldr_to_LP <- function(mldr, labels) {
