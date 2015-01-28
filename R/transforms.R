@@ -26,16 +26,20 @@ mldr_transform <- function(mldr,  type = 'BR', labels) {
     stop('One or more labels have to be selected')
 
   switch(type,
-         BR = mldr_to_BR(mldr, labels),
-         LP = mldr_to_LP(mldr, labels)
+         BR = mldr_to_BR(mldr, labels = labels),
+         LP = mldr_to_LP(mldr, labels = labels)
          )
 }
 
 mldr_to_BR <- function(mldr, labels) {
-  lapply(labels, function(aLabel) mldr$dataset[,c(mldr$attributesIndexes, aLabel)])
+  lapply(labels, function(aLabel) {
+    binary <- cbind(mldr$dataset[ , mldr$attributesIndexes], mldr$dataset[ , aLabel])
+    names(binary)[length(binary)] <- names(mldr$dataset)[aLabel]
+    binary
+  })
 }
 
 mldr_to_LP <- function(mldr, labels) {
-  if(class(mldr) != 'mldr') stop('This method applies only to mldr objects')
-
+  cbind(mldr$dataset[,mldr$attributesIndexes],
+        classLabel = do.call(paste, c(mldr$dataset[ , labels], sep = "")))
 }
