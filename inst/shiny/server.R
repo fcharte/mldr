@@ -46,14 +46,65 @@ shinyServer(function(input, output, session) {
 
     if(!is.null(input$mldrs) && input$mldrs != "") {
       mld <- get(input$mldrs)
-      titles <- c("# of attributes", "# of instances", "# of labels", "# of labelsets",
-                  "# of unique labelsets", "# most frequent labelset", "Cardinality", "Density",
-                  "Mean IR", "SCUMBLE")
-      table <- data.frame(Measure = titles, Value = unlist(mld$measures))
+      titles <- c("Number of attributes",
+                  "Number of instances",
+                  "Number of labels",
+                  "Number of labelsets")
+      values <- c(mld$measures$num.attributes,
+                  mld$measures$num.instances,
+                  mld$measures$num.labels,
+                  mld$measures$num.labelsets)
+      table <- data.frame(Description = titles, Value = values)
       table
     }
   })
-  output$summary <- renderTable(summaryTable(), include.rownames = FALSE, digits = 4)
+  output$summaryGeneral <- renderTable(summaryTable(), include.rownames = FALSE, digits = 0)
+
+  summaryLabelsTable <- reactive({
+    input$loadButton
+
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      mld <- get(input$mldrs)
+      titles <- c("Cardinality",
+                "Density",
+                "Most frequent %",
+                "Least frequent %")
+      values <- c(mld$measures$cardinality,
+                  mld$measures$density,
+                max(mld$labels$freq)*100,
+                min(mld$labels$freq)*100)
+      table <- data.frame(Description = titles, Value = values)
+
+      titles <- c("Max imbalance ratio",
+                  "Mean imbalance ratio",
+                  "Max SCUMBLE",
+                  "Mean SCUMBLE")
+      values <- c(max(mld$labels$IRLbl),
+                  mld$measures$meanIR,
+                  max(mld$dataset$.SCUMBLE),
+                  mld$measures$scumble)
+      table <- cbind(table, data.frame(Description = titles, Value = values))
+      table
+    }
+  })
+  output$summaryLabels <- renderTable(summaryLabelsTable(), include.rownames = FALSE, digits = 4)
+
+  summaryLabelsetsTable <- reactive({
+    input$loadButton
+
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      mld <- get(input$mldrs)
+      titles <- c("Number of single labelsets",
+                  "Most frequent %",
+                  "Least frequent %")
+      values <- c(mld$measures$num.single.labelsets,
+                  max(mld$labelsets) / mld$measures$num.instances * 100,
+                  min(mld$labelsets) / mld$measures$num.instances * 100)
+      table <- data.frame(Description = titles, Values = values)
+      table
+    }
+  })
+  output$summaryLabelsets <- renderTable(summaryLabelsetsTable(), include.rownames = FALSE, digits = 4)
 
   # Table with data about the labels in the mldr
   labelsTable <- reactive({

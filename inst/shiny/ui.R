@@ -10,66 +10,80 @@ shinyUI(
              box-shadow: 10px 10px 5px #888888;
              margin-bottom: 3em;")
       )),
-  titlePanel("mldrGUI - EDA for multilabel datasets"),
-  h4(textOutput("selectedMLD")),
-  hr(),
-  mainPanel(
-   tabsetPanel(id = "pages", type = "pills", selected = "Main",
-    tabPanel(HTML("<b>EXIT</b>"), value = "finish"),
-    tabPanel("Main", fluidPage(
-      titlePanel("Basic information"),
-      fluidRow(column(4,
-        wellPanel(
-         h3('Active MLD'),
-         selectInput("mldrs", "Select a dataset", c()),
-          hr(),
-          h4("Load a dataset"),
-          fileInput('arffname', 'Select the ARFF file'),
-          fileInput('xmlname', 'Select the XML file'),
-          actionButton("loadButton", "Load dataset")
-         ),
-        wellPanel(
-         h3("How to use mldrGUI"),
-         tags$small(paste0(
-           "mldrGUI is an EDA tool for multilabel datasets (MLDs).")), br(),
-         tags$small(paste0("- Use the controls above to select one of the MLDs included in the package, ",
-           "or select an .arff and .xml file in your system to load any MLD.")), br(),
-         tags$small(paste0("- Once the MLD has been loaded, you will see its basic traits in this page.")), br(),
-         tags$small(paste0("- Use the tabs at the top of the page to explore other information, such as label",
-                           " distribution, frequency of labelsets, data about attributes or label concurrence information.")), br(),
-         tags$small(paste0("- Use the 'EXIT' option to close the application."
-         ))
-         )
-        ), column(8,
-        wellPanel(tableOutput("summary"))
-        )
-      )
-    )),
-    tabPanel("Labels", fluidPage(
-      titlePanel("Labels information"),
-      fluidRow(
-        column(6, wellPanel(dataTableOutput("labels"))),
-        column(6, wellPanel(
-          uiOutput("labelRange"),
-          plotOutput("labelHC",height="auto"))
-               )
-      )
-    )),
-    tabPanel("Labelsets", fluidPage(
-      titlePanel("Labelsets information"),
-      mainPanel(dataTableOutput("labelsets"))
-    )),
-    tabPanel("Attributes", fluidPage(
-      titlePanel("Attributes information"),
-      mainPanel(dataTableOutput("attributes"))
-    )),
-    tabPanel("Concurrence", fluidPage(
-      titlePanel("Label concurrence information"),
-      fluidRow(
-        column(5, wellPanel(dataTableOutput("tblConcurrence"))),
-        column(7, wellPanel(plotOutput("labelLC",height="auto"))
-        )
-      )
-    ))
-  ), width = 12)
-))
+    titlePanel("mldrGUI - EDA for multilabel datasets"),
+    h4(textOutput("selectedMLD")),
+    hr(),
+    mainPanel(
+      tabsetPanel(id = "pages", type = "pills", selected = "Main",
+                  tabPanel(HTML("<b>EXIT</b>"), value = "finish"),
+                  tabPanel("Main", fluidPage(
+                    titlePanel("Basic information"),
+                    fluidRow(
+                      column(4,
+                                    wellPanel(
+                                      h3('Active MLD'),
+                                      selectInput("mldrs", "Select a dataset", c()),
+                                      hr(),
+                                      h4("Load a dataset"),
+                                      fileInput('arffname', 'Select the ARFF file'),
+                                      fileInput('xmlname', 'Select the XML file'),
+                                      actionButton("loadButton", "Load dataset")
+                                    ),
+                                    wellPanel(
+                                      h3("How to use mldrGUI"),
+                                      tags$small(paste0(
+                                        "mldrGUI is an EDA tool for multilabel datasets (MLDs).")), br(),
+                                      tags$small(paste0("- Use the controls above to select one of the MLDs included in the package, ",
+                                                        "or select an .arff and .xml file in your system to load any MLD.")), br(),
+                                      tags$small(paste0("- Once the MLD has been loaded, you will see its basic traits in this page.")), br(),
+                                      tags$small(paste0("- Use the tabs at the top of the page to explore other information, such as label",
+                                                        " distribution, frequency of labelsets, data about attributes or label concurrence information.")), br(),
+                                      tags$small(paste0("- Use the 'EXIT' option to close the application."
+                                      ))
+                                    )),
+                      column(6,
+                             fluidRow(
+                               wellPanel(
+                                 h3("General summary"),
+                                 tableOutput("summaryGeneral")
+                                 ),
+                               wellPanel(
+                                 h3("Label summary"),
+                                 tableOutput("summaryLabels")
+                                 ),
+                               wellPanel(
+                                 h3("Labelset summary"),
+                                 tableOutput("summaryLabelsets")
+                               )
+                             )
+                              )))),
+                  tabPanel("Labels", fluidPage(
+                    titlePanel("Labels information"),
+                    fluidRow(
+                      column(6, wellPanel(dataTableOutput("labels"))),
+                      column(6, wellPanel(
+                        uiOutput("labelRange"),
+                        plotOutput("labelHC",height="auto"))
+                      )
+                    )
+                  )),
+                  tabPanel("Labelsets", fluidPage(
+                    titlePanel("Labelsets information"),
+                    mainPanel(dataTableOutput("labelsets"))
+                  )),
+                  tabPanel("Attributes", fluidPage(
+                    titlePanel("Attributes information"),
+                    mainPanel(dataTableOutput("attributes"))
+                  )),
+                  tabPanel("Concurrence", fluidPage(
+                    titlePanel("Label concurrence information"),
+                    fluidRow(
+                      column(5, wellPanel(dataTableOutput("tblConcurrence"))),
+                      column(7, wellPanel(plotOutput("labelLC",height="auto"))
+                      )
+                    )
+                  )),
+                  tabPanel("About", fluidPage(
+                    ))
+      ), width = 12)
+  ))
