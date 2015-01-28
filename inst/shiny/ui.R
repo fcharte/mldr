@@ -67,6 +67,7 @@ shinyUI(
                     fluidRow(
                       column(6, wellPanel(dataTableOutput("labels"))),
                       column(6, wellPanel(
+                        downloadButton("saveLabels", "Save plot"),
                         uiOutput("labelRange"),
                         plotOutput("labelHC",height="auto"))
                       )
@@ -83,8 +84,14 @@ shinyUI(
                   tabPanel("Concurrence", fluidPage(
                     titlePanel("Label concurrence information"),
                     fluidRow(
-                      column(5, wellPanel(dataTableOutput("tblConcurrence"))),
-                      column(7, wellPanel(plotOutput("labelLC",height="auto"))
+                      column(5,
+                             wellPanel(
+                               h3("Select the labels to plot"),
+                               dataTableOutput("tblConcurrence"))
+                             ),
+                      column(7,
+                             downloadButton("saveConcurrence", "Save plot"),
+                             wellPanel(plotOutput("labelLC",height="auto"))
                       )
                     )
                   )),

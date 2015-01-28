@@ -154,6 +154,19 @@ shinyServer(function(input, output, session) {
   })
   output$labelHC <- renderPlot(labelHC(), height = 800, width = 1024)
 
+  output$saveLabels <- downloadHandler(
+    filename = "labels.png",
+    content = function(file) {
+      mld <- get(input$mldrs)
+      labelRange <- input$labelRange
+      png(file, type = 'cairo', width = 1024, height = 800)
+      plot(mld, title = mld$name, type = "LH",
+           labelIndices = (labelRange[1] + mld$labels$index[1] - 1):(labelRange[2] + mld$labels$index[1] -1))
+      dev.off()
+    },
+    contentType = 'image/png'
+  )
+
   # Table with data about labelsets in the mldr
   labelsetsTable <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
@@ -262,6 +275,18 @@ shinyServer(function(input, output, session) {
           table.rows('.selected').indexes().toArray());
       });
     }")
+
+  output$saveConcurrence <- downloadHandler(
+    filename = "concurrence.png",
+    content = function(file) {
+      mld <- get(input$mldrs)
+      labels <- concurrenceTable()[input$labels+1,1]
+      png(file, type = 'cairo', width = 1024, height = 1024)
+      plot(mld, title = mld$name, labelIndices = labels)
+      dev.off()
+    },
+    contentType = 'image/png'
+    )
 
   observe({
     input$labels
