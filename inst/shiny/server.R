@@ -1,3 +1,8 @@
+#
+# This file belongs to mldrGUI, an EDA GUI for multilabel datasets developed on top of the mldr package.
+# (c) 2015 - Francisco Charte Ojeda (fcharte@ugr.es), David Charte Luque (fdavidcl@outlook.com)
+# See the package LICENSE file for license information
+#
 library(shiny)
 library(mldr)
 
