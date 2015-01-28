@@ -46,7 +46,10 @@ shinyServer(function(input, output, session) {
 
     if(!is.null(input$mldrs) && input$mldrs != "") {
       mld <- get(input$mldrs)
-      table <- data.frame(Measure = names(mld$measures), Value = unlist(mld$measures))
+      titles <- c("# of attributes", "# of instances", "# of labels", "# of labelsets",
+                  "# of unique labelsets", "# most frequent labelset", "Cardinality", "Density",
+                  "Mean IR", "SCUMBLE")
+      table <- data.frame(Measure = titles, Value = unlist(mld$measures))
       table
     }
   })
