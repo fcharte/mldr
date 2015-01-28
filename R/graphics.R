@@ -54,6 +54,7 @@ plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, 
 labelCoocurrencePlot <- function(mld, title, labelIndices) {
 
   labelIndices <- labelIndices[labelIndices %in% mld$labels$index]
+  if(length(labelIndices) == 0) return()
 
   labels <- mld$dataset[ , labelIndices]
   nlabels <- ncol(labels)

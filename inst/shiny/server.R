@@ -242,7 +242,7 @@ shinyServer(function(input, output, session) {
 
       paste("function(settings, json) {
             $('.dataTable').DataTable().rows([", ScumbleList, "]).nodes().to$().addClass('selected');
-            Shiny.onInputChange('labels', $('.dataTable').DataTable().rows('.selected').indexes().toArray());
+            Shiny.onInputChange('labels', [", ScumbleList, "]);
             }")
     }
   })
