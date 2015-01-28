@@ -18,16 +18,31 @@ shinyUI(
     tabPanel(HTML("<b>EXIT</b>"), value = "finish"),
     tabPanel("Main", fluidPage(
       titlePanel("Basic information"),
-      sidebarLayout(
-        sidebarPanel(
-          selectInput("mldrs", "Select a dataset", c()),
+      fluidRow(column(4,
+        wellPanel(
+         h3('Active MLD'),
+         selectInput("mldrs", "Select a dataset", c()),
           hr(),
           h4("Load a dataset"),
           fileInput('arffname', 'Select the ARFF file'),
           fileInput('xmlname', 'Select the XML file'),
           actionButton("loadButton", "Load dataset")
-        ),
-        mainPanel(tableOutput("summary"))
+         ),
+        wellPanel(
+         h3("How to use mldrGUI"),
+         tags$small(paste0(
+           "mldrGUI is an EDA tool for multilabel datasets (MLDs).")), br(),
+         tags$small(paste0("- Use the controls above to select one of the MLDs included in the package, ",
+           "or select an .arff and .xml file in your system to load any MLD.")), br(),
+         tags$small(paste0("- Once the MLD has been loaded, you will see its basic traits in this page.")), br(),
+         tags$small(paste0("- Use the tabs at the top of the page to explore other information, such as label",
+                           " distribution, frequency of labelsets, data about attributes or label concurrence information.")), br(),
+         tags$small(paste0("- Use the 'EXIT' option to close the application."
+         ))
+         )
+        ), column(8,
+        wellPanel(tableOutput("summary"))
+        )
       )
     )),
     tabPanel("Labels", fluidPage(
