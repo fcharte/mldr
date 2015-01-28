@@ -29,7 +29,7 @@ shinyServer(function(input, output, session) {
       ls(.GlobalEnv)[unlist(sapply(ls(.GlobalEnv),
                                    function(obj) class(get(obj)) == "mldr"))
                      ]
-      )
+    )
 
     if(is.null(selected)) selected <- availableMLDs[[1]]
     updateSelectInput(session, "mldrs",
@@ -66,13 +66,13 @@ shinyServer(function(input, output, session) {
     if(!is.null(input$mldrs) && input$mldrs != "") {
       mld <- get(input$mldrs)
       titles <- c("Cardinality",
-                "Density",
-                "Most frequent %",
-                "Least frequent %")
+                  "Density",
+                  "Most frequent %",
+                  "Least frequent %")
       values <- c(mld$measures$cardinality,
                   mld$measures$density,
-                max(mld$labels$freq)*100,
-                min(mld$labels$freq)*100)
+                  max(mld$labels$freq)*100,
+                  min(mld$labels$freq)*100)
       table <- data.frame(Description = titles, Value = values)
 
       titles <- c("Max imbalance ratio",
@@ -138,9 +138,9 @@ shinyServer(function(input, output, session) {
   output$labelRange <- renderUI({
     if(!is.null(input$mldrs) && input$mldrs != "") {
       sliderInput("labelRange", label = h5("Choose range of labels to plot"),
-                min = 1, max = labelsNum(), step = 1,
-                value = c(1, if(labelsNum() < 25) labelsNum() else 25),
-                width = "100%")
+                  min = 1, max = labelsNum(), step = 1,
+                  value = c(1, if(labelsNum() < 25) labelsNum() else 25),
+                  width = "100%")
     }
   })
 
@@ -286,7 +286,7 @@ shinyServer(function(input, output, session) {
       dev.off()
     },
     contentType = 'image/png'
-    )
+  )
 
   observe({
     input$labels
