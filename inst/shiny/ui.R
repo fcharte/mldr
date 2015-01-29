@@ -27,6 +27,9 @@ shinyUI(
               }
               [class*='span'] {
                 margin-left: 0;
+              }
+              .well {
+                overflow-x: auto;
               }")
       ),
       tags$script(HTML("
