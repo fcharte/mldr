@@ -1,4 +1,4 @@
-#' birds data
+#' birds
 #'
 #' birds dataset.
 #'
@@ -9,7 +9,7 @@
 #' birds$labels
 "birds"
 
-#' emotions data
+#' emotions
 #'
 #' emotions dataset.
 #'
@@ -20,7 +20,7 @@
 #' emotions$labels
 "emotions"
 
-#' genbase data
+#' genbase
 #'
 #' genbase dataset.
 #'

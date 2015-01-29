@@ -2,7 +2,7 @@
 \docType{data}
 \name{genbase}
 \alias{genbase}
-\title{genbase data}
+\title{genbase}
 \format{An mldr object with 662 instances, 1213 attributes and 27 labels}
 \source{
 S. Diplaris, G. Tsoumakas, P. Mitkas and I. Vlahavas. Protein Classification with Multiple Algorithms, Proc. 10th Panhellenic Conference on Informatics (PCI 2005), pp. 448-456, Volos, Greece, November 2005

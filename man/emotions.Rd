@@ -2,7 +2,7 @@
 \docType{data}
 \name{emotions}
 \alias{emotions}
-\title{emotions data}
+\title{emotions}
 \format{An mldr object with 593 instances, 78 attributes and 6 labels}
 \source{
 K. Trohidis, G. Tsoumakas, G. Kalliris, I. Vlahavas. "Multilabel Classification of Music into Emotions". Proc. 2008 International Conference on Music Information Retrieval (ISMIR 2008), pp. 325-330, Philadelphia, PA, USA, 2008
