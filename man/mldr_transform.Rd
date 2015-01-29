@@ -14,11 +14,14 @@ mldr_transform(mldr, type = "BR", labels)
 
 \item{labels}{Vector with the label indexes to include in the transformation. All labels will be used if not specified}
 }
+\value{
+A list containing the resulting datasets
+}
 \description{
 Transforms an \code{mldr} object into one or serveral binary or multiclass datasets, returning them as \code{data.frame} objects
 }
 \examples{
 library(mldr)
-plot(emotions, type = "LC")
+emotionsbr <- mldr_transform(emotions, type = "BR")
 }
 
