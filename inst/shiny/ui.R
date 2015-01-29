@@ -10,11 +10,42 @@ shinyUI(
     tags$head(
       tags$style(
         HTML(".tab-pane {
-             border: 2px solid black;
-             background: #FAF8D9 !important;
-             box-shadow: 10px 10px 5px #888888;
-             margin-bottom: 3em;")
-      )),
+                border: 2px solid #003955;
+                background: #ddf4ff !important;
+                margin-bottom: 3em;
+                box-shadow: 8px 8px 8px rgba(0,0,0,0.2);
+                border-radius: 4px;
+              }
+              .nav-pills a b {
+                color: #333;
+              }
+              table.table-bordered{
+                background: #fbfbfb;
+              }
+              .tab-content {
+                overflow: inherit;
+              }
+              [class*='span'] {
+                margin-left: 0;
+              }
+              .well {
+                overflow-x: auto;
+              }")
+      ),
+      tags$script(HTML("
+          $(document).ready(function () {
+            var graph = $('.shiny-plot-output').parent();
+            var origOffsetY = $('.well').offset().top + $(window).scrollTop();
+
+            document.onscroll = function () {
+                if ($(window).scrollTop() >= origOffsetY) {
+                    graph.css('margin-top', ($(window).scrollTop() - origOffsetY) + 'px');
+                } else {
+                    graph.css('margin-top', '0px');
+                }
+            };
+        });
+      "))),
     tagList(
       singleton(tags$head(tags$script(src='//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js',type='text/javascript'))),
       singleton(tags$head(tags$script(src='//cdn.datatables.net/tabletools/2.2.2/js/dataTables.tableTools.min.js',type='text/javascript'))),
@@ -29,7 +60,7 @@ shinyUI(
                   tabPanel("Main", fluidPage(
                     titlePanel("Basic information"),
                     fluidRow(
-                      column(4,
+                      column(5,
                              wellPanel(
                                h3('Active MLD'),
                                selectInput("mldrs", "Select a dataset", c()),
@@ -43,13 +74,13 @@ shinyUI(
                                h3("How to use mldrGUI"),
                                tags$small(paste0(
                                  "mldrGUI is an EDA tool for multilabel datasets (MLDs).")), br(),
-                               tags$small(paste0("- Use the controls above to select one of the MLDs included in the package, ",
-                                                 "or select an .arff and .xml file in your system to load any MLD.")), br(),
-                               tags$small(paste0("- Once the MLD has been loaded, you will see its basic traits in this page.")), br(),
-                               tags$small(paste0("- Use the tabs at the top of the page to explore other information, such as label",
-                                                 " distribution, frequency of labelsets, data about attributes or label concurrence information.")), br(),
-                               tags$small(paste0("- Use the 'EXIT' option to close the application."
-                               ))
+                               tags$small(HTML(paste0("<ul><li>Use the controls above to select one of the MLDs included in the package, ",
+                                                 "or select an .arff and .xml file in your system to load any MLD.</li>"))),
+                               tags$small(HTML(paste0("<li>Once the MLD has been loaded, you will see its basic traits in this page.</li>"))),
+                               tags$small(HTML(paste0("<li>Use the tabs at the top of the page to explore other information, such as label",
+                                                 " distribution, frequency of labelsets, data about attributes or label concurrence information.</li>"))),
+                               tags$small(HTML(paste0("<li>Use the 'EXIT' option to close the application.</li></ul>"
+                               )))
                              )),
                       column(6,
                              fluidRow(
@@ -80,11 +111,11 @@ shinyUI(
                   )),
                   tabPanel("Labelsets", fluidPage(
                     titlePanel("Labelsets information"),
-                    mainPanel(dataTableOutput("labelsets"))
+                    mainPanel(wellPanel(dataTableOutput("labelsets")))
                   )),
                   tabPanel("Attributes", fluidPage(
                     titlePanel("Attributes information"),
-                    mainPanel(dataTableOutput("attributes"))
+                    mainPanel(wellPanel(dataTableOutput("attributes")))
                   )),
                   tabPanel("Concurrence", fluidPage(
                     titlePanel("Label concurrence information"),
@@ -95,15 +126,17 @@ shinyUI(
                                dataTableOutput("tblConcurrence"))
                       ),
                       column(7,
-                             downloadButton("saveConcurrence", "Save plot"),
-                             wellPanel(plotOutput("labelLC",height="auto"))
+                             wellPanel(
+                               downloadButton("saveConcurrence", "Save plot"),
+                               plotOutput("labelLC",height="auto"))
                       )
                     )
                   )),
                   tabPanel("About", fluidPage(
-                    p('mldrGUI is an EDA GUI for multilabel datasets developed on top of the mldr package.'),
-                    p('(c) 2015 - Francisco Charte Ojeda (fcharte@ugr.es), David Charte Luque (fdavidcl@outlook.com)'),
-                    p('See the package LICENSE file for license information')
+                    titlePanel("About mldrGUI"),
+                    wellPanel(p('mldrGUI is an EDA GUI for multilabel datasets developed on top of the mldr package.'),
+                    p(HTML('&copy; 2015 &mdash; Francisco Charte Ojeda (fcharte@ugr.es), David Charte Luque (fdavidcl@outlook.com)')),
+                    p('See the package LICENSE file for license information'))
                   ))
       ), width = 12)
   ))
