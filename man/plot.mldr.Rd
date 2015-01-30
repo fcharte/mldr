@@ -32,7 +32,7 @@ plot(genbase, type = "LC") # Plots all labels
 plot(genbase) # Same that above
 plot(genbase, title = "genbase dataset") # Changes the title
 plot(genbase, labelCount = 10) # Randomly selects 10 labels to plot
-plot(genbase, labelIndices = genbase$label$index[1:10]) # Plots info of first 10 labels#'
+plot(genbase, labelIndices = genbase$label$index[1:10]) # Plots info of first 10 labels
 
 # Label histogram plot
 plot(emotions, type = "LH")

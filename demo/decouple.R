@@ -2,19 +2,19 @@
 # Shows how to implement a filter over a MLD to decouple highly imbalanced labels
 #
 
-# Process instances with .Atkinson > Scumble (mean)
+# Process instances with .SCUMBLE > Scumble (mean)
 #
 dilMean <- function(mld) decoupleImbalancedLabels(mld, mld$measures$scumble)
 
-# Process instances with .Atkinson > ThirdQuartile(Scumble)
+# Process instances with .SCUMBLE > ThirdQuartile(Scumble)
 #
-dilThirdQ <- function(mld) decoupleImbalancedLabels(mld, summary(mld$dataset$.Atkinson)["3rd Qu."])
+dilThirdQ <- function(mld) decoupleImbalancedLabels(mld, summary(mld$dataset$.SCUMBLE)["3rd Qu."])
 
-# Process instances with .Atkinson > atkLevel
+# Process instances with .SCUMBLE > atkLevel
 #
 decoupleImbalancedLabels <- function(mld, atkLevel) {
-  mldbase <- mld[.Atkinson <= atkLevel]
-  mldhigh <- mld[.Atkinson > atkLevel]  # Samples with coocurrence of highly imbalanced labels
+  mldbase <- mld[.SCUMBLE <= atkLevel]
+  mldhigh <- mld[.SCUMBLE > atkLevel]  # Samples with coocurrence of highly imbalanced labels
 
   # Indexes of minority and majority labels
   minIndexes <- mld$labels[mld$labels$IRLbl > mld$measures$meanIR,"index"]
@@ -35,8 +35,8 @@ decoupleImbalancedLabels <- function(mld, atkLevel) {
 # Shows how to implement a filter over a MLD to deactivate majority labels
 #
 deactivateMajorityLabels <- function(mld) {
-  mldbase <- mld[.Atkinson <= mld$measures$scumble]
-  mldhigh <- mld[.Atkinson > mld$measures$scumble]  # Samples with coocurrence of highly imbalanced labels
+  mldbase <- mld[.SCUMBLE <= mld$measures$scumble]
+  mldhigh <- mld[.SCUMBLE > mld$measures$scumble]  # Samples with coocurrence of highly imbalanced labels
 
   majIndexes <- mld$labels[mld$labels$IRLbl < mld$measures$meanIR,"index"]
 

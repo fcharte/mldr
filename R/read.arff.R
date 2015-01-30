@@ -43,9 +43,9 @@ read_arff <- function(arff_file) {
   # Build data.frame with @data section
   rawdata <- file_data[data_start:length(file_data)]
   dataset <- if (detect_sparsity(rawdata))
-      parse_sparse_data(rawdata, num_attrs)
-    else
-      parse_nonsparse_data(rawdata, num_attrs)
+    parse_sparse_data(rawdata, num_attrs)
+  else
+    parse_nonsparse_data(rawdata, num_attrs)
 
   rm(rawdata)
   names(dataset) <- names(attributes)
@@ -54,7 +54,7 @@ read_arff <- function(arff_file) {
     relation = relation,
     attributes = attributes,
     dataset = dataset
-    )
+  )
   )
 }
 
@@ -96,6 +96,7 @@ parse_attributes <- function(arff_attrs) {
 # @param xml_file Path to the XMl file
 # @return A vector of strings containing the name
 #  of each label
+#' @import XML
 read_xml <- function(xml_file) {
   library(XML)
   parsed_xml <- xmlParse(xml_file)

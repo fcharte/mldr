@@ -1,8 +1,13 @@
-#' Writes an ARFF and an XML file for
-#' a mldr object
+#' @title Writes an \code{mldr} object to a file
+#' @description Save the \code{mldr} content to an ARFF file and the label data to an XML file
+#' @param obj The \code{mldr} object whose content is going to be written
+#' @param filename Base name for the files (without extension)
+#' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{mldr}}
+#' @examples
 #'
-#' @param obj 'mldr' object
-#' @param filename base name for the files (without extension)
+#' library(mldr)
+#'
+#' write_arff(emotions, "myemotions")
 #' @export
 write_arff <- function(obj, filename, write.xml = FALSE) {
   # Open file
