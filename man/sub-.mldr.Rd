@@ -25,6 +25,6 @@ summary(highlycoupled)   # Compare the selected instances
 summary(genbase)         # with the traits of the original MLD
 }
 \seealso{
-\code{\link{mldr_from_dataframe}}, \code{\link{"==.mldr"}}
+\code{\link{mldr_from_dataframe}}, \code{\link{==.mldr}}, \code{\link{+.mldr}}
 }
 

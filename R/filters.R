@@ -4,7 +4,7 @@
 #' @param mldrObject Original \code{mldr} object from which some rows are going to be selected
 #' @param rowFilter Expression to filter the rows
 #' @return A new \code{mldr} object with the selected rows
-#' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{"==.mldr"}}
+#' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{==.mldr}}, \code{\link{+.mldr}}
 #' @examples
 #'
 #' library(mldr)

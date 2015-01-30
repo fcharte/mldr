@@ -1,4 +1,4 @@
-#' Generates graphic repreentations of an mldr object
+#' Generates graphic representations of an mldr object
 #' @description Generates graphic representations of an \code{mldr} object
 #' @param mldr The mldr object whose features are going to be drawn
 #' @param type Indicates the type of plot to produce. Possible types are:
@@ -40,13 +40,12 @@ plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, 
 #' @examples
 #'
 #' library(mldr)
-#' yeast <- mldr("yeast") # Read "yeast.arff" and labels from "yeast.xml"
-#' labelCoocurrencePlot(yeast) # Plots all labels
-#' plot(yeast, type = "LC") # Same that above
-#' plot(yeast) # Same that above
-#' plot(yeast, title = "Yeast dataset") # Changes the title
-#' plot(yeast, labelCount = 10) # Randomly selects 10 labels to plot
-#' plot(yeast, labelIndices = yeast$label$index[1:10]) # Plots info of first 10 labels
+#' labelCoocurrencePlot(genbase) # Plots all labels
+#' plot(genbase, type = "LC") # Same that above
+#' plot(genbase) # Same that above
+#' plot(genbase, title = "genbase dataset") # Changes the title
+#' plot(genbase, labelCount = 10) # Randomly selects 10 labels to plot
+#' plot(genbase, labelIndices = genbase$label$index[1:10]) # Plots info of first 10 labels
 #'
 #' @import circlize
 #' @export

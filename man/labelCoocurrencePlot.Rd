@@ -23,13 +23,12 @@ and links between them depicting label co-occurrences
 }
 \examples{
 library(mldr)
-yeast <- mldr("yeast") # Read "yeast.arff" and labels from "yeast.xml"
-labelCoocurrencePlot(yeast) # Plots all labels
-plot(yeast, type = "LC") # Same that above
-plot(yeast) # Same that above
-plot(yeast, title = "Yeast dataset") # Changes the title
-plot(yeast, labelCount = 10) # Randomly selects 10 labels to plot
-plot(yeast, labelIndices = yeast$label$index[1:10]) # Plots info of first 10 labels
+labelCoocurrencePlot(genbase) # Plots all labels
+plot(genbase, type = "LC") # Same that above
+plot(genbase) # Same that above
+plot(genbase, title = "genbase dataset") # Changes the title
+plot(genbase, labelCount = 10) # Randomly selects 10 labels to plot
+plot(genbase, labelIndices = genbase$label$index[1:10]) # Plots info of first 10 labels
 }
 \seealso{
 \code{\link{plot.mldr}}

@@ -12,8 +12,8 @@
 #' Generates a new mldr object joining the rows
 #' in the two mldrs given as input
 #'
-#' @param mldr1, mldr2 original mldr objects
-#' @return a new mldr object with all rows in the two parameters
+#' @param mldr1, \code{mldr2} original \code{mldr} objects
+#' @return a new \code{mldr} object with all rows in the two parameters
 #' @export
 "+.mldr" <- function(mldr1, mldr2) {
   # Check the two mldr's structure
