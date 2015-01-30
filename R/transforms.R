@@ -28,7 +28,7 @@ mldr_transform <- function(mldr,  type = 'BR', labels) {
   switch(type,
          BR = mldr_to_BR(mldr, labels = labels),
          LP = mldr_to_LP(mldr, labels = labels)
-         )
+  )
 }
 
 mldr_to_BR <- function(mldr, labels) {
