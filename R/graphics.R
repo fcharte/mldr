@@ -1,13 +1,27 @@
 #' Generates graphic representations of an mldr object
 #' @description Generates graphic representations of an \code{mldr} object
 #' @param mldr The mldr object whose features are going to be drawn
-#' @param type Indicates the type of plot to produce. Possible types are:
-#'  "LC" for Label Co-ocurrence circular plot
+#' @param type Indicates the type of plot to produce. Possible types are:\itemize{
+#'  \item \code{"LC"} Draws a circular plot with sectors representing each label
+#' and links between them depicting label co-occurrences
+#'  \item \code{"LH"} for label histogram
+#'  }
+#' @param title A title to show above the plot. Defaults to the name of the dataset passed as first argument
+#' @param labelCount Samples the labels in the dataset to show information of only \code{labelCount} of them
+#' @param labelIndices Establishes the labels to show in the plot
 #' @examples
 #'
 #' library(mldr)
-#' plot(emotions, type = "LC")
 #'
+#' # Label concurrence plot
+#' plot(genbase, type = "LC") # Plots all labels
+#' plot(genbase) # Same that above
+#' plot(genbase, title = "genbase dataset") # Changes the title
+#' plot(genbase, labelCount = 10) # Randomly selects 10 labels to plot
+#' plot(genbase, labelIndices = genbase$label$index[1:10]) # Plots info of first 10 labels
+#'
+#' # Label histogram plot
+#' plot(emotions, type = "LH")
 #' @import circlize
 #' @export
 
@@ -25,31 +39,10 @@ plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, 
   switch(type,
          LC = labelCoocurrencePlot(mld, title, labelIndices, ...),
          LH = labelHistogram(mld, title, labelIndices, ...)
-         )
+  )
 }
 
-#' Plots a graphic with co-occurrence ratio between pairs of labels
-#' @description Draws a circular plot with sectors representing each label
-#' and links between them depicting label co-occurrences
-#' @param mld An \code{mldr} object with the information to plot
-#' @param title A title to show above the plot. Defaults to the name of the dataset passed as first argument
-#' @param labelCount Samples the labels in the dataset to show information of only \code{labelCount} of them
-#' @param labelIndices Establishes the labels to show in the plot
-#' @return The circular plot
-#' @seealso \code{\link{plot.mldr}}
-#' @examples
-#'
-#' library(mldr)
-#' labelCoocurrencePlot(genbase) # Plots all labels
-#' plot(genbase, type = "LC") # Same that above
-#' plot(genbase) # Same that above
-#' plot(genbase, title = "genbase dataset") # Changes the title
-#' plot(genbase, labelCount = 10) # Randomly selects 10 labels to plot
-#' plot(genbase, labelIndices = genbase$label$index[1:10]) # Plots info of first 10 labels
-#'
 #' @import circlize
-#' @export
-
 labelCoocurrencePlot <- function(mld, title, labelIndices) {
 
   labelIndices <- labelIndices[labelIndices %in% mld$labels$index]
@@ -90,7 +83,7 @@ labelCoocurrencePlot <- function(mld, title, labelIndices) {
     sector.name <- if(name.length <= 7)
       sector.name
     else
-     paste(substr(sector.name, 1, 3), substr(sector.name, name.length - 3, name.length), sep = "-")
+      paste(substr(sector.name, 1, 3), substr(sector.name, name.length - 3, name.length), sep = "-")
 
     circos.lines(xlim, c(mean(ylim) - 0.4, mean(ylim) - 0.4), lty = 3)
     if(xr > 15)
@@ -123,4 +116,3 @@ labelHistogram <- function(mld, title, labelIndices) {
        srt = 60, adj= 1, xpd = TRUE,
        labels = paste(rownames(labels)), cex=1)
 }
-
