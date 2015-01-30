@@ -2,7 +2,6 @@
 # Contains functions for calculating measures
 # for a multilabel dataset
 #
-
 measures <- function(mld) {
   labelsets <- do.call(paste, c(mld$dataset[, mld$labels$index], sep = ""))
   labelsets <- table(as.factor(labelsets))
@@ -48,15 +47,11 @@ dataset_measures <- function(mld) {
   IRs <- data.frame(t(t(mld$dataset[, mld$labels$index]) * mld$labels$IRLbl))
   IRmeans <- rowSums(IRs) / mld$dataset$.labelcount
 
-  # Atkinson = 1 - exp(mean(log(IRs))) / mean(IRs)
-  # Applying properties of the logarithm:
-  # Atkinson = 1 - exp(log(prod(IRs)^(1/n))) / mean(IRs)
-  # Atkinson = 1 - prod(IRs)^(1/n) / mean(IRs)
   IRs[IRs == 0] <- 1            # Identity element for (R, *)
   IRprod <- Reduce("*", IRs)    # Row products
   mld$dataset$.SCUMBLE <- ifelse(mld$dataset$.labelcount > 0,
-                                  1 - (IRprod)^(1/mld$dataset$.labelcount) / IRmeans,
-                                  0)
+                                 1 - (IRprod)^(1/mld$dataset$.labelcount) / IRmeans,
+                                 0)
 
   mld$dataset
 }

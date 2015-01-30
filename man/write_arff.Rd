@@ -6,9 +6,9 @@
 write_arff(obj, filename, write.xml = FALSE)
 }
 \arguments{
-\item{obj}{'mldr' object}
+\item{obj}{The \code{mldr} object whose content is going to be written}
 
-\item{filename}{base name for the files (without extension)}
+\item{filename}{Base name for the files (without extension)}
 }
 \description{
 Save the \code{mldr} content to an ARFF file and the label data to an XML file
