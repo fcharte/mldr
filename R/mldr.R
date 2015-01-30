@@ -17,7 +17,7 @@
 #' @examples
 #'
 #' library(mldr)
-#'
+#'\dontrun{
 #' # Read "yeast.arff" and labels from "yeast.xml"
 #' mymld <- mldr("yeast")
 #'
@@ -26,7 +26,7 @@
 #'
 #' # Read MEKA style dataset, without XML file and giving extension
 #' mymld <- mldr("IMDB.arff", use_xml = FALSE, auto_extension = FALSE)
-#'
+#'}
 #' @export
 
 mldr <- function(filename = NULL,
@@ -34,7 +34,7 @@ mldr <- function(filename = NULL,
                  auto_extension = TRUE,
                  xml_file = NULL) {
 
-   if (!is.null(filename)) {
+  if (!is.null(filename)) {
     # Parameter check
     if (!is.character(filename))
       stop("Argument 'filename' must be a character string.")
@@ -43,16 +43,16 @@ mldr <- function(filename = NULL,
 
     # Calculate names of files
     arff_file <- if (auto_extension)
-        paste(filename, ".arff", sep="")
-      else
-        filename
+      paste(filename, ".arff", sep="")
+    else
+      filename
 
     if (is.null(xml_file)) xml_file <- if (auto_extension)
-        paste(filename, ".xml", sep = "")
-      else {
-        noext <- unlist(strsplit(filename, ".", fixed = TRUE))
-        paste(noext[1:length(noext)], ".xml", sep = "")
-      }
+      paste(filename, ".xml", sep = "")
+    else {
+      noext <- unlist(strsplit(filename, ".", fixed = TRUE))
+      paste(noext[1:length(noext)], ".xml", sep = "")
+    }
 
     # Get file contents
     relation <- NULL
@@ -76,7 +76,7 @@ mldr <- function(filename = NULL,
 
     # Convert labels to numeric
     dataset[, labeli] <- lapply(dataset[, labeli],
-                                    function(col) as.numeric(!is.na(as.numeric(col) | NA)))
+                                function(col) as.numeric(!is.na(as.numeric(col) | NA)))
 
     # Change type from factor of strings to numeric
     dataset[, which(attrs == "numeric")] <-
@@ -123,9 +123,9 @@ mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
   factorIndexes <- which(new_mldr$attributes == "factor")
   if(length(factorIndexes > 0))
     new_mldr$attributes[factorIndexes] <- sapply(factorIndexes,
-      function(idx) paste("{", paste(
-        levels(new_mldr$dataset[, names(new_mldr$attributes)[idx]]),
-        collapse = ","), "}", sep = ""))
+                                                 function(idx) paste("{", paste(
+                                                   levels(new_mldr$dataset[, names(new_mldr$attributes)[idx]]),
+                                                   collapse = ","), "}", sep = ""))
 
   new_mldr$labels <- label_measures(dataframe, labelIndices)
   new_mldr$labelsets <- sort(table(as.factor(do.call(paste, c(dataframe[, new_mldr$labels$index], sep = "")))))

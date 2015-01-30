@@ -31,7 +31,7 @@ the arff header (MEKA style)
 }
 \examples{
 library(mldr)
-
+\dontrun{
 # Read "yeast.arff" and labels from "yeast.xml"
 mymld <- mldr("yeast")
 
@@ -40,6 +40,7 @@ mymld <- mldr("yeast-tra", xml_file = "yeast.xml")
 
 # Read MEKA style dataset, without XML file and giving extension
 mymld <- mldr("IMDB.arff", use_xml = FALSE, auto_extension = FALSE)
+}
 }
 \seealso{
 \code{\link{mldr_from_dataframe}}, \code{\link{summary.mldr}}
