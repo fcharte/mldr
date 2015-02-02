@@ -309,6 +309,29 @@ shinyServer(function(input, output, session) {
     contentType = 'image/png'
   )
 
+  output$saveAT <- downloadHandler(
+    filename = "attributeByType.png",
+    content = function(file) {
+      mld <- get(input$mldrs)
+      png(file, type = 'cairo', width = 1024, height = 1024)
+      plot(mld, title = mld$name, type = "AT")
+      dev.off()
+    },
+    contentType = 'image/png'
+  )
+
+  output$saveCH <- downloadHandler(
+    filename = "cardHistogram.png",
+    content = function(file) {
+      mld <- get(input$mldrs)
+      png(file, type = 'cairo', width = 1024, height = 1024)
+      plot(mld, title = mld$name, type = "CH")
+      dev.off()
+    },
+    contentType = 'image/png'
+  )
+
+
   observe({
     input$labels
     labelLC <- reactive({

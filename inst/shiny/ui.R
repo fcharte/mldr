@@ -86,8 +86,10 @@ shinyUI(
                              fluidRow(
                                wellPanel(
                                  h3("Visual summary"),
+                                 downloadButton("saveAT", "Save plot"),
                                  plotOutput("attributeByType", height = "auto"),
                                  hr(),
+                                 downloadButton("saveCH", "Save plot"),
                                  plotOutput("cardHistogram", height = "auto")
                                  ),
                                wellPanel(
