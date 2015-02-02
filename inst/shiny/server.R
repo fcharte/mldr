@@ -172,6 +172,22 @@ shinyServer(function(input, output, session) {
     contentType = 'image/png'
   )
 
+  attributeByType <- reactive({
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      mld <- get(input$mldrs)
+      plot(mld, title = mld$name, type = "AT")
+    }
+  })
+  output$attributeByType <- renderPlot(attributeByType(), height = 600, width = 600)
+
+  cardHistogram <- reactive({
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      mld <- get(input$mldrs)
+      plot(mld, title = mld$name, type = "CH")
+    }
+  })
+  output$cardHistogram <- renderPlot(cardHistogram(), height = 600, width = 600)
+
   # Table with data about labelsets in the mldr
   labelsetsTable <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {

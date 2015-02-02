@@ -50,7 +50,7 @@ plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, 
 }
 
 #' @import circlize
-labelCoocurrencePlot <- function(mld, title, labelIndices) {
+labelCoocurrencePlot <- function(mld, title, labelIndices, ...) {
 
   labelIndices <- labelIndices[labelIndices %in% mld$labels$index]
   if(length(labelIndices) == 0) return()
@@ -108,7 +108,7 @@ labelCoocurrencePlot <- function(mld, title, labelIndices) {
 
 }
 
-labelHistogram <- function(mld, title, labelIndices) {
+labelHistogram <- function(mld, title, labelIndices, ...) {
   labels <- mld$labels[mld$labels$index %in% labelIndices, ]
 
   end_point = 0.5 + nrow(labels) + nrow(labels)-1
@@ -116,7 +116,7 @@ labelHistogram <- function(mld, title, labelIndices) {
   barplot(labels$count, axes=FALSE,
           ylab = "Number of samples",
           col = rainbow(length(labels$count)),
-          space = 1)
+          space = 1, ...)
   axis(2, at = seq(0, max(labels$count), interval), las = 2, cex = 1.25)
   title(main = title, sub = "Instances per label")
   text(seq(1.5, end_point, by=2), par("usr")[3]-0.25,
@@ -125,20 +125,20 @@ labelHistogram <- function(mld, title, labelIndices) {
 }
 
 
-cardinalityHistogram <- function(mld, title) {
+cardinalityHistogram <- function(mld, title, ...) {
   hist(mld$dataset$.labelcount,
        breaks = max(mld$dataset$.labelcount),
        col = 'blue', border = 'white',
        main = paste(title, "- Labels per instance histogram"),
        xlab = "Number of labels per instance",
-       ylab = "Number of instances")
+       ylab = "Number of instances", ...)
 }
 
 
-attributeByType <- function(mld, title) {
+attributeByType <- function(mld, title, ...) {
   data <- rbind(as.data.frame(table(sapply(mld$dataset[ , mld$attributesIndexes], class))),
                 data.frame(Var1 = "label", Freq = mld$measures$num.labels))
 
   pie(data$Freq, labels = paste(data$Var1, data$Freq, sep = "\n"),
-      main = title, sub = "Type and number of attributes", col = rainbow(5))
+      main = title, sub = "Type and number of attributes", col = heat.colors(5), ...)
 }

@@ -85,6 +85,12 @@ shinyUI(
                       column(6,
                              fluidRow(
                                wellPanel(
+                                 plotOutput("attributeByType", height = "auto")
+                                 ),
+                               wellPanel(
+                                 plotOutput("cardHistogram", height = "auto")
+                               ),
+                               wellPanel(
                                  h3("General summary"),
                                  tableOutput("summaryGeneral")
                                ),
