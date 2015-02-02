@@ -90,8 +90,11 @@ shinyUI(
                                  plotOutput("attributeByType", height = "auto"),
                                  hr(),
                                  downloadButton("saveCH", "Save plot"),
-                                 plotOutput("cardHistogram", height = "auto")
-                                 ),
+                                 plotOutput("cardHistogram", height = "auto"),
+                                 hr(),
+                                 downloadButton("saveLSH", "Save plot"),
+                                 plotOutput("labelsetHistogram", height = "auto")
+                               ),
                                wellPanel(
                                  h3("General summary"),
                                  tableOutput("summaryGeneral")

@@ -188,6 +188,14 @@ shinyServer(function(input, output, session) {
   })
   output$cardHistogram <- renderPlot(cardHistogram(), height = 600, width = 600)
 
+  labelsetHistogram <- reactive({
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      mld <- get(input$mldrs)
+      plot(mld, title = mld$name, type = "LSH")
+    }
+  })
+  output$labelsetHistogram <- renderPlot(labelsetHistogram(), height = 600, width = 600)
+
   # Table with data about labelsets in the mldr
   labelsetsTable <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
@@ -331,6 +339,16 @@ shinyServer(function(input, output, session) {
     contentType = 'image/png'
   )
 
+  output$saveLSH <- downloadHandler(
+    filename = "labelsetHistogram.png",
+    content = function(file) {
+      mld <- get(input$mldrs)
+      png(file, type = 'cairo', width = 1024, height = 1024)
+      plot(mld, title = mld$name, type = "LSH")
+      dev.off()
+    },
+    contentType = 'image/png'
+  )
 
   observe({
     input$labels

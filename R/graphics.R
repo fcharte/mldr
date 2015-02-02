@@ -160,7 +160,7 @@ labelsetHistogram <- function(mld, title, ...) {
           col = rainbow(length(labelsets)),
           space = 1, axisnames = FALSE, ...)
   axis(2, at = seq(0, max(labelsets), interval), las = 2, cex = 1.25)
-  title(main = title, sub = "Instances per labelset")
+  title(main = paste(title, "Instances per labelset", sep = "\n"))
   text(seq(1.5, end_point, by=2), par("usr")[3]-0.25,
        srt = 60, adj= 1, xpd = TRUE,
        labels = names(labelsets), cex = 0.5)
