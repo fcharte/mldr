@@ -6,6 +6,7 @@
 #' and links between them depicting label co-occurrences
 #'  \item \code{"LH"} for label histogram
 #'  \item \code{"CH"} for cardinality histogram
+#'  \item \code{"AT"} for attributes by type pie chart
 #'  }
 #' @param title A title to show above the plot. Defaults to the name of the dataset passed as first argument
 #' @param labelCount Samples the labels in the dataset to show information of only \code{labelCount} of them
@@ -43,7 +44,8 @@ plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, 
   switch(type,
          LC = labelCoocurrencePlot(mld, title, labelIndices, ...),
          LH = labelHistogram(mld, title, labelIndices, ...),
-         CH = cardinalityHistogram(mld, title)
+         CH = cardinalityHistogram(mld, title, ...),
+         AT = attributeByType(mld, title, ...)
   )
 }
 
@@ -130,4 +132,13 @@ cardinalityHistogram <- function(mld, title) {
        main = paste(title, "- Labels per instance histogram"),
        xlab = "Number of labels per instance",
        ylab = "Number of instances")
+}
+
+
+attributeByType <- function(mld, title) {
+  data <- rbind(as.data.frame(table(sapply(mld$dataset[ , mld$attributesIndexes], class))),
+                data.frame(Var1 = "label", Freq = mld$measures$num.labels))
+
+  pie(data$Freq, labels = paste(data$Var1, data$Freq, sep = "\n"),
+      main = title, sub = "Type and number of attributes", col = rainbow(5))
 }
