@@ -5,6 +5,7 @@
 #'  \item \code{"LC"} Draws a circular plot with sectors representing each label
 #' and links between them depicting label co-occurrences
 #'  \item \code{"LH"} for label histogram
+#'  \item \code{"CH"} for cardinality histogram
 #'  }
 #' @param title A title to show above the plot. Defaults to the name of the dataset passed as first argument
 #' @param labelCount Samples the labels in the dataset to show information of only \code{labelCount} of them
@@ -22,6 +23,9 @@
 #'
 #' # Label histogram plot
 #' plot(emotions, type = "LH")
+#'
+#' # Cardinality histogram plot
+#' plot(emotions, type = "CH")
 #' @import circlize
 #' @export
 
@@ -38,7 +42,8 @@ plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, 
 
   switch(type,
          LC = labelCoocurrencePlot(mld, title, labelIndices, ...),
-         LH = labelHistogram(mld, title, labelIndices, ...)
+         LH = labelHistogram(mld, title, labelIndices, ...),
+         CH = cardinalityHistogram(mld, title)
   )
 }
 
@@ -115,4 +120,14 @@ labelHistogram <- function(mld, title, labelIndices) {
   text(seq(1.5, end_point, by=2), par("usr")[3]-0.25,
        srt = 60, adj= 1, xpd = TRUE,
        labels = paste(rownames(labels)), cex=1)
+}
+
+
+cardinalityHistogram <- function(mld, title) {
+  hist(mld$dataset$.labelcount,
+       breaks = max(mld$dataset$.labelcount),
+       col = 'blue', border = 'white',
+       main = paste(title, "- Labels per instance histogram"),
+       xlab = "Number of labels per instance",
+       ylab = "Number of instances")
 }
