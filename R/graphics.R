@@ -7,6 +7,7 @@
 #'  \item \code{"LH"} for label histogram
 #'  \item \code{"CH"} for cardinality histogram
 #'  \item \code{"AT"} for attributes by type pie chart
+#'  \item \code{"LSH"} for labelset histogram
 #'  }
 #' @param title A title to show above the plot. Defaults to the name of the dataset passed as first argument
 #' @param labelCount Samples the labels in the dataset to show information of only \code{labelCount} of them
@@ -45,7 +46,8 @@ plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, 
          LC = labelCoocurrencePlot(mld, title, labelIndices, ...),
          LH = labelHistogram(mld, title, labelIndices, ...),
          CH = cardinalityHistogram(mld, title, ...),
-         AT = attributeByType(mld, title, ...)
+         AT = attributeByType(mld, title, ...),
+         LSH = labelsetHistogram(mld, title, ...)
   )
 }
 
@@ -141,4 +143,25 @@ attributeByType <- function(mld, title, ...) {
 
   pie(data$Freq, labels = paste(data$Var1, data$Freq, sep = "\n"),
       main = title, sub = "Type and number of attributes", col = heat.colors(5), ...)
+}
+
+labelsetHistogram <- function(mld, title, ...) {
+  labelsets <- mld$labelsets
+  nls <- length(labelsets)
+
+  if(nls > 50) {
+    labelsets <- c(labelsets[nls:(nls-50)], others = sum(labelsets[1:(nls-49)]))
+  }
+
+  end_point = 0.5 + length(labelsets) + length(labelsets)-1
+  interval = round(max(labelsets) / 25)
+  barplot(labelsets, axes = FALSE,
+          ylab = "Number of samples",
+          col = rainbow(length(labelsets)),
+          space = 1, axisnames = FALSE, ...)
+  axis(2, at = seq(0, max(labelsets), interval), las = 2, cex = 1.25)
+  title(main = title, sub = "Instances per labelset")
+  text(seq(1.5, end_point, by=2), par("usr")[3]-0.25,
+       srt = 60, adj= 1, xpd = TRUE,
+       labels = names(labelsets), cex = 0.5)
 }

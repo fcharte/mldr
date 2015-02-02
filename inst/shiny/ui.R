@@ -119,11 +119,11 @@ shinyUI(
                   )),
                   tabPanel("Labelsets", fluidPage(
                     titlePanel("Labelsets information"),
-                    mainPanel(wellPanel(dataTableOutput("labelsets")))
+                    wellPanel(dataTableOutput("labelsets"))
                   )),
                   tabPanel("Attributes", fluidPage(
                     titlePanel("Attributes information"),
-                    mainPanel(wellPanel(dataTableOutput("attributes")))
+                    wellPanel(dataTableOutput("attributes"))
                   )),
                   tabPanel("Concurrence", fluidPage(
                     titlePanel("Label concurrence information"),
