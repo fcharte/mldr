@@ -28,6 +28,12 @@
 #'
 #' # Cardinality histogram plot
 #' plot(emotions, type = "CH")
+#'
+#' # Attributes by type
+#' plot(emotions, type = "AT", cex = 0.85)
+#'
+#' # Labelset histogram
+#' plot(emotions, type = "LSH")
 #' @import circlize
 #' @export
 

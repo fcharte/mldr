@@ -11,6 +11,9 @@
  \item \code{"LC"} Draws a circular plot with sectors representing each label
 and links between them depicting label co-occurrences
  \item \code{"LH"} for label histogram
+ \item \code{"CH"} for cardinality histogram
+ \item \code{"AT"} for attributes by type pie chart
+ \item \code{"LSH"} for labelset histogram
  }}
 
 \item{labelCount}{Samples the labels in the dataset to show information of only \code{labelCount} of them}
@@ -36,5 +39,14 @@ plot(genbase, labelIndices = genbase$label$index[1:10]) # Plots info of first 10
 
 # Label histogram plot
 plot(emotions, type = "LH")
+
+# Cardinality histogram plot
+plot(emotions, type = "CH")
+
+# Attributes by type
+plot(emotions, type = "AT", cex = 0.85)
+
+# Labelset histogram
+plot(emotions, type = "LSH")
 }
 
