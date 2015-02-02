@@ -34,7 +34,7 @@ shinyUI(
       ),
       tags$script(HTML("
           $(document).ready(function () {
-            var graph = $('.shiny-plot-output').parent();
+            var graph = $('#labelLC').parent();
             var origOffsetY = $('.well').offset().top + $(window).scrollTop();
 
             document.onscroll = function () {
@@ -85,11 +85,11 @@ shinyUI(
                       column(6,
                              fluidRow(
                                wellPanel(
-                                 plotOutput("attributeByType", height = "auto")
-                                 ),
-                               wellPanel(
+                                 h3("Visual summary"),
+                                 plotOutput("attributeByType", height = "auto"),
+                                 hr(),
                                  plotOutput("cardHistogram", height = "auto")
-                               ),
+                                 ),
                                wellPanel(
                                  h3("General summary"),
                                  tableOutput("summaryGeneral")
