@@ -46,12 +46,13 @@ mldr <- function(filename = NULL,
     else
       filename
 
-    if (is.null(xml_file)) xml_file <- if (auto_extension)
-      paste(filename, ".xml", sep = "")
-    else {
-      noext <- unlist(strsplit(filename, ".", fixed = TRUE))
-      paste(noext[1:length(noext)], ".xml", sep = "")
-    }
+    if (is.null(xml_file))
+      xml_file <- if (auto_extension)
+        paste(filename, ".xml", sep = "")
+      else {
+        noext <- unlist(strsplit(filename, ".", fixed = TRUE))
+        paste(noext[1:length(noext)], ".xml", sep = "")
+      }
 
     # Get file contents
     relation <- NULL
@@ -77,7 +78,7 @@ mldr <- function(filename = NULL,
     dataset[, labeli] <- lapply(dataset[, labeli],
                                 function(col) as.numeric(!is.na(as.numeric(col) | NA)))
 
-    # Change type from factor of strings to numeric
+    # Adjust type of numeric attributes
     dataset[, which(attrs == "numeric")] <-
       lapply(dataset[, which(attrs == "numeric")], as.numeric)
 
@@ -92,7 +93,7 @@ mldr <- function(filename = NULL,
 #' stored in a \code{data.frame}, taking as labels the columns pointed by the
 #' indexes given in a vector.
 #' @param dataframe The \code{data.frame} containing the dataset attributes and labels.
-#' @param labelIndices Vector containing the indexes of attributes acting as labels. Usually the
+#' @param labelIndices Vector containing the indices of attributes acting as labels. Usually the
 #' labels will be at the end (right-most columns) or the beginning (left-most columns) of the \code{data.frame}
 #' @param name Name of the dataset. The name of the dataset given as first parameter will be used by default
 #' @return An mldr object containing the multilabel dataset

@@ -16,15 +16,15 @@
 #'   of its values.}
 #'   \item{\strong{Concurrence:}}{ This page shows for each label the number of instances in which it appears and its
 #'   mean SCUMBLE measure, along with a plot that shows the level of concurrence among the selected labels. Clicking the
-#'   labels in the table it is possible to add/remove them from the plot.}
+#'   labels in the table makes it possible to add/remove them from the plot.}
 #' }
 #'
-#' The tables shown in these pages can be sorted by any of its fields,  as well as filtered. The content of the tables
+#' The tables shown in these pages can be sorted by any of its fields, as well as filtered. The content of the tables
 #' can be copied to clipboard, printed and saved in CSV and Microsoft Excel format.
 #'
-#' @title Launchs the web-based GUI for mldr
+#' @title Launches the web-based GUI for mldr
 #' @return Nothing
-#' @description Loads in the web browser an interactive user interface built using R shiny.
+#' @description Loads an interactive user interface in the web browser, built using R shiny.
 #' @examples
 #'
 #' library(mldr)
