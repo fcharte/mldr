@@ -16,7 +16,8 @@ mldr_transform(mldr, type = "BR", labels)
 \item{labels}{Vector with the label indexes to include in the transformation. All labels will be used if not specified}
 }
 \value{
-A list of data.frames containing the resulting datasets (for BR) or a data.frame with the dataset (for LP)
+A list of data.frames containing the resulting datasets (for BR) or a data.frame with the dataset (for LP).
+The result is not longer an \code{mldr} object, but a plain \code{data.frame}
 }
 \description{
 Transforms an \code{mldr} object into one or serveral binary or multiclass datasets, returning them as \code{data.frame} objects

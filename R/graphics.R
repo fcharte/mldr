@@ -36,7 +36,6 @@
 #' plot(emotions, type = "LSH")
 #' @import circlize
 #' @export
-
 plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, ...)  {
   if(missing(title))
     title <- substitute(mld)
@@ -57,6 +56,7 @@ plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, 
   )
 }
 
+# Generates a circular label concurrence plot
 #' @import circlize
 labelCoocurrencePlot <- function(mld, title, labelIndices, ...) {
 
@@ -116,6 +116,7 @@ labelCoocurrencePlot <- function(mld, title, labelIndices, ...) {
 
 }
 
+# Generates a barplot with label counters
 labelHistogram <- function(mld, title, labelIndices, ...) {
   labels <- mld$labels[mld$labels$index %in% labelIndices, ]
 
@@ -132,7 +133,7 @@ labelHistogram <- function(mld, title, labelIndices, ...) {
        labels = paste(rownames(labels)), cex=1)
 }
 
-
+# Generates a histogram with cardinality information
 cardinalityHistogram <- function(mld, title, ...) {
   hist(mld$dataset$.labelcount,
        breaks = max(mld$dataset$.labelcount),
@@ -142,7 +143,7 @@ cardinalityHistogram <- function(mld, title, ...) {
        ylab = "Number of instances", ...)
 }
 
-
+# Generates a pie chart with attribute types distribucion
 attributeByType <- function(mld, title, ...) {
   data <- rbind(as.data.frame(table(sapply(mld$dataset[ , mld$attributesIndexes], class))),
                 data.frame(Var1 = "label", Freq = mld$measures$num.labels))
@@ -151,6 +152,7 @@ attributeByType <- function(mld, title, ...) {
       main = title, sub = "Type and number of attributes", col = heat.colors(5), ...)
 }
 
+# Generates a barplot with labelset counters
 labelsetHistogram <- function(mld, title, ...) {
   labelsets <- mld$labelsets
   nls <- length(labelsets)

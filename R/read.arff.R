@@ -1,6 +1,6 @@
 #
 # Contains necessary functions to read ARFF files in
-# different formats (sparse, nonsparse...)
+# different formats (MULAN/MEKA, sparse, nonsparse...)
 #
 #
 # Extracts all useful data from an ARFF file in

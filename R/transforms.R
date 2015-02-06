@@ -6,13 +6,13 @@
 #'  \item \code{"LP"} Produces a multiclass dataset using each labelset as class label
 #'  }
 #' @param labels Vector with the label indexes to include in the transformation. All labels will be used if not specified
-#' @return A list of data.frames containing the resulting datasets (for BR) or a data.frame with the dataset (for LP)
+#' @return A list of data.frames containing the resulting datasets (for BR) or a data.frame with the dataset (for LP).
+#' The result is not longer an \code{mldr} object, but a plain \code{data.frame}
 #' @examples
 #' library(mldr)
 #' emotionsbr <- mldr_transform(emotions, type = "BR")
 #' emotionslp <- mldr_transform(emotions, type = "LP")
 #' @export
-
 mldr_transform <- function(mldr,  type = 'BR', labels) {
   if(class(mldr) != 'mldr')
     stop('This method applies only to mldr objects')
@@ -31,6 +31,7 @@ mldr_transform <- function(mldr,  type = 'BR', labels) {
   )
 }
 
+# Internal function to generate BR transformation
 mldr_to_BR <- function(mldr, labels) {
   lapply(labels, function(aLabel) {
     binary <- cbind(mldr$dataset[ , mldr$attributesIndexes], mldr$dataset[ , aLabel])
@@ -39,6 +40,7 @@ mldr_to_BR <- function(mldr, labels) {
   })
 }
 
+# Internal function to generate LP transformation
 mldr_to_LP <- function(mldr, labels) {
   cbind(mldr$dataset[,mldr$attributesIndexes],
         classLabel = do.call(paste, c(mldr$dataset[ , labels], sep = "")))
