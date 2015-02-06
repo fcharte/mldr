@@ -18,9 +18,9 @@ and links between them depicting label co-occurrences
 
 \item{labelCount}{Samples the labels in the dataset to show information of only \code{labelCount} of them}
 
-\item{labelIndices}{Establishes the labels to show in the plot}
+\item{labelIndices}{Establishes the labels to be shown in the plot}
 
-\item{title}{A title to show above the plot. Defaults to the name of the dataset passed as first argument}
+\item{title}{A title to be shown above the plot. Defaults to the name of the dataset passed as first argument}
 
 \item{mldr}{The mldr object whose features are going to be drawn}
 }
@@ -32,7 +32,7 @@ library(mldr)
 
 # Label concurrence plot
 plot(genbase, type = "LC") # Plots all labels
-plot(genbase) # Same that above
+plot(genbase) # Same as above
 plot(genbase, title = "genbase dataset") # Changes the title
 plot(genbase, labelCount = 10) # Randomly selects 10 labels to plot
 plot(genbase, labelIndices = genbase$label$index[1:10]) # Plots info of first 10 labels

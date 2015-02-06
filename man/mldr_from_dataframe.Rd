@@ -8,7 +8,7 @@ mldr_from_dataframe(dataframe, labelIndices, name = NULL)
 \arguments{
 \item{dataframe}{The \code{data.frame} containing the dataset attributes and labels.}
 
-\item{labelIndices}{Vector containing the indexes of attributes acting as labels. Usually the
+\item{labelIndices}{Vector containing the indices of attributes acting as labels. Usually the
 labels will be at the end (right-most columns) or the beginning (left-most columns) of the \code{data.frame}}
 
 \item{name}{Name of the dataset. The name of the dataset given as first parameter will be used by default}
