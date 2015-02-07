@@ -125,7 +125,13 @@ shinyUI(
                   )),
                   tabPanel("Labelsets", fluidPage(
                     titlePanel("Labelsets information"),
-                    wellPanel(dataTableOutput("labelsets"))
+                    fluidRow(
+                      column(6, wellPanel(dataTableOutput("labelsets"))),
+                      column(6, wellPanel(
+                        downloadButton("saveLabelsets", "Save plot"),
+                        plotOutput("labelsetHC",height="auto"))
+                      )
+                    )
                   )),
                   tabPanel("Attributes", fluidPage(
                     titlePanel("Attributes information"),
