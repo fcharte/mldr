@@ -92,6 +92,9 @@ shinyUI(
                                  downloadButton("saveCH", "Save plot"),
                                  plotOutput("cardHistogram", height = "auto"),
                                  hr(),
+                                 downloadButton("saveLH", "Save plot"),
+                                 plotOutput("labelHistogram", height = "auto"),
+                                 hr(),
                                  downloadButton("saveLSH", "Save plot"),
                                  plotOutput("labelsetHistogram", height = "auto")
                                ),

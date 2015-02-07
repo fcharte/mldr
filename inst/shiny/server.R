@@ -153,7 +153,7 @@ shinyServer(function(input, output, session) {
     if(!is.null(input$mldrs) && input$mldrs != "" && !is.null(input$labelRange)) {
       mld <- get(input$mldrs)
       labelRange <- input$labelRange
-      plot(mld, title = mld$name, type = "LH",
+      plot(mld, title = mld$name, type = "LB",
            labelIndices = (labelRange[1] + mld$labels$index[1] - 1):(labelRange[2] + mld$labels$index[1] -1))
     }
   })
@@ -165,7 +165,7 @@ shinyServer(function(input, output, session) {
       mld <- get(input$mldrs)
       labelRange <- input$labelRange
       png(file, type = 'cairo', width = 1024, height = 800)
-      plot(mld, title = mld$name, type = "LH",
+      plot(mld, title = mld$name, type = "LB",
            labelIndices = (labelRange[1] + mld$labels$index[1] - 1):(labelRange[2] + mld$labels$index[1] -1))
       dev.off()
     },
@@ -187,6 +187,14 @@ shinyServer(function(input, output, session) {
     }
   })
   output$cardHistogram <- renderPlot(cardHistogram(), height = 600, width = 600)
+
+  labelHistogram <- reactive({
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      mld <- get(input$mldrs)
+      plot(mld, title = mld$name, type = "LH")
+    }
+  })
+  output$labelHistogram <- renderPlot(labelHistogram(), height = 600, width = 600)
 
   labelsetHistogram <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
@@ -334,6 +342,17 @@ shinyServer(function(input, output, session) {
       mld <- get(input$mldrs)
       png(file, type = 'cairo', width = 1024, height = 1024)
       plot(mld, title = mld$name, type = "CH")
+      dev.off()
+    },
+    contentType = 'image/png'
+  )
+
+  output$saveLH <- downloadHandler(
+    filename = "labelHistogram.png",
+    content = function(file) {
+      mld <- get(input$mldrs)
+      png(file, type = 'cairo', width = 1024, height = 1024)
+      plot(mld, title = mld$name, type = "LH")
       dev.off()
     },
     contentType = 'image/png'

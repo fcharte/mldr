@@ -5,6 +5,7 @@
 #'  \item \code{"LC"} Draws a circular plot with sectors representing each label
 #' and links between them depicting label co-occurrences
 #'  \item \code{"LH"} for label histogram
+#'  \item \code{"LB"} for label bar plot
 #'  \item \code{"CH"} for cardinality histogram
 #'  \item \code{"AT"} for attributes by type pie chart
 #'  \item \code{"LSH"} for labelset histogram
@@ -49,7 +50,8 @@ plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, 
 
   switch(type,
          LC = labelCoocurrencePlot(mld, title, labelIndices, ...),
-         LH = labelHistogram(mld, title, labelIndices, ...),
+         LH = labelHistogram(mld, title, ...),
+         LB = labelBarPlot(mld, title, labelIndices, ...),
          CH = cardinalityHistogram(mld, title, ...),
          AT = attributeByType(mld, title, ...),
          LSH = labelsetHistogram(mld, title, ...)
@@ -117,7 +119,7 @@ labelCoocurrencePlot <- function(mld, title, labelIndices, ...) {
 }
 
 # Generates a barplot with label counters
-labelHistogram <- function(mld, title, labelIndices, ...) {
+labelBarPlot <- function(mld, title, labelIndices, ...) {
   labels <- mld$labels[mld$labels$index %in% labelIndices, ]
 
   end_point = 0.5 + nrow(labels) + nrow(labels)-1
@@ -131,6 +133,16 @@ labelHistogram <- function(mld, title, labelIndices, ...) {
   text(seq(1.5, end_point, by=2), par("usr")[3]-0.25,
        srt = 60, adj= 1, xpd = TRUE,
        labels = paste(rownames(labels)), cex=1)
+}
+
+# Generates a histogram with label counters
+labelHistogram <- function(mld, title, ...) {
+  hist(mld$labels$count,
+       breaks = length(mld$labels$count) / 3,
+       col = 'blue', border = 'white',
+       main = paste(title, "- Labels histogram"),
+       xlab = "Number of instances",
+       ylab = "Number of labels")
 }
 
 # Generates a histogram with cardinality information
