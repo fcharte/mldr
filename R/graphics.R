@@ -9,6 +9,7 @@
 #'  \item \code{"CH"} for cardinality histogram
 #'  \item \code{"AT"} for attributes by type pie chart
 #'  \item \code{"LSH"} for labelset histogram
+#'  \item \code{"LSB"} for labelset bar plot
 #'  }
 #' @param title A title to be shown above the plot. Defaults to the name of the dataset passed as first argument
 #' @param labelCount Samples the labels in the dataset to show information of only \code{labelCount} of them
@@ -54,7 +55,8 @@ plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, 
          LB = labelBarPlot(mld, title, labelIndices, ...),
          CH = cardinalityHistogram(mld, title, ...),
          AT = attributeByType(mld, title, ...),
-         LSH = labelsetHistogram(mld, title, ...)
+         LSH = labelsetHistogram(mld, title, ...),
+         LSB = labelsetBarPlot(mld, title, ...)
   )
 }
 
@@ -165,7 +167,7 @@ attributeByType <- function(mld, title, ...) {
 }
 
 # Generates a barplot with labelset counters
-labelsetHistogram <- function(mld, title, ...) {
+labelsetBarPlot <- function(mld, title, ...) {
   labelsets <- mld$labelsets
   nls <- length(labelsets)
 
@@ -184,4 +186,13 @@ labelsetHistogram <- function(mld, title, ...) {
   text(seq(1.5, end_point, by=2), par("usr")[3]-0.25,
        srt = 60, adj= 1, xpd = TRUE,
        labels = names(labelsets), cex = 0.5)
+}
+
+# Generates a histogram with labelset counters
+labelsetHistogram <- function(mld, title, ...) {
+  hist(mld$labelsets,
+       col = 'blue', border = 'white',
+       main = paste(title, "- Labelsets histogram"),
+       xlab = "Number of instances",
+       ylab = "Number of labelsets")
 }
