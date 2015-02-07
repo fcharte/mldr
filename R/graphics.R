@@ -78,8 +78,12 @@ labelCoocurrencePlot <- function(mld, title, labelIndices, ...) {
   colnames(tbl) <- colnames(labels)
   row.names(tbl) <- colnames(tbl)
 
+  if(length(which(tbl != 0)) == 0) return() # There's nothing to plot
+
   tbl <- tbl[apply(tbl, 1, function(r) !all(r == 0)), ]
   tbl <- tbl[,apply(tbl, 2, function(r) !all(r == 0))]
+
+  if(class(tbl) != "matrix") return() # Nothing to plot
 
   color.sector <- rainbow(length(union(colnames(tbl), row.names(tbl))))
   color.links <- rainbow(nrow(tbl) * ncol(tbl))
