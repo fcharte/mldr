@@ -11,9 +11,11 @@
  \item \code{"LC"} Draws a circular plot with sectors representing each label
 and links between them depicting label co-occurrences
  \item \code{"LH"} for label histogram
+ \item \code{"LB"} for label bar plot
  \item \code{"CH"} for cardinality histogram
  \item \code{"AT"} for attributes by type pie chart
  \item \code{"LSH"} for labelset histogram
+ \item \code{"LSB"} for labelset bar plot
  }}
 
 \item{labelCount}{Samples the labels in the dataset to show information of only \code{labelCount} of them}
