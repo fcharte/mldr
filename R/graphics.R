@@ -42,23 +42,23 @@
 #' @export
 plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title = NULL, ...)  {
   if(missing(title))
-    title <- substitute(mldr)
+    title <- substitute(x)
 
   if(missing(labelIndices)) {
     labelIndices <- if(!missing(labelCount))
-      sample(mldr$labels$index, labelCount)
+      sample(x$labels$index, labelCount)
     else
-      mldr$labels$index
+      x$labels$index
   }
 
   switch(type,
-         LC = labelCoocurrencePlot(mldr, title, labelIndices, ...),
-         LH = labelHistogram(mldr, title, ...),
-         LB = labelBarPlot(mldr, title, labelIndices, ...),
-         CH = cardinalityHistogram(mldr, title, ...),
-         AT = attributeByType(mldr, title, ...),
-         LSH = labelsetHistogram(mldr, title, ...),
-         LSB = labelsetBarPlot(mldr, title, ...)
+         LC = labelCoocurrencePlot(x, title, labelIndices, ...),
+         LH = labelHistogram(x, title, ...),
+         LB = labelBarPlot(x, title, labelIndices, ...),
+         CH = cardinalityHistogram(x, title, ...),
+         AT = attributeByType(x, title, ...),
+         LSH = labelsetHistogram(x, title, ...),
+         LSB = labelsetBarPlot(x, title, ...)
   )
 }
 
