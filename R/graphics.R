@@ -1,6 +1,6 @@
 #' Generates graphic representations of an mldr object
 #' @description Generates graphic representations of an \code{mldr} object
-#' @param mldr The mldr object whose features are going to be drawn
+#' @param x The mldr object whose features are going to be drawn
 #' @param type Indicates the type of plot to produce. Possible types are:\itemize{
 #'  \item \code{"LC"} Draws a circular plot with sectors representing each label
 #' and links between them depicting label co-occurrences
@@ -14,10 +14,11 @@
 #' @param title A title to be shown above the plot. Defaults to the name of the dataset passed as first argument
 #' @param labelCount Samples the labels in the dataset to show information of only \code{labelCount} of them
 #' @param labelIndices Establishes the labels to be shown in the plot
+#' @param ... Aditional parameters to be given to barplot, hist, etc.
 #' @examples
 #'
 #' library(mldr)
-#'
+#'\dontrun{
 #' # Label concurrence plot
 #' plot(genbase, type = "LC") # Plots all labels
 #' plot(genbase) # Same as above
@@ -36,27 +37,28 @@
 #'
 #' # Labelset histogram
 #' plot(emotions, type = "LSH")
+#' }
 #' @import circlize
 #' @export
-plot.mldr <- function(mld, type = "LC", labelCount, labelIndices, title = NULL, ...)  {
+plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title = NULL, ...)  {
   if(missing(title))
-    title <- substitute(mld)
+    title <- substitute(mldr)
 
   if(missing(labelIndices)) {
     labelIndices <- if(!missing(labelCount))
-      sample(mld$labels$index, labelCount)
+      sample(mldr$labels$index, labelCount)
     else
-      mld$labels$index
+      mldr$labels$index
   }
 
   switch(type,
-         LC = labelCoocurrencePlot(mld, title, labelIndices, ...),
-         LH = labelHistogram(mld, title, ...),
-         LB = labelBarPlot(mld, title, labelIndices, ...),
-         CH = cardinalityHistogram(mld, title, ...),
-         AT = attributeByType(mld, title, ...),
-         LSH = labelsetHistogram(mld, title, ...),
-         LSB = labelsetBarPlot(mld, title, ...)
+         LC = labelCoocurrencePlot(mldr, title, labelIndices, ...),
+         LH = labelHistogram(mldr, title, ...),
+         LB = labelBarPlot(mldr, title, labelIndices, ...),
+         CH = cardinalityHistogram(mldr, title, ...),
+         AT = attributeByType(mldr, title, ...),
+         LSH = labelsetHistogram(mldr, title, ...),
+         LSB = labelsetBarPlot(mldr, title, ...)
   )
 }
 
@@ -148,7 +150,7 @@ labelHistogram <- function(mld, title, ...) {
        col = 'blue', border = 'white',
        main = paste(title, "- Labels histogram"),
        xlab = "Number of instances",
-       ylab = "Number of labels")
+       ylab = "Number of labels", ...)
 }
 
 # Generates a histogram with cardinality information
@@ -198,5 +200,5 @@ labelsetHistogram <- function(mld, title, ...) {
        col = 'blue', border = 'white',
        main = paste(title, "- Labelsets histogram"),
        xlab = "Number of instances",
-       ylab = "Number of labelsets")
+       ylab = "Number of labelsets", ...)
 }

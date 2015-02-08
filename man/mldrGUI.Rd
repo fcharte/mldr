@@ -37,7 +37,9 @@ The tables shown in these pages can be sorted by any of its fields, as well as f
 can be copied to clipboard, printed and saved in CSV and Microsoft Excel format.
 }
 \examples{
+\dontrun{
 library(mldr)
 mldrGUI()
+}
 }
 

@@ -6,7 +6,9 @@
 \method{==}{mldr}(mldr1, mldr2)
 }
 \arguments{
-\item{mldr1,}{mldr2 mldr objects to compare}
+\item{mldr1}{First \code{mldr} object to compare}
+
+\item{mldr2}{Second \code{mldr} object to compare}
 }
 \value{
 true if the two mldr objects have the same structure

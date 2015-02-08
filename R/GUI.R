@@ -26,16 +26,15 @@
 #' @return Nothing
 #' @description Loads an interactive user interface in the web browser, built using R shiny.
 #' @examples
-#'
+#'\dontrun{
 #' library(mldr)
 #' mldrGUI()
-#'
+#'}
 #' @import shiny
 #' @export
 
 mldrGUI <- function() {
-  if(require(shiny))
-    shiny::runApp(appDir = system.file("shiny", package="mldr"), launch.browser = TRUE)
+  shiny::runApp(appDir = system.file("shiny", package="mldr"), launch.browser = TRUE)
 
   invisible()
 }

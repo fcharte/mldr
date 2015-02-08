@@ -3,10 +3,12 @@
 \alias{summary.mldr}
 \title{Provides a summary of measures about the mldr}
 \usage{
-\method{summary}{mldr}(mld)
+\method{summary}{mldr}(object, ...)
 }
 \arguments{
-\item{mld}{Object whose measures are to be printed}
+\item{object}{Object whose measures are to be printed}
+
+\item{...}{Additional parameters to be given to print}
 }
 \description{
 Prints a summary of the measures obtained from the \code{mldr} object

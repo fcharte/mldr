@@ -3,10 +3,12 @@
 \alias{print.mldr}
 \title{Prints the mldr content}
 \usage{
-\method{print}{mldr}(mld)
+\method{print}{mldr}(x, ...)
 }
 \arguments{
-\item{mld}{Object whose data are to be printed}
+\item{x}{Object whose data are to be printed}
+
+\item{...}{Additional parameters to be given to print}
 }
 \description{
 Prints the \code{mldr} object data, including input attributs and output labels

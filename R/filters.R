@@ -15,7 +15,7 @@
 #'
 #' @export
 
-"[.mldr" <- function(mldrObject, rowFilter = T, ...) {
+"[.mldr" <- function(mldrObject, rowFilter = T) {
   rowFilter <- substitute(rowFilter)
   rows <- eval(rowFilter, mldrObject$dataset, parent.frame())
   newDataset <- mldrObject$dataset[rows, c(mldrObject$attributesIndexes, mldrObject$labels$index)]

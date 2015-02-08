@@ -1,6 +1,7 @@
 #' @title Provides a summary of measures about the mldr
 #' @description Prints a summary of the measures obtained from the \code{mldr} object
-#' @param mld Object whose measures are to be printed
+#' @param object Object whose measures are to be printed
+#' @param ... Additional parameters to be given to print
 #' @seealso \code{\link{mldr}}, \code{\link{print.mldr}}
 #' @examples
 #'
@@ -9,13 +10,14 @@
 #' summary(emotions)
 #'
 #' @export
-summary.mldr <- function(mld) {
-  print(data.frame(mld$measures))
+summary.mldr <- function(object, ...) {
+  print(data.frame(object$measures), ...)
 }
 
 #' @title Prints the mldr content
 #' @description Prints the \code{mldr} object data, including input attributs and output labels
-#' @param mld Object whose data are to be printed
+#' @param x Object whose data are to be printed
+#' @param ... Additional parameters to be given to print
 #' @seealso \code{\link{mldr}}, \code{\link{summary.mldr}}
 #' @examples
 #'
@@ -25,8 +27,8 @@ summary.mldr <- function(mld) {
 #' print(emotions) # Same as above
 #'
 #' @export
-print.mldr <- function(mld) {
-  print(mld$dataset[ , c(mld$attributesIndexes, mld$labels$index)])
+print.mldr <- function(x, ...) {
+  print(x$dataset[ , c(x$attributesIndexes, x$labels$index)], ...)
 }
 
 

@@ -3,7 +3,7 @@
 \alias{[.mldr}
 \title{Filter rows in a\code{mldr} returning a new \code{mldr}}
 \usage{
-\method{[}{mldr}(mldrObject, rowFilter = T, ...)
+\method{[}{mldr}(mldrObject, rowFilter = T)
 }
 \arguments{
 \item{mldrObject}{Original \code{mldr} object from which some rows are going to be selected}

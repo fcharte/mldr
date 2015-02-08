@@ -1,17 +1,19 @@
 Package: mldr
 Title: Exploratory data analysis and manipulation of multilabel datasets
 Version: 0.1
+Date: 2015-02-08
 Authors@R: c( person("David", "Charte", email = "fdavidcl@outlook.com", role =
     "cre"), person("Francisco", "Charte", email = "francisco@fcharte.com", role
     = "aut"))
+Author: Francisco Charte <francisco@fcharte.com>
+Maintainer: David Charte <fdavidcl@outlook.com>
 Description: Exploratory data analysis and manipulation functions for
     multilabel datasets along with interactive Shiny application to ease their
     use.
 Depends:
-    R (>= 3.1.0)
-Imports:
+    R (>= 3.0.0),
     shiny,
     XML,
     circlize
-License: LGPL-3
+License: GPL (>= 3) | file LICENSE
 LazyData: true

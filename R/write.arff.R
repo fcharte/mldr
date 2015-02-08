@@ -2,6 +2,7 @@
 #' @description Save the \code{mldr} content to an ARFF file and the label data to an XML file
 #' @param obj The \code{mldr} object whose content is going to be written
 #' @param filename Base name for the files (without extension)
+#' @param write.xml \code{TRUE} or \code{FALSE}, stating if the XML file has to be written
 #' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{mldr}}
 #' @examples
 #'

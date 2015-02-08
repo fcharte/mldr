@@ -3,10 +3,12 @@
 \alias{plot.mldr}
 \title{Generates graphic representations of an mldr object}
 \usage{
-\method{plot}{mldr}(mld, type = "LC", labelCount, labelIndices,
-  title = NULL, ...)
+\method{plot}{mldr}(x, type = "LC", labelCount, labelIndices, title = NULL,
+  ...)
 }
 \arguments{
+\item{x}{The mldr object whose features are going to be drawn}
+
 \item{type}{Indicates the type of plot to produce. Possible types are:\itemize{
  \item \code{"LC"} Draws a circular plot with sectors representing each label
 and links between them depicting label co-occurrences
@@ -24,14 +26,14 @@ and links between them depicting label co-occurrences
 
 \item{title}{A title to be shown above the plot. Defaults to the name of the dataset passed as first argument}
 
-\item{mldr}{The mldr object whose features are going to be drawn}
+\item{...}{Aditional parameters to be given to barplot, hist, etc.}
 }
 \description{
 Generates graphic representations of an \code{mldr} object
 }
 \examples{
 library(mldr)
-
+\dontrun{
 # Label concurrence plot
 plot(genbase, type = "LC") # Plots all labels
 plot(genbase) # Same as above
@@ -50,5 +52,6 @@ plot(emotions, type = "AT", cex = 0.85)
 
 # Labelset histogram
 plot(emotions, type = "LSH")
+}
 }
 

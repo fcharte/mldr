@@ -98,7 +98,6 @@ parse_attributes <- function(arff_attrs) {
 #  of each label
 #' @import XML
 read_xml <- function(xml_file) {
-  library(XML)
   parsed_xml <- xmlParse(xml_file)
   label_list <- xmlToList(parsed_xml, simplify = T)
   rm(parsed_xml)

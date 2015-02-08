@@ -7,7 +7,9 @@ in the two mldrs given as input}
 \method{+}{mldr}(mldr1, mldr2)
 }
 \arguments{
-\item{mldr1,}{\code{mldr2} original \code{mldr} objects}
+\item{mldr1}{First \code{mldr} object to join}
+
+\item{mldr2}{Second \code{mldr} object to join}
 }
 \value{
 a new \code{mldr} object with all rows in the two parameters
