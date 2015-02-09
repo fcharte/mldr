@@ -37,12 +37,14 @@ shinyUI(
               }")
       ),
       tags$script(HTML("
+          const ONECOL_WIDTH = 767;
+
           $(document).ready(function () {
             var graph = $('#labelLC').parent();
             var origOffsetY = $('.well').offset().top + $(window).scrollTop();
 
             document.onscroll = function () {
-                if ($(window).scrollTop() >= origOffsetY) {
+                if ($(window).scrollTop() >= origOffsetY && $(window).width() > ONECOL_WIDTH) {
                     graph.css('margin-top', ($(window).scrollTop() - origOffsetY) + 'px');
                 } else {
                     graph.css('margin-top', '0px');
