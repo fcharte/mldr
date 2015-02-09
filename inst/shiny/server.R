@@ -245,6 +245,7 @@ shinyServer(function(input, output, session) {
                         summary(mld$dataset[,column.name])
                       else
                         summary(as.factor(mld$dataset[,column.name]))
+
                       paste('<table><tr><td><b>',
                             paste(names(tmpsum), collapse = '</b></td><td><b>'),
                             '</td></tr><tr><td>',
