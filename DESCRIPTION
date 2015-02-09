@@ -12,7 +12,7 @@ Description: Exploratory data analysis and manipulation functions for
     use.
 Depends:
     R (>= 3.0.0),
-    shiny,
+    shiny (>= 0.11),
     XML,
     circlize
 License: GPL (>= 3) | file LICENSE
