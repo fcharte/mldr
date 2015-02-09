@@ -246,7 +246,7 @@ shinyServer(function(input, output, session) {
                       else
                         summary(as.factor(mld$dataset[,column.name]))
 
-                      paste('<table><tr><td><b>',
+                      paste('<table class="table table-striped"><tr><td><b>',
                             paste(names(tmpsum), collapse = '</b></td><td><b>'),
                             '</td></tr><tr><td>',
                             paste(tmpsum, collapse = '</td><td>'),
@@ -270,7 +270,7 @@ shinyServer(function(input, output, session) {
         )
       )
     )
-  ))
+  ), escape = FALSE)
 
   # Table with data about the labels in the mldr
   concurrenceTable <- reactive({
