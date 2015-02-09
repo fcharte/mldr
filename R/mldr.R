@@ -137,7 +137,10 @@ mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
                                                    collapse = ","), "}", sep = ""))
 
   new_mldr$labels <- label_measures(dataframe, labelIndices)
-  new_mldr$labelsets <- sort(table(as.factor(do.call(paste, c(dataframe[, new_mldr$labels$index], sep = "")))))
+  new_mldr$labelsets <- if(nrow(dataframe) > 0)
+                           sort(table(as.factor(do.call(paste, c(dataframe[, new_mldr$labels$index], sep = "")))))
+                        else
+                          array()
   new_mldr$dataset <- dataset_measures(new_mldr)
   new_mldr$measures <- measures(new_mldr)
   new_mldr$labels$SCUMBLE <- sapply(new_mldr$labels$index, function(idx)
