@@ -2,7 +2,7 @@
 #'
 #' @param mldr1 First \code{mldr} object to compare
 #' @param mldr2 Second \code{mldr} object to compare
-#' @return true if the two mldr objects have the same structure
+#' @return \code{TRUE} if the two mldr objects have the same structure, \code{FALSE} otherwise
 #' @export
 "==.mldr" <- function(mldr1, mldr2) {
   length(mldr1$attributes) == length(mldr2$attributes) &&

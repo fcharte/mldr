@@ -7,13 +7,13 @@
 #'  }
 #' @param labels Vector with the label indexes to include in the transformation. All labels will be used if not specified
 #' @return A list of data.frames containing the resulting datasets (for BR) or a data.frame with the dataset (for LP).
-#' The result is not longer an \code{mldr} object, but a plain \code{data.frame}
+#' The result is no longer an \code{mldr} object, but a plain \code{data.frame}
 #' @examples
 #' library(mldr)
 #' emotionsbr <- mldr_transform(emotions, type = "BR")
 #' emotionslp <- mldr_transform(emotions, type = "LP")
 #' @export
-mldr_transform <- function(mldr,  type = 'BR', labels) {
+mldr_transform <- function(mldr, type = 'BR', labels) {
   if(class(mldr) != 'mldr')
     stop('This method applies only to mldr objects')
 
