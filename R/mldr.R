@@ -112,6 +112,15 @@ mldr <- function(filename = NULL,
 #' @export
 #'
 mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
+  if(!is.data.frame(dataframe))
+    stop(paste(substitute(dataframe), "is not a valid data.frame"))
+
+  if(missing(labelIndices))
+    stop("labelIndices parameter is compulsory")
+
+  if(!is.numeric(labelIndices))
+    stop(paste(substitute(labelIndices), "is not a numeric vector"))
+
   new_mldr <- list()
   new_mldr$name <- if(missing(name)) substitute(dataframe) else name
   new_mldr$dataset <- dataframe
