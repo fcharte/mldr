@@ -102,9 +102,11 @@ shinyServer(function(input, output, session) {
       titles <- c("Number of single labelsets",
                   "Most frequent %",
                   "Least frequent %")
-      values <- c(mld$measures$num.single.labelsets,
+      values <-
+        c(mld$measures$num.single.labelsets,
                   max(mld$labelsets) / mld$measures$num.instances * 100,
                   min(mld$labelsets) / mld$measures$num.instances * 100)
+
       table <- data.frame(Description = titles, Values = values)
       table
     }
@@ -216,7 +218,10 @@ shinyServer(function(input, output, session) {
   labelsetsTable <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
       mld <- get(input$mldrs)
-      data.frame(LabelSet = names(mld$labelsets), Count = mld$labelsets)
+      if(mld$measures$num.instances > 0)
+        data.frame(LabelSet = names(mld$labelsets), Count = mld$labelsets)
+      else
+        data.frame(LabelSet = character(0), Count = numeric(0))
     }
   })
   output$labelsets <- renderDataTable(labelsetsTable(), options = list(

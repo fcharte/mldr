@@ -41,6 +41,8 @@
 #' @import circlize
 #' @export
 plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title = NULL, ...)  {
+  if(x$measures$num.instances == 0) return()
+
   if(missing(title))
     title <- substitute(x)
 
