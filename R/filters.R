@@ -20,8 +20,5 @@
   rows <- eval(rowFilter, mldrObject$dataset, parent.frame())
   newDataset <- mldrObject$dataset[rows, c(mldrObject$attributesIndexes, mldrObject$labels$index)]
 
-  if(nrow(newDataset) > 0) {
-    mldr_from_dataframe(newDataset, labelIndices = mldrObject$labels$index, name = mldrObject$name)
-  } else
-    stop('This filter does not select any rows')
+  mldr_from_dataframe(newDataset, labelIndices = mldrObject$labels$index, name = mldrObject$name)
 }
