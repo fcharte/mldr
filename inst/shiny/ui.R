@@ -30,6 +30,10 @@ shinyUI(
               }
               .well {
                 overflow-x: auto;
+              }
+              .shiny-plot-output img {
+                max-width: 100%;
+                height: auto !important;
               }")
       ),
       tags$script(HTML("
