@@ -8,9 +8,9 @@
   ...)
 }
 \arguments{
-\item{x}{The mldr object whose features are going to be drawn}
+\item{x}{The mldr object whose features are to be drawn}
 
-\item{type}{Indicates the type of plot to produce. Possible types are:\itemize{
+\item{type}{Indicates the type of plot to be produced. Possible types are:\itemize{
  \item \code{"LC"} Draws a circular plot with sectors representing each label
 and links between them depicting label co-occurrences
  \item \code{"LH"} for label histogram
@@ -27,7 +27,7 @@ and links between them depicting label co-occurrences
 
 \item{title}{A title to be shown above the plot. Defaults to the name of the dataset passed as first argument}
 
-\item{...}{Aditional parameters to be given to barplot, hist, etc.}
+\item{...}{Additional parameters to be given to barplot, hist, etc.}
 }
 \description{
 Generates graphic representations of an \code{mldr} object
