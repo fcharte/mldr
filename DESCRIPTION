@@ -1,12 +1,12 @@
 Package: mldr
 Title: Exploratory Data Analysis and Manipulation of Multi-Label Data Sets
-Version: 0.1.70
+Version: 0.1.70.9000
 Date: 2015-02-08
 Authors@R: c( person("David", "Charte", email = "fdavidcl@outlook.com", role =
     "cre"), person("Francisco", "Charte", email = "francisco@fcharte.com", role
     = "aut"))
 Description: Exploratory data analysis and manipulation functions for
-    multi-label data sets along with interactive Shiny application to ease their
+    multi-label data sets along with an interactive Shiny application to ease their
     use.
 URL: https://github.com/fcharte/mldr
 Depends:
