@@ -23,9 +23,14 @@ shinyServer(function(input, output, session) {
     }
 
     # Make sample datasets in package mldr available in global environment
-    for(obj in ls("package:mldr"))
-      if(class(get(obj, "package:mldr")) == "mldr")
-        assign(obj, get(obj, "package:mldr"), .GlobalEnv)
+    tryCatch(
+      for (obj in ls("package:mldr"))
+        if (class(get(obj, "package:mldr")) == "mldr")
+          assign(obj, get(obj, "package:mldr"), .GlobalEnv),
+      error = function(e) {
+        warning("Couldn't load sample datasets. Make sure package mldr is attached (library(mldr)).")
+      }
+    )
 
     # Get available mldr objects in the global environment
     availableMLDs <- as.list(
@@ -34,7 +39,13 @@ shinyServer(function(input, output, session) {
                      ]
     )
 
-    if(is.null(selected)) selected <- availableMLDs[[1]]
+    # Select first available mldr or an empty one
+    if (is.null(selected))
+      selected <- if (length(availableMLDs) > 0)
+        availableMLDs[[1]]
+      else
+        mldr::mldr()
+
     updateSelectInput(session, "mldrs",
                       choices = availableMLDs,
                       selected = selected)
