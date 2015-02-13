@@ -8,6 +8,7 @@ Authors@R: c( person("David", "Charte", email = "fdavidcl@outlook.com", role =
 Description: Exploratory data analysis and manipulation functions for
     multi-label data sets along with interactive Shiny application to ease their
     use.
+Url: https://github.com/fcharte/mldr
 Depends:
     R (>= 3.0.0),
     shiny (>= 0.11),
