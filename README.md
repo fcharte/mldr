@@ -2,7 +2,7 @@ mldr
 ====
 
 Exploratory data analysis and manipulation functions for multi-label data sets along
-with interactive Shiny application to ease their use.
+with an interactive Shiny application to ease their use.
 
 ## Installation
 
