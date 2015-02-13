@@ -6,14 +6,18 @@ with interactive Shiny application to ease their use.
 
 ## Installation
 
-You can install this package via `install_github` from the 
+Use `install.packages` to install *mldr* and its dependencies:
+
+```R
+install.packages("mldr")
+```
+
+Alternatively, you can install it via `install_github` from the 
 [devtools](https://github.com/hadley/devtools) package.
 
 ```R
 devtools::install_github("fcharte/mldr")
 ```
-
-<!-- Add installation from CRAN when released -->
 
 ## Usage and examples
 
