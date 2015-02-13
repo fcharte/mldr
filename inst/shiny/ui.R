@@ -3,7 +3,6 @@
 # (c) 2015 - Francisco Charte Ojeda (fcharte@ugr.es), David Charte Luque (fdavidcl@outlook.com)
 # See the package LICENSE file for license information
 #
-library(shiny)
 
 shinyUI(
   fluidPage(
