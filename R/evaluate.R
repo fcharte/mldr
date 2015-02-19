@@ -4,7 +4,9 @@
 #' The label information could be in a separate XML file (MULAN style) or in the
 #' the arff header (MEKA style)
 #' @param mldr Object of \code{mldr} type containing the instances to evaluate
-#' @param predictions Matrix with the labels predicted for each instance in the \code{mldr} parameter
+#' @param predictions Matrix with the labels predicted for each instance in the \code{mldr} parameter. Each element
+#' should be a value into [0,1] range
+#' @param threshold Threshold to use to generate bipartition of labels
 #' @return An list with multilabel predictive performance measures
 #' @seealso \code{\link{mldr}}
 #' @examples
@@ -15,6 +17,26 @@
 #' evaluation.measures <- mldr_evaluate(emotions.test, predictions.emotions)
 #'}
 #' @export
-mldr_evaluate(mldr, predictions) {
+mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
+  trueLabels <- mldr$dataset[, mldr$labels$index]
+  if(any((dim(trueLabels) == dim(predictions)) == FALSE))
+    stop("Wrong predicitions matrix!")
 
+  bipartition <- predictions
+  active <- bipartition >= threshold
+  bipartition[active] <- 1
+  bipartition[!active] <- 0
+
+  list(
+    HammingLoss  = mldr_HL(trueLabels, bipartition),
+    MicroF       = mldr_MicroF(trueLabels, bipartition)
+  )
+}
+
+mldr_HL <- function(trueLabels, predictions) {
+  0
+}
+
+mldr_MicroF <- function(trueLabels, predictions) {
+  0
 }
