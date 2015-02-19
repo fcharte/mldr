@@ -29,15 +29,19 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
 
   counters <- list(
     RealPositives      = sum(trueLabels),
+    RealNegatives      = sum(!trueLabels),
     PredictedPositives = sum(bipartition),
-    TruePositives      = sum(trueLabels & bipartition)
+    PredictedNegatives = sum(!bipartition),
+    TruePositives      = sum(trueLabels & bipartition),
+    TrueNegatives      = sum(!trueLabels & !bipartition)
   )
 
   list(
     HammingLoss  = mldr_HL(trueLabels, bipartition),
+    Accuracy     = mldr_Accuracy(counters),
     Precision    = mldr_Precision(counters),
     Recall       = mldr_Recall(counters),
-    MicroF       = mldr_MicroF(counters)
+    FMeasure     = mldr_FMeasure(counters)
   )
 }
 
@@ -48,7 +52,7 @@ mldr_HL <- function(trueLabels, predictions) {
 
 # Calculate global accuracy
 mldr_Accuracy <- function(counters) {
-
+  (counters[["TruePositives"]] + counters[["TrueNegatives"]]) / (counters[["PredictedPositives"]] + counters[["PredictedNegatives"]])
 }
 
 # Calculate global precision
@@ -61,6 +65,7 @@ mldr_Recall <- function(counters) {
   counters[["TruePositives"]] / counters[["RealPositives"]]
 }
 
-mldr_MicroF <- function(counters) {
+# Calculate F-Measure
+mldr_FMeasure <- function(counters) {
   mldr_Precision(counters) * mldr_Recall(counters) * 2 / (mldr_Precision(counters) + mldr_Recall(counters))
 }
