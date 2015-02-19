@@ -33,8 +33,9 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
   )
 }
 
+# Calculate global Hamming Loss
 mldr_HL <- function(trueLabels, predictions) {
-  0
+  sum(trueLabels != predictions) / (nrow(trueLabels) * ncol(trueLabels))
 }
 
 mldr_MicroF <- function(trueLabels, predictions) {
