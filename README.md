@@ -1,4 +1,4 @@
-mldr
+mldr [![Travis](https://img.shields.io/travis/fcharte/mldr.svg)](https://travis-ci.org/fcharte/mldr/)
 ====
 
 Exploratory data analysis and manipulation functions for multi-label data sets along
