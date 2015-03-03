@@ -43,7 +43,8 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
     FMeasure     = mldr_FMeasure(counters),
     SubsetAccuracy = mldr_SubsetAccuracy(trueLabels, bipartition),
     OneError     = mldr_OneError(trueLabels, predictions),
-    Coverage     = mldr_Coverage(trueLabels, predictions)
+    Coverage     = mldr_Coverage(trueLabels, predictions),
+    RankingLoss  = mldr_RankingLoss(trueLabels, predictions)
   )
 }
 
@@ -92,6 +93,17 @@ mldr_Coverage <- function(trueLabels, predictions) {
     idxs <- which(trueLabels[idr, ] == TRUE);
     rk <- order(predictions[idr, ], decreasing = TRUE);
     max(rk[idxs]) -1}))) / nrow(trueLabels)
+}
+
+# Calculate example based Ranking Loss
+mldr_RankingLoss <- function(trueLabels, predictions) {
+  sum(unlist(lapply(1:nrow(trueLabels), function(idr) {
+    idxT <- which(trueLabels[idr,] == 1)
+    idxF <- which(trueLabels[idr,] == 0)
+
+    if(length(idxT) > 0 && length(idxF) > 0)
+      sum(mapply(function(k, l) predictions[idr,k] > predictions[idr,l], idxT, idxF)) / (length(idxT) * length(idxF))
+  }))) / nrow(trueLabels)
 }
 
 testMeasures <- function() {
