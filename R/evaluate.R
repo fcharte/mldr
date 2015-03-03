@@ -78,5 +78,5 @@ mldr_FMeasure <- function(counters) {
 testMeasures <- function() {
   m <- mldr_from_dataframe(data.frame(F = c(1,1,1,1,1,1), L1 = c(1,0,1,1,1,0), L2 = c(1,1,0,1,1,1)), labelIndices = c(2, 3))
   p <- matrix(c(1,0,1,1,1,0,1,0,1,0,1,0), ncol = 2, byrow = T)
-  mldr_evaluate(m[1:2], p[1:2,])
+  mldr_evaluate(m[1:3], p[1:3,])
 }
