@@ -40,31 +40,33 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
     Accuracy     = mldr_Accuracy(counters),
     Precision    = mldr_Precision(counters),
     Recall       = mldr_Recall(counters),
-    FMeasure     = mldr_FMeasure(counters)
+    FMeasure     = mldr_FMeasure(counters),
+    SubsetAccuracy = mldr_SubsetAccuracy(trueLabels, bipartition),
+    OneError     = mldr_OneError(trueLabels, predictions)
   )
 }
 
-# Calculate global Hamming Loss
+# Calculate example based Hamming Loss
 mldr_HL <- function(trueLabels, predictions) {
   sum(trueLabels != predictions) / (nrow(trueLabels) * ncol(trueLabels))
 }
 
-# Calculate global accuracy
+# Calculate example based accuracy
 mldr_Accuracy <- function(counters) {
   mean((counters$TruePositives + counters$TrueNegatives) / (counters$PredictedPositives + counters$PredictedNegatives))
 }
 
-# Calculate global precision
+# Calculate example based precision
 mldr_Precision <- function(counters) {
   mean(counters$TruePositives / counters$PredictedPositives, na.rm = TRUE)
 }
 
-# Calculate global recall
+# Calculate example based recall
 mldr_Recall <- function(counters) {
   mean(counters$TruePositives / counters$RealPositives, na.rm  = TRUE)
 }
 
-# Calculate F-Measure
+# Calculate example based F-Measure
 mldr_FMeasure <- function(counters) {
   precision <- counters$TruePositives / counters$PredictedPositives
   recall <- counters$TruePositives / counters$RealPositives
@@ -72,11 +74,19 @@ mldr_FMeasure <- function(counters) {
   mean(precision * recall * 2 / (precision + recall), na.rm = TRUE)
 }
 
+# Calculate example based Subset Accuracy
+mldr_SubsetAccuracy <- function(trueLabels, predictions) {
+  sum(apply(trueLabels == predictions, 1, sum) == ncol(trueLabels)) / nrow(trueLabels)
+}
 
-
+# Calculate example based One Error
+mldr_OneError <- function(trueLabels, predictions) {
+  maxIndex <- apply(predictions, 1, function(r) order(r)[length(r)])
+  sum(trueLabels[cbind(1:nrow(trueLabels), maxIndex)] != 1) / nrow(trueLabels)
+}
 
 testMeasures <- function() {
   m <- mldr_from_dataframe(data.frame(F = c(1,1,1,1,1,1), L1 = c(1,0,1,1,1,0), L2 = c(1,1,0,1,1,1)), labelIndices = c(2, 3))
-  p <- matrix(c(1,0,1,1,1,0,1,0,1,0,1,0), ncol = 2, byrow = T)
+  p <- matrix(c(.75,0.25,0.8,0.75,0.75,0.25,1,0,1,0,1,0), ncol = 2, byrow = T)
   mldr_evaluate(m[1:3], p[1:3,])
 }
