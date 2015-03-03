@@ -44,7 +44,8 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
     SubsetAccuracy = mldr_SubsetAccuracy(trueLabels, bipartition),
     OneError     = mldr_OneError(trueLabels, predictions),
     Coverage     = mldr_Coverage(trueLabels, predictions),
-    RankingLoss  = mldr_RankingLoss(trueLabels, predictions)
+    RankingLoss  = mldr_RankingLoss(trueLabels, predictions),
+    AveragePrecision = mldr_AveragePrecision(trueLabels, predictions)
   )
 }
 
@@ -90,8 +91,8 @@ mldr_OneError <- function(trueLabels, predictions) {
 # Calculate example based Coverage
 mldr_Coverage <- function(trueLabels, predictions) {
   sum(unlist(lapply(1:nrow(predictions), function(idr) {
-    idxs <- which(trueLabels[idr, ] == TRUE);
-    rk <- order(predictions[idr, ], decreasing = TRUE);
+    idxs <- which(trueLabels[idr, ] == TRUE)
+    rk <- order(predictions[idr, ], decreasing = TRUE)
     max(rk[idxs]) -1}))) / nrow(trueLabels)
 }
 
@@ -104,6 +105,20 @@ mldr_RankingLoss <- function(trueLabels, predictions) {
     if(length(idxT) > 0 && length(idxF) > 0)
       sum(mapply(function(k, l) predictions[idr,k] > predictions[idr,l], idxT, idxF)) / (length(idxT) * length(idxF))
   }))) / nrow(trueLabels)
+}
+
+# Calculate example based Average Precision
+mldr_AveragePrecision <- function(trueLabels, predictions) {
+  mean(unlist(lapply(1:nrow(predictions), function(idr) {
+    idxs <- which(trueLabels[idr, ] == 1)
+    rk <- order(predictions[idr, ], decreasing = TRUE)
+
+    if(length(idxs) > 0)
+      sum(unlist(lapply(idxs, function(k)
+        sum(unlist(lapply(idxs, function(l)
+          rk[k] >= rk[l]))) / rk[k]))) / length(idxs)
+
+  })))
 }
 
 testMeasures <- function() {
