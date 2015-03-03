@@ -36,22 +36,23 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
   )
 
   list(
-    HammingLoss  = mldr_HL(trueLabels, bipartition),
-    Accuracy     = mldr_Accuracy(counters),
-    Precision    = mldr_Precision(counters),
-    Recall       = mldr_Recall(counters),
-    FMeasure     = mldr_FMeasure(counters),
-    SubsetAccuracy = mldr_SubsetAccuracy(trueLabels, bipartition),
-    OneError     = mldr_OneError(trueLabels, predictions),
-    Coverage     = mldr_Coverage(trueLabels, predictions),
-    RankingLoss  = mldr_RankingLoss(trueLabels, predictions),
-    AveragePrecision = mldr_AveragePrecision(trueLabels, predictions)
+    Accuracy         = mldr_Accuracy(counters),
+    AveragePrecision = mldr_AveragePrecision(trueLabels, predictions),
+    Coverage         = mldr_Coverage(trueLabels, predictions),
+    FMeasure         = mldr_FMeasure(counters),
+    HammingLoss      = mldr_HL(trueLabels, bipartition),
+    MacroFMeasure    = mldr_MacroFMeasure(trueLabels, bipartition),
+    MacroPrecision   = mldr_MacroPrecision(trueLabels, bipartition),
+    MacroRecall      = mldr_MacroRecall(trueLabels, bipartition),
+    MicroFMeasure    = mldr_MicroFMeasure(trueLabels, bipartition),
+    MicroPrecision   = mldr_MicroPrecision(trueLabels, bipartition),
+    MicroRecall      = mldr_MicroRecall(trueLabels, bipartition),
+    OneError         = mldr_OneError(trueLabels, predictions),
+    Precision        = mldr_Precision(counters),
+    RankingLoss      = mldr_RankingLoss(trueLabels, predictions),
+    Recall           = mldr_Recall(counters),
+    SubsetAccuracy   = mldr_SubsetAccuracy(trueLabels, bipartition)
   )
-}
-
-# Calculate example based Hamming Loss
-mldr_HL <- function(trueLabels, predictions) {
-  sum(trueLabels != predictions) / (nrow(trueLabels) * ncol(trueLabels))
 }
 
 # Calculate example based accuracy
@@ -59,14 +60,23 @@ mldr_Accuracy <- function(counters) {
   mean((counters$TruePositives + counters$TrueNegatives) / (counters$PredictedPositives + counters$PredictedNegatives))
 }
 
-# Calculate example based precision
-mldr_Precision <- function(counters) {
-  mean(counters$TruePositives / counters$PredictedPositives, na.rm = TRUE)
+# Calculate example based Average Precision
+mldr_AveragePrecision <- function(trueLabels, predictions) {
+  mean(unlist(lapply(1:nrow(predictions), function(idr) {
+    idxs <- which(trueLabels[idr, ] == 1)
+    rk <- order(predictions[idr, ], decreasing = TRUE)
+
+    if(length(idxs) > 0)
+      sum(unlist(lapply(idxs, function(k) sum(unlist(lapply(idxs, function(l) rk[k] >= rk[l]))) / rk[k]))) / length(idxs)
+  })))
 }
 
-# Calculate example based recall
-mldr_Recall <- function(counters) {
-  mean(counters$TruePositives / counters$RealPositives, na.rm  = TRUE)
+# Calculate example based Coverage
+mldr_Coverage <- function(trueLabels, predictions) {
+  sum(unlist(lapply(1:nrow(predictions), function(idr) {
+    idxs <- which(trueLabels[idr, ] == TRUE)
+    rk <- order(predictions[idr, ], decreasing = TRUE)
+    max(rk[idxs]) -1}))) / nrow(trueLabels)
 }
 
 # Calculate example based F-Measure
@@ -77,9 +87,45 @@ mldr_FMeasure <- function(counters) {
   mean(precision * recall * 2 / (precision + recall), na.rm = TRUE)
 }
 
-# Calculate example based Subset Accuracy
-mldr_SubsetAccuracy <- function(trueLabels, predictions) {
-  sum(apply(trueLabels == predictions, 1, sum) == ncol(trueLabels)) / nrow(trueLabels)
+# Calculate example based Hamming Loss
+mldr_HL <- function(trueLabels, predictions) {
+  sum(trueLabels != predictions) / (nrow(trueLabels) * ncol(trueLabels))
+}
+
+# Calculate label based Macro FMeasure
+mldr_MacroFMeasure <- function(trueLabels, bipartition) {
+  macroPrecision <-  colSums(trueLabels & bipartition) / colSums(bipartition)
+  macroRecall <- colSums(trueLabels & bipartition) / colSums(trueLabels)
+
+  mean(macroPrecision * macroRecall * 2 / (macroPrecision + macroRecall), na.rm = TRUE)
+}
+
+# Calculate label based Macro Precision
+mldr_MacroPrecision <- function(trueLabels, bipartition) {
+  mean(colSums(trueLabels & bipartition) / colSums(bipartition), na.rm = TRUE)
+}
+
+# Calculate label based Macro Recall
+mldr_MacroRecall <- function(trueLabels, bipartition) {
+  mean(colSums(trueLabels & bipartition) / colSums(trueLabels), na.rm = TRUE)
+}
+
+# Calculate label based Micro FMeasure
+mldr_MicroFMeasure <- function(trueLabels, bipartition) {
+  microPrecision <- mldr_MicroPrecision(trueLabels, bipartition)
+  microRecall <- mldr_MicroRecall(trueLabels, bipartition)
+
+  microPrecision * microRecall * 2 / (microPrecision + microRecall)
+}
+
+# Calculate label based Micro Precision
+mldr_MicroPrecision <- function(trueLabels, bipartition) {
+  mean(sum(trueLabels & bipartition) / sum(bipartition), na.rm = TRUE)
+}
+
+# Calculate label based Micro Recall
+mldr_MicroRecall <- function(trueLabels, bipartition) {
+  mean(sum(trueLabels & bipartition) / sum(trueLabels), na.rm = TRUE)
 }
 
 # Calculate example based One Error
@@ -88,12 +134,9 @@ mldr_OneError <- function(trueLabels, predictions) {
   sum(trueLabels[cbind(1:nrow(trueLabels), maxIndex)] != 1) / nrow(trueLabels)
 }
 
-# Calculate example based Coverage
-mldr_Coverage <- function(trueLabels, predictions) {
-  sum(unlist(lapply(1:nrow(predictions), function(idr) {
-    idxs <- which(trueLabels[idr, ] == TRUE)
-    rk <- order(predictions[idr, ], decreasing = TRUE)
-    max(rk[idxs]) -1}))) / nrow(trueLabels)
+# Calculate example based precision
+mldr_Precision <- function(counters) {
+  mean(counters$TruePositives / counters$PredictedPositives, na.rm = TRUE)
 }
 
 # Calculate example based Ranking Loss
@@ -107,15 +150,14 @@ mldr_RankingLoss <- function(trueLabels, predictions) {
   }))) / nrow(trueLabels)
 }
 
-# Calculate example based Average Precision
-mldr_AveragePrecision <- function(trueLabels, predictions) {
-  mean(unlist(lapply(1:nrow(predictions), function(idr) {
-    idxs <- which(trueLabels[idr, ] == 1)
-    rk <- order(predictions[idr, ], decreasing = TRUE)
+# Calculate example based recall
+mldr_Recall <- function(counters) {
+  mean(counters$TruePositives / counters$RealPositives, na.rm  = TRUE)
+}
 
-    if(length(idxs) > 0)
-      sum(unlist(lapply(idxs, function(k) sum(unlist(lapply(idxs, function(l) rk[k] >= rk[l]))) / rk[k]))) / length(idxs)
-  })))
+# Calculate example based Subset Accuracy
+mldr_SubsetAccuracy <- function(trueLabels, predictions) {
+  sum(apply(trueLabels == predictions, 1, sum) == ncol(trueLabels)) / nrow(trueLabels)
 }
 
 testMeasures <- function() {
