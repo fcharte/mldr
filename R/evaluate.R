@@ -42,7 +42,8 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
     Recall       = mldr_Recall(counters),
     FMeasure     = mldr_FMeasure(counters),
     SubsetAccuracy = mldr_SubsetAccuracy(trueLabels, bipartition),
-    OneError     = mldr_OneError(trueLabels, predictions)
+    OneError     = mldr_OneError(trueLabels, predictions),
+    Coverage     = mldr_Coverage(trueLabels, predictions)
   )
 }
 
@@ -83,6 +84,14 @@ mldr_SubsetAccuracy <- function(trueLabels, predictions) {
 mldr_OneError <- function(trueLabels, predictions) {
   maxIndex <- apply(predictions, 1, function(r) order(r)[length(r)])
   sum(trueLabels[cbind(1:nrow(trueLabels), maxIndex)] != 1) / nrow(trueLabels)
+}
+
+# Calculate example based Coverage
+mldr_Coverage <- function(trueLabels, predictions) {
+  sum(unlist(lapply(1:nrow(predictions), function(idr) {
+    idxs <- which(trueLabels[idr, ] == TRUE);
+    rk <- order(predictions[idr, ], decreasing = TRUE);
+    max(rk[idxs]) -1}))) / nrow(trueLabels)
 }
 
 testMeasures <- function() {
