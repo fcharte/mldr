@@ -114,10 +114,7 @@ mldr_AveragePrecision <- function(trueLabels, predictions) {
     rk <- order(predictions[idr, ], decreasing = TRUE)
 
     if(length(idxs) > 0)
-      sum(unlist(lapply(idxs, function(k)
-        sum(unlist(lapply(idxs, function(l)
-          rk[k] >= rk[l]))) / rk[k]))) / length(idxs)
-
+      sum(unlist(lapply(idxs, function(k) sum(unlist(lapply(idxs, function(l) rk[k] >= rk[l]))) / rk[k]))) / length(idxs)
   })))
 }
 
