@@ -1,13 +1,12 @@
-#' @title Creates an object representing a multilabel dataset
-#' @description Reads a multilabel dataset from a file and returns an \code{mldr} object
-#' containing the data and additional measures. The file has to be in ARFF format.
-#' The label information could be in a separate XML file (MULAN style) or in the
-#' the arff header (MEKA style)
+#' @title Evaluates the predictions made by a multilabel classifier
+#' @description Taking as input an \code{mldr} object and a matrix with the predictions
+#' given by a classifier, this function evaluates the classifier performance through
+#' several multilabel measures
 #' @param mldr Object of \code{mldr} type containing the instances to evaluate
 #' @param predictions Matrix with the labels predicted for each instance in the \code{mldr} parameter. Each element
 #' should be a value into [0,1] range
-#' @param threshold Threshold to use to generate bipartition of labels
-#' @return An list with multilabel predictive performance measures
+#' @param threshold Threshold to use to generate bipartition of labels. By default the value 0.5 is used
+#' @return A list with multilabel predictive performance measures: HammingLoss, Accuracy, Precision, Recall, FMeasure
 #' @seealso \code{\link{mldr}}
 #' @examples
 #'
@@ -27,13 +26,13 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
   bipartition[active] <- 1
   bipartition[!active] <- 0
 
-  counters <- list(
-    RealPositives      = sum(trueLabels),
-    RealNegatives      = sum(!trueLabels),
-    PredictedPositives = sum(bipartition),
-    PredictedNegatives = sum(!bipartition),
-    TruePositives      = sum(trueLabels & bipartition),
-    TrueNegatives      = sum(!trueLabels & !bipartition)
+  counters <- data.frame(
+    RealPositives      = rowSums(trueLabels),
+    RealNegatives      = rowSums(!trueLabels),
+    PredictedPositives = rowSums(bipartition),
+    PredictedNegatives = rowSums(!bipartition),
+    TruePositives      = rowSums(trueLabels & bipartition),
+    TrueNegatives      = rowSums(!trueLabels & !bipartition)
   )
 
   list(
@@ -52,20 +51,32 @@ mldr_HL <- function(trueLabels, predictions) {
 
 # Calculate global accuracy
 mldr_Accuracy <- function(counters) {
-  (counters[["TruePositives"]] + counters[["TrueNegatives"]]) / (counters[["PredictedPositives"]] + counters[["PredictedNegatives"]])
+  mean((counters$TruePositives + counters$TrueNegatives) / (counters$PredictedPositives + counters$PredictedNegatives))
 }
 
 # Calculate global precision
 mldr_Precision <- function(counters) {
-  counters[["TruePositives"]] / counters[["PredictedPositives"]]
+  mean(counters$TruePositives / counters$PredictedPositives, na.rm = TRUE)
 }
 
 # Calculate global recall
 mldr_Recall <- function(counters) {
-  counters[["TruePositives"]] / counters[["RealPositives"]]
+  mean(counters$TruePositives / counters$RealPositives, na.rm  = TRUE)
 }
 
 # Calculate F-Measure
 mldr_FMeasure <- function(counters) {
-  mldr_Precision(counters) * mldr_Recall(counters) * 2 / (mldr_Precision(counters) + mldr_Recall(counters))
+  precision <- counters$TruePositives / counters$PredictedPositives
+  recall <- counters$TruePositives / counters$RealPositives
+
+  mean(precision * recall * 2 / (precision + recall), na.rm = TRUE)
+}
+
+
+
+
+testMeasures <- function() {
+  m <- mldr_from_dataframe(data.frame(F = c(1,1,1,1,1,1), L1 = c(1,0,1,1,1,0), L2 = c(1,1,0,1,1,1)), labelIndices = c(2, 3))
+  p <- matrix(c(1,0,1,1,1,0,1,0,1,0,1,0), ncol = 2, byrow = T)
+  mldr_evaluate(m[1:2], p[1:2,])
 }
