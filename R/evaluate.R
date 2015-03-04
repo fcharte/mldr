@@ -50,6 +50,7 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
     MacroFMeasure    = mldr_MacroFMeasure(trueLabels, bipartition),
     MacroPrecision   = mldr_MacroPrecision(trueLabels, bipartition),
     MacroRecall      = mldr_MacroRecall(trueLabels, bipartition),
+    MicroAUC         = mldr_MicroAUC(trueLabels, predictions),
     MicroFMeasure    = mldr_MicroFMeasure(trueLabels, bipartition),
     MicroPrecision   = mldr_MicroPrecision(trueLabels, bipartition),
     MicroRecall      = mldr_MicroRecall(trueLabels, bipartition),
@@ -169,6 +170,11 @@ mldr_SubsetAccuracy <- function(trueLabels, predictions) {
 # Calculate label based MacroAUC
 mldr_MacroAUC <- function(trueLabels, predictions) {
   mean(unlist(lapply(1:ncol(trueLabels), function(l) if(sum(trueLabels[,l]) == 0) 0.5 else auc(trueLabels[,l], predictions[,l]))))
+}
+
+# Calculate label based MicroAUC
+mldr_MicroAUC <- function(trueLabels, predictions) {
+  as.numeric(auc(unlist(trueLabels), unlist(predictions)))
 }
 
 # Calculate example based AUC
