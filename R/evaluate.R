@@ -15,8 +15,12 @@
 #' # Evaluate predictive performance
 #' evaluation.measures <- mldr_evaluate(emotions.test, predictions.emotions)
 #'}
+#' @import pROC
 #' @export
 mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
+  if(class(mldr) != 'mldr')
+    stop('First argument must be an mldr object')
+
   trueLabels <- mldr$dataset[, mldr$labels$index]
   if(any((dim(trueLabels) == dim(predictions)) == FALSE))
     stop("Wrong predicitions matrix!")
@@ -37,10 +41,12 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
 
   list(
     Accuracy         = mldr_Accuracy(counters),
+    AUC              = mldr_AUC(trueLabels, predictions),
     AveragePrecision = mldr_AveragePrecision(trueLabels, predictions),
     Coverage         = mldr_Coverage(trueLabels, predictions),
     FMeasure         = mldr_FMeasure(counters),
     HammingLoss      = mldr_HL(trueLabels, bipartition),
+    MacroAUC         = mldr_MacroAUC(trueLabels, predictions),
     MacroFMeasure    = mldr_MacroFMeasure(trueLabels, bipartition),
     MacroPrecision   = mldr_MacroPrecision(trueLabels, bipartition),
     MacroRecall      = mldr_MacroRecall(trueLabels, bipartition),
@@ -160,8 +166,25 @@ mldr_SubsetAccuracy <- function(trueLabels, predictions) {
   sum(apply(trueLabels == predictions, 1, sum) == ncol(trueLabels)) / nrow(trueLabels)
 }
 
+# Calculate label based MacroAUC
+mldr_MacroAUC <- function(trueLabels, predictions) {
+  mean(unlist(lapply(1:ncol(trueLabels), function(l) if(sum(trueLabels[,l]) == 0) 0.5 else auc(trueLabels[,l], predictions[,l]))))
+}
+
+# Calculate example based AUC
+mldr_AUC <- function(trueLabels, predictions) {
+  TL <- as.matrix(trueLabels)
+  idxs <- which(rowSums(trueLabels) != 0 & rowMeans(trueLabels) != 1)
+  (sum(!idxs) * 0.5 + sum(unlist(lapply(idxs, function(r) auc(TL[r,], predictions[r, ]))))) / nrow(trueLabels)
+}
+
 testMeasures <- function() {
   m <- mldr_from_dataframe(data.frame(F = c(1,1,1,1,1,1), L1 = c(1,0,1,1,1,0), L2 = c(1,1,0,1,1,1)), labelIndices = c(2, 3))
-  p <- matrix(c(.75,0.25,0.8,0.75,0.75,0.25,1,0,1,0,1,0), ncol = 2, byrow = T)
-  mldr_evaluate(m[1:3], p[1:3,])
+  p <- matrix(c(.75,0.25,0.2,0.75,0.75,0.25,0.9,0.4,0.85,0.3,0.25,0.98), ncol = 2, byrow = T)
+  p <- matrix(c(1,0,0,1,1,0,1,0,1,0,0,1), ncol = 2, byrow = T)
+  mldr_evaluate(m, p)
+
+  p <- as.matrix(emotions$dataset[,emotions$labels$index])
+  p[sample(1:593, 100),sample(1:6, 100, replace = T)] <- sample(0:1, 100, replace = T)
+  mldr_evaluate(emotions, p)
 }
