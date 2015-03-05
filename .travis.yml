@@ -1,0 +1,14 @@
+language: r
+
+# System dependencies
+apt_packages:
+ - libxml2-dev
+
+# R dependencies for mldr
+r_packages:
+ - XML
+ - circlize
+ - shiny
+
+# Custom settings
+warnings_are_errors: true
