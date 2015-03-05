@@ -15,7 +15,7 @@
 #' # Evaluate predictive performance
 #' evaluation.measures <- mldr_evaluate(emotions.test, predictions.emotions)
 #'}
-#' @import pROC
+#'
 #' @export
 mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
   if(class(mldr) != 'mldr')
