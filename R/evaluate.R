@@ -23,7 +23,7 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
 
   trueLabels <- mldr$dataset[, mldr$labels$index]
   if(any((dim(trueLabels) == dim(predictions)) == FALSE))
-    stop("Wrong predicitions matrix!")
+    stop("Wrong predictions matrix!")
 
   bipartition <- predictions
   active <- bipartition >= threshold
@@ -172,7 +172,7 @@ mldr_MacroAUC <- function(trueLabels, predictions) {
   if (!requireNamespace("pROC", quietly = TRUE))
     NULL
   else
-    mean(unlist(lapply(1:ncol(trueLabels), function(l) if(sum(trueLabels[,l]) == 0) 0.5 else auc(trueLabels[,l], predictions[,l]))))
+    mean(unlist(lapply(1:ncol(trueLabels), function(l) if(sum(trueLabels[,l]) == 0) 0.5 else pROC::auc(trueLabels[,l], predictions[,l]))))
 }
 
 # Calculate label based MicroAUC
@@ -180,7 +180,7 @@ mldr_MicroAUC <- function(trueLabels, predictions) {
   if (!requireNamespace("pROC", quietly = TRUE))
     NULL
   else
-    as.numeric(auc(unlist(trueLabels), unlist(predictions)))
+    as.numeric(pROC::auc(unlist(trueLabels), unlist(predictions)))
 }
 
 # Calculate example based AUC
@@ -190,17 +190,6 @@ mldr_AUC <- function(trueLabels, predictions) {
   else {
     TL <- as.matrix(trueLabels)
     idxs <- which(rowSums(trueLabels) != 0 & rowMeans(trueLabels) != 1)
-    (sum(!idxs) * 0.5 + sum(unlist(lapply(idxs, function(r) auc(TL[r,], predictions[r, ]))))) / nrow(trueLabels)
+    (sum(!idxs) * 0.5 + sum(unlist(lapply(idxs, function(r) pROC::auc(TL[r,], predictions[r, ]))))) / nrow(trueLabels)
   }
-}
-
-testMeasures <- function() {
-  m <- mldr_from_dataframe(data.frame(F = c(1,1,1,1,1,1), L1 = c(1,0,1,1,1,0), L2 = c(1,1,0,1,1,1)), labelIndices = c(2, 3))
-  p <- matrix(c(.75,0.25,0.2,0.75,0.75,0.25,0.9,0.4,0.85,0.3,0.25,0.98), ncol = 2, byrow = T)
-  p <- matrix(c(1,0,0,1,1,0,1,0,1,0,0,1), ncol = 2, byrow = T)
-  mldr_evaluate(m, p)
-
-  p <- as.matrix(emotions$dataset[,emotions$labels$index])
-  p[sample(1:593, 100),sample(1:6, 100, replace = T)] <- sample(0:1, 100, replace = T)
-  mldr_evaluate(emotions, p)
 }
