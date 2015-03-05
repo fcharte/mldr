@@ -35,7 +35,7 @@
 #' # Get the true labels in emotions
 #' predictions <- as.matrix(emotions$dataset[,emotions$labels$index])
 #' # and introduce some noise
-#' predictions[sample(1:593, 100),sample(1:6, 100, replace = T)] <- sample(0:1, 100, replace = T)
+#' predictions[sample(1:593, 100),sample(1:6, 100, replace = TRUE)] <- sample(0:1, 100, replace = TRUE)
 #' # then evaluate predictive performance
 #' mldr_evaluate(emotions, predictions)
 #'
@@ -62,6 +62,11 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
     TrueNegatives      = rowSums(!trueLabels & !bipartition)
   )
 
+  roc <- if (!requireNamespace("pROC", quietly = TRUE))
+    NULL
+  else
+    pROC::roc(unlist(trueLabels), unlist(predictions))
+
   list(
     Accuracy         = mldr_Accuracy(counters),
     AUC              = mldr_AUC(trueLabels, predictions),
@@ -81,7 +86,8 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
     Precision        = mldr_Precision(counters),
     RankingLoss      = mldr_RankingLoss(trueLabels, predictions),
     Recall           = mldr_Recall(counters),
-    SubsetAccuracy   = mldr_SubsetAccuracy(trueLabels, bipartition)
+    SubsetAccuracy   = mldr_SubsetAccuracy(trueLabels, bipartition),
+    ROC              = roc
   )
 }
 
