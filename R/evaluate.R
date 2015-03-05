@@ -169,19 +169,29 @@ mldr_SubsetAccuracy <- function(trueLabels, predictions) {
 
 # Calculate label based MacroAUC
 mldr_MacroAUC <- function(trueLabels, predictions) {
-  mean(unlist(lapply(1:ncol(trueLabels), function(l) if(sum(trueLabels[,l]) == 0) 0.5 else auc(trueLabels[,l], predictions[,l]))))
+  if (!requireNamespace("pROC", quietly = TRUE))
+    NULL
+  else
+    mean(unlist(lapply(1:ncol(trueLabels), function(l) if(sum(trueLabels[,l]) == 0) 0.5 else auc(trueLabels[,l], predictions[,l]))))
 }
 
 # Calculate label based MicroAUC
 mldr_MicroAUC <- function(trueLabels, predictions) {
-  as.numeric(auc(unlist(trueLabels), unlist(predictions)))
+  if (!requireNamespace("pROC", quietly = TRUE))
+    NULL
+  else
+    as.numeric(auc(unlist(trueLabels), unlist(predictions)))
 }
 
 # Calculate example based AUC
 mldr_AUC <- function(trueLabels, predictions) {
-  TL <- as.matrix(trueLabels)
-  idxs <- which(rowSums(trueLabels) != 0 & rowMeans(trueLabels) != 1)
-  (sum(!idxs) * 0.5 + sum(unlist(lapply(idxs, function(r) auc(TL[r,], predictions[r, ]))))) / nrow(trueLabels)
+  if (!requireNamespace("pROC", quietly = TRUE))
+    NULL
+  else {
+    TL <- as.matrix(trueLabels)
+    idxs <- which(rowSums(trueLabels) != 0 & rowMeans(trueLabels) != 1)
+    (sum(!idxs) * 0.5 + sum(unlist(lapply(idxs, function(r) auc(TL[r,], predictions[r, ]))))) / nrow(trueLabels)
+  }
 }
 
 testMeasures <- function() {
