@@ -26,10 +26,13 @@
 #'  \item \code{RankingLoss}: Example and ranking based ranking-loss (how many times a non-relevant label is ranked above a relevant one, evaluated for all label pairs and averaged by instance)
 #'  \item \code{Recall}: Example and bipartition based recall (averaged by instance)
 #'  \item \code{SubsetAccuracy}: Example and bipartition based subset accuracy (strict equality between predicted and real labelset, averaged by instance)
+#'  \item \code{ROC}: A \code{roc} object corresponding to the \code{MicroAUC} value. This object can be given as input to \code{plot} for plotting the ROC curve
 #'  }
+#'  The \code{AUC}, \code{MacroAUC}, \code{MicroAUC} and \code{ROC} members will be \code{NULL} if the \code{pROC} package is not installed.
+#'
 #' @seealso \code{\link{mldr}}
 #' @examples
-#'
+#'\dontrun{
 #' library(mldr)
 #'
 #' # Get the true labels in emotions
@@ -37,8 +40,10 @@
 #' # and introduce some noise
 #' predictions[sample(1:593, 100),sample(1:6, 100, replace = TRUE)] <- sample(0:1, 100, replace = TRUE)
 #' # then evaluate predictive performance
-#' mldr_evaluate(emotions, predictions)
-#'
+#' res <- mldr_evaluate(emotions, predictions)
+#' str(res)
+#' plot(res$ROC)
+#'}
 #' @export
 mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
   if(class(mldr) != 'mldr')
@@ -62,10 +67,9 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
     TrueNegatives      = rowSums(!trueLabels & !bipartition)
   )
 
-  roc <- if (!requireNamespace("pROC", quietly = TRUE))
-    NULL
-  else
-    pROC::roc(unlist(trueLabels), unlist(predictions))
+  MicroROC <- NULL
+  if (requireNamespace("pROC", quietly = TRUE))
+    MicroROC <- pROC::roc(unlist(trueLabels), predictions, algorithm = TRUE)
 
   list(
     Accuracy         = mldr_Accuracy(counters),
@@ -87,7 +91,7 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
     RankingLoss      = mldr_RankingLoss(trueLabels, predictions),
     Recall           = mldr_Recall(counters),
     SubsetAccuracy   = mldr_SubsetAccuracy(trueLabels, bipartition),
-    ROC              = roc
+    ROC              = MicroROC
   )
 }
 

@@ -35,7 +35,9 @@ A list with multilabel predictive performance measures. The items in the list wi
  \item \code{RankingLoss}: Example and ranking based ranking-loss (how many times a non-relevant label is ranked above a relevant one, evaluated for all label pairs and averaged by instance)
  \item \code{Recall}: Example and bipartition based recall (averaged by instance)
  \item \code{SubsetAccuracy}: Example and bipartition based subset accuracy (strict equality between predicted and real labelset, averaged by instance)
+ \item \code{ROC}: A \code{roc} object corresponding to the \code{MicroAUC} value. This object can be given as input to \code{plot} for plotting the ROC curve
  }
+ The \code{AUC}, \code{MacroAUC}, \code{MicroAUC} and \code{ROC} members will be \code{NULL} if the \code{pROC} package is not installed.
 }
 \description{
 Taking as input an \code{mldr} object and a matrix with the predictions
@@ -43,14 +45,18 @@ given by a classifier, this function evaluates the classifier performance throug
 several multilabel metrics.
 }
 \examples{
+\dontrun{
 library(mldr)
 
 # Get the true labels in emotions
 predictions <- as.matrix(emotions$dataset[,emotions$labels$index])
 # and introduce some noise
-predictions[sample(1:593, 100),sample(1:6, 100, replace = T)] <- sample(0:1, 100, replace = T)
+predictions[sample(1:593, 100),sample(1:6, 100, replace = TRUE)] <- sample(0:1, 100, replace = TRUE)
 # then evaluate predictive performance
-mldr_evaluate(emotions, predictions)
+res <- mldr_evaluate(emotions, predictions)
+str(res)
+plot(res$ROC)
+}
 }
 \seealso{
 \code{\link{mldr}}
