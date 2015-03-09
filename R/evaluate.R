@@ -69,7 +69,7 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
 
   MicroROC <- NULL
   if (requireNamespace("pROC", quietly = TRUE))
-    MicroROC <- pROC::roc(unlist(trueLabels), predictions, algorithm = TRUE)
+    MicroROC <- pROC::roc(unlist(trueLabels), predictions, algorithm = 3)
 
   list(
     Accuracy         = mldr_Accuracy(counters),
