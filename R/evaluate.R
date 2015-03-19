@@ -42,7 +42,7 @@
 #' # then evaluate predictive performance
 #' res <- mldr_evaluate(emotions, predictions)
 #' str(res)
-#' plot(res$ROC)
+#' plot(res$ROC, main = "ROC curve for emotions")
 #'}
 #' @export
 mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
