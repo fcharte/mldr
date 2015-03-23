@@ -37,7 +37,7 @@
 #'
 #' # Get the true labels in emotions
 #' predictions <- as.matrix(emotions$dataset[,emotions$labels$index])
-#' # and introduce some noise
+#' # and introduce some noise (alternatively get the predictions from some classifier)
 #' predictions[sample(1:593, 100),sample(1:6, 100, replace = TRUE)] <- sample(0:1, 100, replace = TRUE)
 #' # then evaluate predictive performance
 #' res <- mldr_evaluate(emotions, predictions)
