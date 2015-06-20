@@ -24,7 +24,7 @@
 #' plot(genbase) # Same as above
 #' plot(genbase, title = "genbase dataset") # Changes the title
 #' plot(genbase, labelCount = 10) # Randomly selects 10 labels to plot
-#' plot(genbase, labelIndices = genbase$label$index[1:10]) # Plots info of first 10 labels
+#' plot(genbase, labelIndices = genbase$labels$index[1:10]) # Plots info of first 10 labels
 #'
 #' # Label histogram plot
 #' plot(emotions, type = "LH")
@@ -91,10 +91,16 @@ labelCoocurrencePlot <- function(mld, title, labelIndices, ...) {
 
   color.sector <- rainbow(length(union(colnames(tbl), row.names(tbl))))
   color.links <- rainbow(nrow(tbl) * ncol(tbl))
+
+  # Update for newer circlize versions: 'col' cannot be an atomic vector
+  color.links <- matrix(color.links, ncol = ncol(tbl), byrow = T)
+
   circos.par(gap.degree = 1)
+
   chordDiagram(tbl, annotationTrack = "grid", transparency = 0.5,
                preAllocateTracks = list(track.height = 0.2),
                grid.col = color.sector, col = color.links)
+
   for(si in get.all.sector.index()) {
     circos.axis(h = "top", labels.cex = 0.4, sector.index = si,
                 track.index = 2, direction = "inside", labels = FALSE,

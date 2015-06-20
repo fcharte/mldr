@@ -1,8 +1,12 @@
 # CHANGES IN mldr 0.1.70.9000
 
-NEW FEATURES:
+### New features
 
 * New `mldr_evaluate()` function to assess multilabel classifier performance. Taking as input an `mldr` object and a matrix with predictions this function returns a list of metrics, including Accuracy, AUC, AveragePrecision, Coverage, FMeasure, HammingLoss, MacroAUC, MacroFMeasure, MacroPrecision, MacroRecall, MicroAUC, MicroFMeasure, MicroPrecision, MicroRecall, OneError, Precision, RankingLoss, Recall, and SubsetAccuracy
+
+### Fixes
+
+* Fixed call to `chordDiagram` for newer versions of the [`circlize`](https://github.com/jokergoo/circlize) package.
 
 # mldr 0.1.70
 
