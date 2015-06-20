@@ -93,7 +93,7 @@ labelCoocurrencePlot <- function(mld, title, labelIndices, ...) {
   color.links <- rainbow(nrow(tbl) * ncol(tbl))
 
   # Update for newer circlize versions: 'col' cannot be an atomic vector
-  color.links <- matrix(color.links, ncol = ncol(tbl), byrow = T)
+  color.links <- matrix(color.links, ncol = ncol(tbl), byrow = F)
 
   circos.par(gap.degree = 1)
 
