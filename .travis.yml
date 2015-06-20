@@ -1,5 +1,7 @@
 language: r
 
+sudo: required
+
 # System dependencies
 apt_packages:
  - libxml2-dev
