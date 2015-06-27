@@ -12,6 +12,12 @@
 #' @param xml_file Path to the XML file. If not
 #'  provided, the filename ending in ".xml" will be
 #'  assumed
+#' @param label_indices Optional vector containing the indices of the attributes
+#'  that should be read as labels
+#' @param label_names Optional vector containing the names of the attributes
+#'  that should be read as labels
+#' @param label_amount Optional parameter indicating the number of labels in the
+#'  dataset, which will be taken from the last attributes of the dataset
 #' @return An mldr object containing the multilabel dataset
 #' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{summary.mldr}}
 #' @examples
@@ -24,20 +30,33 @@
 #' # Read "yeast-tra.arff" and labels from "yeast.xml"
 #' mymld <- mldr("yeast-tra", xml_file = "yeast.xml")
 #'
+#' # Read "yeast.arff" specifying the amount of attributes to be used as labels
+#' mymld <- mldr("yeast", label_amount = 14)
+#'
 #' # Read MEKA style dataset, without XML file and giving extension
 #' mymld <- mldr("IMDB.arff", use_xml = FALSE, auto_extension = FALSE)
 #'}
 #' @export
-mldr <- function(filename = NULL,
+mldr <- function(filename,
                  use_xml = TRUE,
                  auto_extension = TRUE,
-                 xml_file = NULL) {
+                 xml_file,
+                 label_indices,
+                 label_names,
+                 label_amount) {
 
-  if (!is.null(filename)) {
+  no_filename <- missing(filename)
+  no_xml_file <- missing(xml_file)
+  no_label_indices <- missing(label_indices)
+  no_label_names <- missing(label_names)
+  no_label_amount <- missing(label_amount)
+
+  if (!no_filename) {
+    print("here")
     # Parameter check
     if (!is.character(filename))
       stop("Argument 'filename' must be a character string.")
-    if (!is.null(xml_file) && !is.character(xml_file))
+    if (!no_xml_file && !is.character(xml_file))
       stop("Argument 'xml_file' must be a character string.")
 
     # Calculate names of files
@@ -46,7 +65,7 @@ mldr <- function(filename = NULL,
     else
       filename
 
-    if (is.null(xml_file))
+    if (no_xml_file)
       xml_file <- if (auto_extension)
         paste(filename, ".xml", sep = "")
       else {
@@ -65,24 +84,41 @@ mldr <- function(filename = NULL,
 
     header <- read_header(relation)
 
-    if (use_xml) {
-      # Read labels from XML file
-      labelnames <- read_xml(xml_file)
-      labeli <- which(names(attrs) %in% labelnames)
-    } else {
-      # Read label amount from Meka parameters
-      labeli <- 1:header$toplabel
+    # Finding label indices. Priorities:
+    #  - label_indices
+    #  - label_names
+    #  - label_amount
+    #  - xml_file
+    #  - MEKA header
+
+    if (no_label_indices) {
+      if (use_xml && no_label_names && no_label_amount) {
+        # Read labels from XML file
+        label_names <- read_xml(xml_file)
+      }
+
+      if (use_xml || !no_label_names) {
+        label_indices <- which(names(attrs) %in% label_names)
+      } else {
+        if (no_label_amount) {
+          # Read label amount from Meka parameters
+          label_indices <- 1:header$toplabel
+        } else {
+          label_indices <- (nrow(dataset) - label_amount + 1):nrow(dataset)
+        }
+      }
     }
 
+
     # Convert labels to numeric
-    dataset[, labeli] <- lapply(dataset[, labeli],
+    dataset[, label_indices] <- lapply(dataset[, label_indices],
                                 function(col) as.numeric(!is.na(as.numeric(col) | NA)))
 
     # Adjust type of numeric attributes
     dataset[, which(attrs == "numeric")] <-
       lapply(dataset[, which(attrs == "numeric")], as.numeric)
 
-    mldr_from_dataframe(dataset, labeli, header$name)
+    mldr_from_dataframe(dataset, label_indices, header$name)
   } else {
     NULL
   }
