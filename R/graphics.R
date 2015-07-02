@@ -38,6 +38,7 @@
 #' # Labelset histogram
 #' plot(emotions, type = "LSH")
 #' }
+#' @import graphics
 #' @import circlize
 #' @export
 plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title = NULL, ...)  {
