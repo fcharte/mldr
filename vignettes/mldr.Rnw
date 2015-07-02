@@ -1,0 +1,722 @@
+% \VignetteIndexEntry{Working with Multilabel Datasets in R: The mldr Package}
+% \VignetteDepends{mldr}
+% \VignetteKeywords{mldr}
+% \VignetteKeywords{multilabel}
+% \VignettePackage{mldr}
+%\VignetteCompiler{knitr}
+%\VignetteEngine{knitr::knitr}
+
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,array}
+\usepackage{booktabs}
+
+\usepackage[a4paper, top=1.5cm, bottom=1.5cm, left=2cm, right=2cm]{geometry}
+
+%% load any required packages here
+\usepackage{tikz}
+\usepackage{color}
+\usepackage{stmaryrd}
+
+\usepackage{url}
+\usepackage[numbers,sectionbib]{natbib}
+
+\begin{document}
+
+\providecommand{\pkg}[1]{\textbf{#1}}
+\providecommand{\CRANpkg}[1]{\textbf{#1}}
+\providecommand{\code}[1]{\texttt{#1}}
+\providecommand{\file}[1]{\texttt{'#1'}}
+
+\title{Working with Multilabel Datasets in R: The \pkg{mldr} Package}
+\author{Francisco Charte\\ F. David Charte}
+
+\maketitle
+
+\definecolor{highlight}{rgb}{0,0,0}
+
+<<echo = FALSE>>=
+library(mldr)
+@
+
+\abstract{
+Most classification algorithms deal with datasets which have a set of input features, the variables to be used as predictors, and only one output class, the variable to be predicted. However, in late years many scenarios in which the classifier has to work with several outputs have come to life. Automatic labeling of text documents, image annotation or protein classification are among them. Multilabel datasets are the product of these new needs, and they have many specific traits. The \pkg{mldr} package allows the user to load datasets of this kind, obtain their characteristics, produce specialized plots, and manipulate them. The goal is to provide the exploratory tools needed to analyze multilabel datasets, as well as the transformation and manipulation functions that will make possible \textcolor{highlight}{to apply} binary and multiclass classification models to this data or the development of new multilabel classifiers. Thanks to its integrated user interface, the exploratory functions will be available even to non-specialized R users.}
+
+\section{Introduction}
+Pattern classification is an important task nowadays and is in use everywhere, from our e-mail client, which is able to separate spam from legit messages, to credit institutions, that rely on \textcolor{highlight}{it} to detect fraud and grant \textcolor{highlight}{or deny} loans. All these cases operate with binary datasets, \textcolor{highlight}{since a} message is \textcolor{highlight}{either} spam or legit, and multiclass datasets, the loan is safe, medium, risky or highly risky, for instance. In both cases the user expects only one output.
+
+The huge growth on the amount of information stored in late years onto the Web, such as blog posts, pictures taken from cameras and phones, videos hosted on Youtube, and messages on social networks, has demanded a more complex classification work. A blog post can be classified into several non-exclusive categories, for instance news, economy and politics simultaneously. A picture can be assigned a set of labels, such as landscape, sky and forest. A video can be labeled into several musical styles at once, etc. All of these are examples of tasks in need of multilabel classification.
+
+Binary and multiclass datasets can be managed in R by using dataframes. Usually the last attribute (column on the \code{data.frame}) is the output class, whether it contains only \code{TRUE/FALSE} values or a value belonging to a finite set (a factor). Multilabel datasets (MLDs) can also be stored in an R \code{data.frame}, but an additional structure to know which attributes are output labels is needed. Moreover, this kind of datasets have many specific characteristics that do not exist in the traditional ones. The average number of labels per instance, the imbalance ratio for each label, the number of labelsets (sets of labels assigned to each row) and their frequencies, and the level of concurrence among imbalanced labels are some of the traits that differentiate an MLD from the others.
+
+Until now, most of the software to work with MLDs has been written in Java. The two best known frameworks are MULAN \cite{MULAN} and MEKA \cite{MEKA}. Both rely on WEKA, since \textcolor{highlight}{it offers a large variety of binary and multiclass classifiers, as well as the functions needed to deal with ARFF (\textit{Attribute-Relation File Format}) files}. Most of the existent MLDs are stored in ARFF format. MULAN and MEKA provide the specialized tools needed to deal with multilabel ARFFs, and the infrastructure to build multilabel classifiers (MLCs). Although R can access WEKA services through the \CRANpkg{RWeka} \cite{RWeka} package, handling MLDs is far from an easy task. This has been the main motivation behind the \pkg{mldr} package development. \textcolor{highlight}{In the best of our knowledge, \pkg{mldr} is the first R package aimed to ease the work with multilabel data.}
+
+The \pkg{mldr} package aims to provide the user with the functions needed to perform exploratory analysis over MLDs, stating their main traits both statistically and visually. Moreover, it also brings the proper tools to manipulate this kind of datasets, including the application of the most common transformation methods\textcolor{highlight}{, BR (\textit{Binary Relevance}) and LP (\textit{Label Powerset}), that will be described in the following section}. These would be the foundation for processing the MLDs with traditional classifiers, as well as for developing new multilabel algorithms.
+
+The \pkg{mldr} package does not depend on the \pkg{RWeka} package and it is not linked to MULAN nor MEKA. It has been designed to allow reading both MULAN and MEKA MLDs, but without any external dependencies. In fact, it would be possible to load MLDs stored in other file formats, as well as creating them from scratch. The package will \textcolor{highlight}{create for} the user an \code{"mldr"} object, containing the data in the MLD and also a large set of measures obtained from it. The functions provided by the package ease the access to this information, produce some specific plots, and make possible the manipulation of \textcolor{highlight}{its} content. A web-based user interface, developed using the \CRANpkg{shiny} \cite{shiny} package, puts the exploratory analysis tools of the \pkg{mldr} package at the fingertips of all users, even those which have little experience using R.
+
+In the following section the foundations related to MLDs and MLC will be briefly introduced. After that, the structure of the \pkg{mldr} package and the operations it provides will be explained. Finally, the user interface provided by \pkg{mldr} to ease exploratory analysis tasks over MLDs will be shown. \textcolor{highlight}{All code displayed in this paper is available in a vignette, accessible by loading the \pkg{mldr} package and entering \code{vignette("mldr")}.}
+
+\section{Working with multilabel datasets}
+MLDs are generated from text documents \cite{enron}, sets of images \cite{corel5k}, music collections, and protein attributes \cite{genbase}, among other sources. For each sample a set of features (input attributes) is collected, and a set of labels (the output labelset) is assigned. Usually there are several hundreds or even thousands of attributes, and it is not rare that a MLD has more labels than features. Some MLDs have only a few labels per instance, while others have dozens of them. In some MLDs the number of label combinations (labelsets) is quite short, whereas in others it can be very large. Most MLDs are imbalanced, which means that some labels are very frequent while others are scarcely represented. The labels in an MLD can be correlated or not. Moreover, frequent labels and rare labels can appear together in the same instances.
+
+As can be seen, a lot of different scenarios can be found depending on the MLD characteristics. This is the reason why several specific measures have been designed to assess MLD traits \cite{Tsoumakas3}, since they can have a serious impact into the MLCs performance. The two subsections below introduce several of these measures and some of the approaches followed to face multilabel classification.
+
+\subsection{Multilabel dataset traits}
+The most common characterization measures for MLDs can be grouped into four categories, as depicted in Figure \ref{Taxonomy}.
+
+\begin{figure}[htbp]
+\centering
+\tikzset{
+  basic/.style  = {draw, text width=2cm, font=\sffamily, rectangle},
+  root/.style   = {basic, rounded corners=2pt, thin, align=center, fill=gray!60, text width=18em},
+  level 2/.style = {basic, rounded corners=6pt, thin,align=center, fill=gray!40, text width=8em},
+  level 3/.style = {basic, thin, align=left, fill=gray!10, text width=6.4em, font=\scriptsize}
+}
+\begin{tikzpicture}[
+  level 1/.style={sibling distance=35mm},
+  edge from parent/.style={->,draw},
+  >=latex]
+
+\node[root] {Characterization measures for MLDs}
+  child {node[level 2] (c1) {Basic measures}}
+  child {node[level 2] (c2) {Measuring label distribution}}
+  child {node[level 2] (c3) {Relationship among labels}}
+  child {node[level 2] (c4) {Imbalance level measures}};
+
+\begin{scope}[every node/.style={level 3}]
+\node [below of = c1,  xshift=5pt] (c11) {\#Attributes};
+\node [below of = c11] (c12) {\#Samples};
+\node [below of = c12] (c13) {\#Labels};
+\node [below of = c13] (c14) {\#Labelsets};
+
+\node [below of = c2] (c21) {Card};
+\node [below of = c21] (c22) {Dens};
+\node [below of = c22] (c23) {Frequency};
+
+\node [below of = c3] (c31) {\#UniqLabelsets};
+\node [below of = c31] (c32) {SCUMBLE};
+\node [below of = c32] (c33) {MostFreqLabelset};
+
+\node [below of = c4] (c41) {MaxIR};
+\node [below of = c41] (c42) {MeanIR};
+\node [below of = c42] (c43) {CV};
+\node [below of = c43] (c44) {IRperLabel};
+\end{scope}
+
+\foreach \value in {1,...,4}  \draw[->] (c1.190) |- (c1\value.west);
+\foreach \value in {1,...,3}  \draw[->] (c2.190) |- (c2\value.west);
+\foreach \value in {1,...,3}  \draw[->] (c3.190) |- (c3\value.west);
+\foreach \value in {1,...,4}  \draw[->] (c4.190) |- (c4\value.west);
+\end{tikzpicture}
+\caption{Characterization measures taxonomy.}
+\label{Taxonomy}
+\end{figure}
+
+The most basic information that can be obtained from an MLD is the number of instances, attributes and labels. Being $D$ any MLD containing $|D|$ instances, any instance $D_i, i \in \{1..|D|\}$ will be the union of a set of attributes and a set of labels ($X_i$, $Y_i$), $X_i \in X^1\times X^2\times \dots\times X^f, Y_i \subseteq L$, where $f$ is the number of input features and $X^j$ is the space of possible values for the $j$-th attribute, $j \in \{1..f\}$. $L$ being the full set of labels used in $D$, $Y_i$ could be any \textcolor{highlight}{subset} of items in $L$. Therefore, theoretically the number of potential labelsets could be $2^{|L|}$. In practice this number tends to be limited by $|D|$.
+
+Each instance $D_i$ has an associated labelset, whose length (number of active labels) can be in the range \{0..$|L|$\}. The average number of active labels per instance is the most basic measure of any MLD, usually known as \textit{Card} (standing for cardinality). It is calculated as shown in Equation \ref{Card}. Dividing this measure by the number of labels in $L$, as shown in Equation \ref{Dens}, results in a dimension-less measure, known as \textit{Dens} (standing for label density).
+
+\begin{equation} Card(D) = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} |Y_i| . \label{Card}\end{equation}
+
+\begin{equation} Dens(D) = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} \frac{|Y_i|}{|L|} . \label{Dens}\end{equation}
+
+Most multilabel datasets are imbalanced, meaning that some of the labels are very frequent whereas others are quite rare. \textcolor{highlight}{The level of imbalance of a determinate label can be measured by the imbalance ratio, $IRLbl$, defined in Equation \ref{IRLbl}}. To know how much imbalance there is in $D$, the $MeanIR$ measure \cite{Charte:Neucom13} is calculated as the \textcolor{highlight}{mean imbalance ratio among all labels}, as shown in Equation \ref{MeanIR}. \textcolor{highlight}{In order to know the significance of this last measure, the standard CV (\textit{Coefficient of Variation, Equation \ref{CV}}) can be used.}
+
+\newcommand{\opA}{\mathop{\vphantom{\sum}\mathchoice
+		{\vcenter{\hbox{\normalsize argmax}}}
+		{\vcenter{\hbox{\Large argmax}}}{\mathrm{argmax}}{\mathrm{argmax}}}\displaylimits}
+\begin{equation} \textit{IRLbl(\textcolor{highlight}{y})} =
+	\frac{
+		\displaystyle\opA\limits_{\textcolor{highlight}{\textcolor{highlight}{y}'\in L}}
+		\left(\displaystyle\sum\limits_{i=1}^{|D|}{h(\textcolor{highlight}{y}', Y_i)}\right)
+	}
+	{
+		\displaystyle\sum\limits_{i=1}^{|D|}{h(\textcolor{highlight}{y}, Y_i)}},
+	\hspace{0.3cm}h(\textcolor{highlight}{y}, Y_i) =
+	\begin{cases}
+		1 & \textcolor{highlight}{y} \in Y_i \\
+		0 & \textcolor{highlight}{y} \notin Y_i
+	\end{cases} .
+	\label{IRLbl}\end{equation}
+
+\begin{equation}
+	\textit{MeanIR} = \frac{1}{|L|} \displaystyle\sum\limits_{\textcolor{highlight}{y\in L}}(\textit{IRLbl(\textcolor{highlight}{y})}) .
+	\label{MeanIR}\end{equation}
+
+\color{highlight}
+\begin{equation}
+    \textit{CV} = \frac{\textit{IRLbl}\sigma}{\textit{MeanIR}},~ \label{CV}
+           \textit{IRLbl}\sigma = \sqrt{
+                   \displaystyle\sum\limits_{y=Y_1}^{Y_{|Y|}}{
+                       \frac{\textit{(IRLbl(y) - MeanIR)}^2}{|Y|-1}
+                    }
+                 }
+\end{equation}
+\color{black}
+
+The number of different labelsets, as well as \textcolor{highlight}{the amount of them being} unique labelsets (appearing only once in $D$), give us a glimpse on how sparsely the labels are distributed. The labelsets by themselves allow \textcolor{highlight}{to know} how the labels in $L$ are related. A very frequent labelset denotes that the labels in it tend to appear jointly in $D$. The $SCUMBLE$ measure, introduced in \cite{Charte:HAIS14} and shown in Equation \ref{SCUMBLE}, is used to assess the concurrence level among frequent and infrequent labels.
+
+\begin{equation}
+  \textit{SCUMBLE}_{ins}(i) =
+     1 - \frac{1}{\overline{IRLbl_i}}(\prod\limits_{l=1}^{|L|} IRLbl_{il})^{(1/|L|)}
+\label{SCUMBLEIns}
+\end{equation}
+
+\begin{equation}
+  \textit{SCUMBLE(D)} = \frac{1}{|D|}
+   \displaystyle\sum\limits_{i=1}^{|D|} \textit{SCUMBLE}_{ins}(i)
+\label{SCUMBLE}
+\end{equation}
+
+Besides the aforementioned, there are some other interesting traits that can be indirectly obtained from the previous measures, such as the ratio between input features and output labels, the maximum \textit{IRLbl}, or the coefficient of variation in the imbalance levels, among others.
+
+Although the raw numbers given by these calculations describe the nature of any multilabel dataset to a good level, in general a visualization of its characteristics would be desirable to ease its interpretation by researchers.
+
+The information obtained from the previous measures depicts the characteristics of the dataset\textcolor{highlight}{. This data, along with other factors such as the loss function used by the classifier, would help in choosing} the most proper algorithm to learn from it and, in the future, make predictions on new data. Traditional classification models, such as trees and support vector machines, are designed to give only one output as result. Multilabel classification can mainly be faced through two different approaches:
+\subsection{Multilabel classification}
+\begin{itemize}
+	\item \textbf{Algorithm adaptation}: The goal is to modify existent algorithms taking into account the multilabel nature of the samples, for instance hosting more than one class in the leaves of a tree instead of only one.
+
+	\item \textbf{Problem transformation}: This approach transforms the original data to make it suitable to traditional classification algorithms, then combines the obtained predictions to build the labelsets given as output result.
+\end{itemize}
+
+Although several transformation methods have been defined in the specialized literature, there are two among them that stand out \textcolor{highlight}{because they are the foundation for many others}:
+\begin{itemize}
+	\item \textbf{Binary Relevance} (BR): Introduced by \cite{Godbole} \textcolor{highlight}{ as an adaptation of OVA (\textit{one-vs-all}) to the multilabel scenario}, this method transforms the original multilabel dataset into several binary datasets, as many as different labels there are. This way any binary classifier can be used, joining their individual predictions to generate the final output.
+
+	\item \textbf{Label Powerset} (LP): Introduced by \cite{Boutell}, this method transforms the multilabel dataset into a multiclass dataset by using the labelset of each instance as class identifier. Any multiclass classifier can be used, transforming back the predicted class into a labelset.
+\end{itemize}
+
+BR and LP have been used not only as a direct technique to implement multilabel classifiers, but also as base methods to build more sophisticated algorithms. Several ensembles of binary classifiers \textcolor{highlight}{relying on BR} have been proposed, such as CC \textcolor{highlight}{(\textit{Classifier Chains})} or ECC \textcolor{highlight}{(\textit{Ensemble of Classifier Chains})}, both by \cite{Read}. The same is applicable to the LP transformation, foundation of ensemble multilabel classifiers such as RAkEL \textcolor{highlight}{(Random k-Labelsets for Multi-Label Classification,  \cite{RAKEL})} and \textcolor{highlight}{EPS (Ensemble of Pruned Sets, \cite{read2008multi})}.
+
+For the readers interested in deeper knowledge, a recent review on multilabel classification has been published by \cite{Zhang:2013}.
+
+\section{The \pkg{mldr} package}
+R is among the most used tools when it comes to performing data mining tasks, including binary and multiclass classification. However, the work with MLDs in R is not as easy as it is with classic datasets. This is the main motivation behind the development of the \pkg{mldr} package, whose goals and functionality are described in this section.
+
+\subsection{Main goals of the \pkg{mldr} package}
+When we planned the development of this package, our main objective was to ease the exploration of MLDs from R. This included loading existent MLDs in different formats, as well as obtaining from them all the available information. These functions should be available to everyone, even to users not used to the R command line but to GUIs \textcolor{highlight}{(\textit{Graphic User Interfaces})} such \textcolor{highlight}{as \CRANpkg{Rcmdr} (aka \textit{R Commander}, \cite{rcmdr}) or \CRANpkg{rattle} \cite{rattle}}.
+
+At the same time, we aimed to include the tools needed to manipulate the MLDs, apply filters and transformations, and also the possibility of loading MLDs from alternative file formats, as well as to creating them from scratch. This functionality, directed to more experienced R users, opens the doors to implement other algorithms on top of \pkg{mldr}, for instance preprocessing methods or multilabel classifiers.
+
+\subsection{Installing and loading the \pkg{mldr} package}
+The \pkg{mldr} package is available at CRAN servers, therefore it can be installed as any other package, \textcolor{highlight}{by} simply typing:
+<<install, eval = FALSE>>=
+install.packages("mldr")
+@
+
+\pkg{mldr} depends on three R packages: \CRANpkg{XML} \cite{XML}, \CRANpkg{circlize} \cite{circlize} and \pkg{shiny}. The first one allows reading XML \textcolor{highlight}{(\textit{eXtensible Markup Language})} files, the second one is used to generate a specific type of plot (described below), and the third one is the base of \textcolor{highlight}{its} user interface.
+
+Older releases of \pkg{mldr}, as well as the development version, are available at \url{http://github.com/fcharte/mldr}. It is possible to install the development version using the \code{install\_github()} function from \CRANpkg{devtools}.
+
+Once installed, the package has to be loaded before it can be used. This can be done through the \code{library()} or \code{require()} functions, as usual. After loading the package three sample MLDs will be available: \code{birds}, \code{emotions} and \code{genbase}. These are included into the \file{birds.rda}, \file{emotions.rda} and \file{genbase.rda} files, which are lazily loaded along with the package.
+
+The \pkg{mldr} package uses its own internal representation for MLDs, which are assigned the \code{"mldr"} class. Inside an \code{"mldr"} object, such as the previous mentioned \code{emotions} or \code{birds}, both the data in the MLD and all the information obtained from this data can be found.
+
+\subsection{Loading and creating MLDs}
+Besides the three \textcolor{highlight}{sample} MLDs included in the package, the \code{mldr()} function allows \textcolor{highlight}{to load} any MLD stored in MULAN or MEKA file formats. Assuming that the files \file{corel5k.arff} and \file{corel5k.xml}, which hold the Corel5k \cite{corel5k} MLD in MULAN format, are in the current directory, the loading will be done as follows:
+<<mld_load, eval = FALSE>>=
+corel5k <- mldr("corel5k")
+@
+
+\color{highlight}If the XML file is not available, it is possible to indicate just the number of labels in the MLD instead. In this case, the function assumes that the labels are at the end of the list of features. For instance:
+
+<<mld_load_k, eval = FALSE>>=
+corel5k <- mldr("corel5k", label_amount = 374)
+@
+\color{black}
+
+Loading an MLD in MEKA file format is equally easy. In this case there is not an XML file with label information, but a special header inside the ARFF file, a fact that will be indicated to \code{mldr()} with the \code{use\_xml} parameter:
+
+<<mld_load_meka, eval = FALSE>>=
+imdb <- mldr("imdb", use_xml = FALSE)
+@
+
+In all cases the result, as long as the MLD can be correctly loaded and parsed, will be a new \code{"mldr"} object ready to use.
+
+If the MLD we are interested in is not in MULAN or MEKA format, firstly it will have to be loaded in a \code{data.frame}, for instance using functions such as \code{read.csv()}, \code{read.table()} or a more specialized reader, and secondly this \code{data.frame} and an integer vector stating the indices of the labels inside it \textcolor{highlight}{will} be given to the \code{mldr\_from\_dataframe()} function. This is a general function for creating an \code{"mldr"} object from any \code{data.frame}, so it can also be used to generate new MLDs on the fly, as shown in the following example:
+
+<<custom_mld, eval = FALSE>>=
+df <- data.frame(matrix(rnorm(1000), ncol = 10))
+df$Label1 <- c(sample(c(0,1), 100, replace = TRUE))
+df$Label2 <- c(sample(c(0,1), 100, replace = TRUE))
+mymldr <- mldr_from_dataframe(df, labelIndices = c(11, 12), name = "testMLDR")
+@
+
+This will assign to \code{mymldr} an MLD, named \code{testMLDR}, with 10 input attributes and 2 labels.
+
+\subsection{Obtaining information from an MLD}
+After loading any MLD, a quick summary of its main characteristics can be obtained by means of the usual \code{summary()} function, as shown below:
+
+<<summary>>=
+summary(birds)
+@
+
+Any of these measures can be individually obtained through the \code{measures} member of the \code{"mldr"} class, like this:
+<<measures>>=
+emotions$measures$num.attributes
+genbase$measures$scumble
+@
+
+Full information about the labels in the MLD, including the number of times they appear, their \textit{IRLbl} and \textit{SCUMBLE} measures, can be retrieved \textcolor{highlight}{by} using the \code{labels} member of the \code{"mldr"} class:
+
+<<labels>>=
+birds$labels
+@
+
+The same is applicable for labelsets and attributes, by means of the \code{labelsets} and \code{attributes} members of the class.
+
+To access the MLD content, attributes and label values, the \code{print()} function can be used, as well as the \code{dataset} member of the \code{"mldr"} object.
+
+\subsection{Plotting functions}
+Exploratory analysis of MLDs can be tedious, since most of them have thousands of attributes and hundreds of labels. The \pkg{mldr} package provides a \code{plot()} function specific for dealing with \code{"mldr"} objects, allowing the generation of several specific types of plots. The first parameter given to \code{plot()} must be an \code{"mldr"} object, while the second one specifies the type of plot to be produced.
+
+<<plot, fig.width=4, fig.height=4>>=
+plot(emotions, type = "LH")
+@
+
+There are seven different types of plots available: three histograms showing relations between instances and labels, two bar plots with similar aim, a circular plot indicating types of attributes and a concurrence plot for labels. \textcolor{highlight}{All} of them are shown in the following code:
+
+<<plot_layout, fig.width=8, fig.height=11>>=
+layout(matrix(c(1,1,6,1,1,3,5,5,3,2,4,7), 4, 3, byrow = TRUE))
+
+plot(emotions, type = "LC")
+plot(emotions, type = "LH")
+plot(emotions, type = "LB")
+plot(emotions, type = "CH")
+plot(emotions, type = "LSB")
+plot(emotions, type = "AT")
+plot(emotions, type = "LSH")
+@
+
+The label histogram (type \code{"LH"}) relates labels and instances in a way that shows how well-represented labels are in general. The X axis is assigned to the number of instances and the Y axis to the amount of labels. This means that if a great number of labels are appearing in very few instances, all data will concentrate on the left side of the plot. On the contrary, if labels are generally present in many instances, data will tend to accumulate on the right side. This plot shows imbalance of labels when there is data accumulated on both sides of the plot, which implies that many labels are underrepresented and a large amount are overrepresented as well.
+
+The labelset histogram (named \code{"LSH"}) is similar to the former in a way. However, instead of representing the number of \textcolor{highlight}{instances in which each label appears}, it shows the amount of labelsets. This indicates quantitatively whether labelsets repeat consistently or not among instances.
+
+The label and labelset bar plots display exactly the number of instances for each one of the labels and labelsets, respectively. Their codes are \code{"LB"} for the label bar plot and \code{"LSB"} for the labelset one.
+
+The cardinality histogram (type \code{"CH"}) represents the amount of labels instances have in general, therefore data accumulating on the right side of the plot will mean that instances do have a notable amount of labels, whereas data concentrating on the left side shows the opposite situation.
+
+The attribute types plot (named \code{"AT"}) is a pie chart displaying the number of labels, numeric attributes and finite set (character) attributes, thus showing the proportions between these types of attributes to ease the comprehension about the amount of input information and that of output data.
+
+The concurrence plot is the default one, with type \code{"LC"}, and responds to the need of exploring interactions among labels, and specifically between majority and minority ones. This plot has a circular shape, with the circumference partitioned into several disjoint arcs representing labels. Each arc has length proportional to the number of instances where the label is present. These arcs are in turn divided into bands that join two of them, showing the relation between the corresponding labels. The width of each band indicates the strength of the relation, since it is proportional to the number of instances in which both labels appear simultaneously. In this manner, a concurrence plot can show whether imbalanced labels appear frequently together, a situation which could limit the possible improvement of a preprocessing technique \cite{Charte:HAIS14}.
+
+Since drawing interactions among lots of labels can produce a confusing result, this last type of plot accepts more parameters: \code{labelCount}, which accepts an integer that will be used to generate the plot with that number of labels chosen at random; and \code{labelIndices}, which allows to indicate exactly the indices of the labels to be displayed in the plot. For example, in order to plot relations among the first eleven labels of \code{genbase}:
+
+<<plot_lc_custom, fig.width=4, fig.height=4>>=
+plot(genbase, labelIndices = genbase$labels$index[1:11])
+@
+
+\subsection{Transforming and filtering functions}
+
+Manipulation of datasets is a crucial task in multilabel classification. Since transformation is one of the main approaches to tackle the problem, both BR and LP transformations are implemented in \pkg{mldr}. They can be obtained by \textcolor{highlight}{means of} the \code{mldr\_transform} function, which accepts an \code{"mldr"} object as first parameter, the type of transformation, \code{"BR"} or \code{"LP"}, as second, and an optional vector of label indices to be included in the transformation as last argument:
+
+<<transforms>>=
+emotionsbr <- mldr_transform(emotions, type = "BR")
+
+emotionslp <- mldr_transform(emotions, type = "LP", emotions$labels$index[1:4])
+@
+
+The BR transformation will return a list of \code{data.frame} objects, each one of them using one of the labels as class, whereas the LP transformation will return a single \code{data.frame} representing a multiclass dataset using each labelset as a class. Both of these transformations can be directly used in order to apply binary and multiclass classification algorithms, or even implement new ones.
+
+<<transf_eval, eval = FALSE>>=
+emo_lp <- mldr_transform(emotions, "LP")
+library(RWeka)
+classifier <- IBk(classLabel ~ ., data = emo_lp, control = Weka_control(K = 10))
+evaluate_Weka_classifier(classifier, numFolds = 5)
+@
+
+A filtering utility is included in the package as well. Using it is intuitive, since it can be called with the square bracket operator \code{[}. This allows to partition an MLD or filter it according to a logical condition.
+
+<<filter>>=
+emotions$measures$num.instances
+emotions[emotions$dataset$.SCUMBLE > 0.01]$measures$num.instances
+@
+
+Combined with the joining operator, \code{+}, this can enable users to implement new preprocessing techniques that modify information in the MLD in order to improve classification results. For example, the following would be an implementation of an algorithm disabling majority labels on instances with highly imbalanced labels:
+
+<<decoupling, eval = FALSE>>=
+mldbase <- mld[.SCUMBLE <= mld$measures$scumble]
+
+# Samples with coocurrence of highly imbalanced labels
+mldhigh <- mld[.SCUMBLE > mld$measures$scumble]
+majIndexes <- mld$labels[mld$labels$IRLbl < mld$measures$meanIR,"index"]
+
+# Deactivate majority labels
+mldhigh$dataset[, majIndexes] <- 0
+joined <- mldbase + mldhigh # Join the instances without changes with the filtered ones
+@
+
+In this last example, the first two commands filter the MLD, separating instances with their \textit{SCUMBLE} lower than the mean and those with it higher. Then, the third line obtains the indices of the labels with lower \textit{IRLbl} than the mean, thus these are the majority labels of the dataset. Finally, these labels are set to 0 in the instances with high \textit{SCUMBLE} and then the two partitions are joined again.
+
+Lastly, another useful feature included in the \pkg{mldr} package is the MLD comparison with the \code{==} operator. This indicates whether both MLDs in comparison share the same structure, which would mean they have the same attributes and these would have the same type.
+
+<<equals>>=
+emotions[1:10] == emotions[20:30]
+emotions == birds
+@
+
+\subsection{Assessing multilabel predictive performance}
+Assuming that a set of predictions has been obtained for a MLD, through a set of binary classifiers, a multiclass classifier or any other algorithm, the next step would be to evaluate the classification performance. In the literature there \textcolor{highlight}{exist} more than 20 metrics for this task, and some of them are quite complex to calculate. \color{highlight}The \pkg{mldr} package provides the \code{mldr\_evaluate} function to accomplish this task, supplying  both example based and label based metrics.
+
+Multilabel evaluation metrics are grouped into two main categories: example based and label based metrics. Example based metrics are computed individually for each instance, then averaged to obtain the final value. Label based metrics are computed per label, instead of per instance. There are two approaches called \textit{micro-averaging} and \textit{macro-averaging} (described below). The output of the classifier can be a bipartition (i.e. a set of 0s and 1s denoting the predicted labels) or a ranking (i.e. a set of real values denoting the relevance of each label). For this reason, there are bipartition based and ranking based evaluation metrics for each one of the two previous categories.
+
+$D$ being the MLD, $L$ the full set of labels used in $D$, $Y_i$ the subset of predicted labels for the \textit{i-th} instance, and $Z_i$ the true subset of labels, the example/bipartition based metrics returned by \code{mldr\_evaluate} are the following:
+
+\begin{itemize}
+    \item \textbf{Accuracy}: It is defined (see Equation \ref{Accuracy}) as the proportion of correctly predicted labels with respect to the total number of labels for each instance.
+
+		\begin{equation}
+		Accuracy = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} \frac{|Y_i \cap Z_i|}{|Y_i \cup Z_i|} \label{Accuracy}
+		\end{equation}
+
+	\item \textbf{Precision}: This metric is computed as indicated in Equation \ref{Precision}, giving as result the ratio of relevant labels predicted by the classifier.
+
+    \begin{equation}
+		Precision = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} \frac{|Y_i \cap Z_i|}{|Z_i|} \label{Precision}
+		\end{equation}
+
+	\item \textbf{Recall}: It is a metric (see Equation \ref{Recall}) commonly used along with the previous one, measuring the proportion of predicted labels which are relevant.
+
+		\begin{equation}
+		Recall = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} \frac{|Y_i \cap Z_i|}{|Y_i|} \label{Recall}
+		\end{equation}
+
+	\item \textbf{F-measure}: As can be seen in Equation \ref{F1}, this metric is the harmonic mean between \textit{Precision} (see Equation \ref{Precision}) and \textit{Recall} (see Equation \ref{Recall}), providing a balanced assessment between precision and sensitivity.
+
+    \begin{equation}
+		\textit{F-Measure} = 2 * \frac{Precision * Recall}{Precision + Recall} \label{F1}
+		\end{equation}
+
+	\item \textbf{Hamming Loss}: It is the most common evaluation metric in multilabel literature, computed (see Equation \ref{HL}) as the simmetric difference between predicted and true labels and divided by the total number of labels in the MLD.
+
+		\begin{equation}
+		HammingLoss = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} \frac{|Y_i \Delta Z_i|}{|L|}  \label{HL}
+		\end{equation}
+
+	\item \textbf{Subset Accuracy}: This metric is also known as \textit{0/1 Subset Accuracy} and \textit{Classification Accuracy}, and it is the most strict evaluation metric. The $\llbracket expr \rrbracket$ operator (see Equation \ref{SubsetAccuracy}) returns 1 when $expr$ is truthy and 0 otherwise, in this case its value is 1 only if the predicted set of labels equals to the true one.
+
+		\begin{equation}
+		SubsetAccuracy = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} \llbracket Y_i = Z_i \rrbracket \label{SubsetAccuracy}
+		\end{equation}
+\end{itemize}
+
+Let $rank(x_i, y)$ be a function returning the position of $y$, a certain label, in the $x_i$ instance.  The example/ranking based evaluation metrics returned by the \code{mldr\_evaluate} function are the following ones:
+
+\begin{itemize}
+    \item \textbf{Average Precision}: This metric (see Equation \ref{AveragePrecision}) computes the proportion of labels ranked ahead of a certain relevant label. The goal is to establish how many positions have to be traversed until this label is found.
+
+		\begin{equation}
+		\textit{AveragePrecision} = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} \frac{1}{|Y_i|} 	\displaystyle\sum\limits_{y \in Y_i}
+			\frac{|\{y'\in Y_i : rank(x_i, y') \leq rank(x_i, y) \}|}{rank(x_i, y)}
+		\label{AveragePrecision}
+		\end{equation}
+
+	\item \textbf{Coverage}: Defined as indicated in Equation \ref{Coverage}, this metric calculates the extent to which it is necessary to go up in the ranking to cover all relevant labels.
+
+		\begin{equation}
+		\textit{Coverage} = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|}
+				\displaystyle\opA\limits_{y \in Y_i} \langle rank(x_i, y) \rangle - 1
+        \label{Coverage}
+		\end{equation}
+
+	\item \textbf{One Error}: It is a metric (see Equation \ref{OneError}) which determines how many times the best ranked label given by the classifier is not part of the true label set of the instance.
+
+		\begin{equation}
+		\textit{OneError} = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} \left\llbracket \left[\opA\limits_{y \in Z_i} \langle rank(x_i, y) \rangle \notin Y_i\right] \right\rrbracket \label{OneError}
+		\end{equation}
+
+	\item \textbf{Ranking Loss}: This metric (see Equation \ref{RankingLoss}) compares each pair of labels in $L$, computing how many times a relevant label (member of the true labelset) appears ranked lower than a non-relevant label. In the equation, $\overline{Y_i}$ is notation for $L\backslash Y_i$.
+
+		\begin{equation}\small
+		\textit{RankingLoss} = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|}  \frac{1}{|Y_i||\overline{Y_i}|}
+				\left|\left\{(y_a, y_b) \in Y_i \times \overline{Y_i}: rank(x_i, y_a) > rank(x_i, y_b) \right\}\right|
+		\label{RankingLoss}
+		\end{equation}
+\end{itemize}
+
+Regarding the label based metrics, there are two different ways to aggregate the values of the labels. The macro-averaging approach (see Equation \ref{MacroB}) computes the metric independently for each label, then averages the obtained values to get the final measure. On the contrary, the micro-averaging approach (see Equation \ref{MicroB}) first agregate the counters for all the labels, the computes the metric only once. In these equations \textit{TP}, \textit{FP}, \textit{TN} and \textit{FN} stand for \textit{True Positives}, \textit{False Positives}, \textit{True Negatives} and \textit{False Negatives}, respectively.
+
+    \begin{equation}
+    MacroMetric = \frac{1}{|L|} \sum\limits_{l=1}^{|L|}evalMetric(TP_l,FP_l,TN_l,FN_l) \label{MacroB}
+    \end{equation}
+
+    \begin{equation}
+    MicroMetric = evalMetric(\sum\limits_{l=1}^{|L|}TP_l,\sum\limits_{l=1}^{|L|}FP_l,\sum\limits_{l=1}^{|L|}TN_l,\sum\limits_{l=1}^{|L|}FN_l) \label{MicroB}
+    \end{equation}
+
+All the bipartition based metrics, such as \textit{Precision}, \textit{Recall} or \textit{FMeasure}, can be computed as label based measures following these two approaches. In this category, there are as well some ranking based metrics, such as \textit{MacroAUC} (see Equation \ref{MacroAUC}) and \textit{MicroAUC} (Equation \ref{MicroAUC}).
+
+    \begin{equation}
+    \begin{split}
+    MacroAUC = \frac{1}{|L|} \sum\limits_{l=1}^{|L|} \frac{|\{x', x'' : rank(x', y_l) \ge rank(x'', y_l), (x', x'') \in X_l \times \overline{X_l} \}|}{|X_l||\overline{X_l}|}, \\
+     X_l = \{ x_i : y_l \in Y_i\}, \overline{X_l} = \{x_i : y_l \notin Y_i\}
+    \label{MacroAUC}
+    \end{split}
+    \end{equation}
+
+
+    \begin{equation}\small
+    \begin{split}
+    MicroAUC = \frac{|\{x', x'', y', y'' : rank(x', y') \ge rank(x'', y''), (x', y') \in S^+ , (x'', y'') \in S^-  \}|}{|S^+||S^-|}, \\
+     S^+ = \{ (x_i, y) : y \in Y_i\}, S^- = \{ (x_i, y) : y \notin Y_i\}
+    \label{MicroAUC}
+    \end{split}
+    \end{equation}
+
+
+\color{black}
+\textcolor{highlight}{When} the partition of the MLD for which the predictions have been obtained and the predictions themselves \textcolor{highlight}{are given to} the \code{mldr\_evaluate} function, a list of 20 measures \textcolor{highlight}{is returned}. For instance:
+
+<<evaluation>>=
+# Get the true labels in emotions
+predictions <- as.matrix(emotions$dataset[,emotions$labels$index])
+# and introduce some noise
+predictions[sample(1:593, 100),sample(1:6, 100, replace = TRUE)] <- sample(0:1, 100,
+  replace = TRUE)
+# then evaluate the predictive performance
+res <- mldr_evaluate(emotions, predictions)
+str(res)
+@
+<<eval_plot, eval = FALSE>>=
+plot(res$ROC, main = "ROC curve for emotions") # Plot ROC curve
+@
+
+If the \CRANpkg{pROC} \cite{pROC} package is available, this list will include non-null AUC \textcolor{highlight}{(\textit{Area Under the ROC Curve})} measures and also a member called \code{ROC}. The latter holds the information needed to plot the ROC \textcolor{highlight}{(\textit{Receiver Operating Characteristic})} curve, as shown in the last line of the previous example. The result would be a plot similar to
+that in the Figure \ref{figure:RocCurve}.
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\linewidth]{RocCurve}
+\caption{ROC curve plot with the data returned by \code{mldr\_evaluate}.}
+\label{figure:RocCurve}
+\end{figure}
+
+
+\section{The \pkg{mldr} user interface}
+
+This package provides the user with a web-based graphic user interface on top of \pkg{shiny}, allowing to interactively manipulate measurements and obtain graphics and other results. Once \pkg{mldr} is loaded, this GUI can be launched from the R console with a single command:
+
+<<gui, eval = FALSE>>=
+mldrGUI()
+@
+
+This will cause the user's default browser to start or open a new tab in which the GUI will be displayed, organized into a tab bar and a content pane. The tab bar allows the change of section so that different information is shown in the pane.
+
+The GUI will initially display the Main section, as shown in Figure \ref{figure:guimain}. It contains options able to select an MLD between those available, and load a new one by uploading its ARFF and XML files onto the application. On the right side, several plots are stacked. These show the amount of attributes of each type (numeric, character or label), the amount of labels per instance, the amount of instances corresponding to labels and the number of instances related to labelsets. Each plot can be saved as an image into the filesystem. Right below these graphics, some tables containing basic measures are shown. The first one lists generic measures related to the entire MLD, and is followed by measures specific to labels, such as \textit{Card} or \textit{Dens}. The last table shows a summary of measures for labelsets.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\linewidth]{mldrGUI_main_crop}
+\caption{Main page of the shiny based user interface.}
+\label{figure:guimain}
+\end{figure}
+
+The Labels section contains a table enumerating each label of the MLD with its relevant details and measures: its index in the attribute list, its count and frequency, its \textit{IRLbl} and its \textit{SCUMBLE}. Labels in this table can be reordered using the headers, and filtered by the Search field. Furthermore, if the list is longer than the number specified in the Show field, it will be splitted into several pages. The data shown in all tables can be exported to files in several formats. On the right side, a plot shows the amount of instances that have each label. This is an interactive plot, and allows the range of labels to be manipulated.
+
+Since relations between labels can determine the behavior of new data, studying labelsets is important in multilabel classification. Thus, the section named Labelsets provides information about them, listing each labelset along with its count. This list can be filtered and splitted into pages as well, and is accompanied by a bar plot showing the count of instances per labelset.
+
+In orde\textcolor{highlight}{r} to obtain statistical measures about input attributes, the Attributes section organizes all of them into a paged table, displaying their type and some data or measures according to it. If the attribute is numeric, then there will be a table containing its minimum and maximum values, its quartiles and its mean. On the contrary, if the attribute takes values from a finite set, each possible value will be shown along with its count in the MLD.
+
+Lastly, concurrence among labels is provenly a factor to take into account when applying preprocessing techniques to MLDs. For this reason, the Concurrence section attempts to create an easy way of visualizing concurrence among labels (see Figure \ref{figure:guiconcurrence}), with a label concurrence plot displaying the selected labels in the left-side table and their coocurrences represented by bands in the circle. By default, the ten labels with higher \textit{SCUMBLE} are selected. The user will be able to select and deselect other labels by clicking their corresponding row on the table.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.75\linewidth]{mldrPlot}
+  \caption{The plots can be customized and saved.}
+  \label{figure:guiconcurrence}
+\end{figure}
+
+% \CRANpkg{shiny}
+
+\section{Summary}
+In this paper the \pkg{mldr} package, aimed to provide exploratory analysis and manipulation tools for MLDs, has been introduced. The functions supplied by this package allow both loading existent MLDs and generating new ones. Several characterization measures and specific plots can be obtained for any MLD, and its content can be extracted, filtered and joined, producing new MLDs. Any MLD can be transformed in a set of binary datasets or a multiclass dataset by mean of the transformation function of \pkg{mldr}. Finally, a web-based user interface eases the access to most of this functionality for everyone.
+
+In its current version, \pkg{mldr} is a strong base to develop any preprocessing method for MLDs, as has been shown in a previous section. The development of the \pkg{mldr} package will continue in the near future by including the tools needed to implement and evaluate multilabel classifiers. With this foundation, we aim to encourage other developers to incorporate their own algorithms into \pkg{mldr}, as we will do in forthcoming releases.
+
+\section{Acknowledgment}
+This paper is partially supported by the project TIN2012-33856 of the Spanish Ministry of Science and Technology.
+
+\begin{thebibliography}{21}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Boutell et~al.(2004)Boutell, Luo, Shen, and Brown]{Boutell}
+M.~Boutell, J.~Luo, X.~Shen, and C.~Brown.
+\newblock {Learning multi-label scene classification}.
+\newblock \emph{Pattern Recognition}, 37\penalty0 (9):\penalty0 1757--1771,
+  2004.
+\newblock ISSN 00313203.
+\newblock \doi{10.1016/j.patcog.2004.03.009}.
+
+\bibitem[Chang(2015)]{shiny}
+W.~Chang.
+\newblock \emph{shiny: Web Application Framework for R}, 2015.
+\newblock URL \url{http://CRAN.R-project.org/package=shiny}.
+\newblock R package version 0.11.
+
+\bibitem[Charte et~al.(2014)Charte, Rivera, Jesus, and Herrera]{Charte:HAIS14}
+F.~Charte, A.~Rivera, M.~J. Jesus, and F.~Herrera.
+\newblock Concurrence among imbalanced labels and its influence on multilabel
+  resampling algorithms.
+\newblock In \emph{Proc. 9th International Conference on Hybrid Artificial
+  Intelligent Systems, Salamanca, Spain, HAIS'14}, volume 8480 of \emph{LNCS},
+  2014.
+\newblock ISBN 978-3-319-07616-4.
+
+\bibitem[Charte et~al.(2015)Charte, Rivera, del Jesus, and
+  Herrera]{Charte:Neucom13}
+F.~Charte, A.~J. Rivera, M.~J. del Jesus, and F.~Herrera.
+\newblock Addressing imbalance in multilabel classification: Measures and
+  random resampling algorithms.
+\newblock \emph{Neurocomputing}, 163\penalty0 (0):\penalty0 3--16, 2015.
+\newblock ISSN 0925-2312.
+\newblock \doi{10.1016/j.neucom.2014.08.091}.
+
+\bibitem[Diplaris et~al.(2005)Diplaris, Tsoumakas, Mitkas, and
+  Vlahavas]{genbase}
+S.~Diplaris, G.~Tsoumakas, P.~Mitkas, and I.~Vlahavas.
+\newblock {Protein Classification with Multiple Algorithms}.
+\newblock In \emph{Proc. 10th Panhellenic Conference on Informatics, Volos,
+  Greece, PCI'05}, pages 448--456, 2005.
+\newblock \doi{10.1007/11573036\_42}.
+
+\bibitem[Duygulu et~al.(2002)Duygulu, Barnard, de~Freitas, and
+  Forsyth]{corel5k}
+P.~Duygulu, K.~Barnard, J.~de~Freitas, and D.~Forsyth.
+\newblock {Object Recognition as Machine Translation: Learning a Lexicon for a
+  Fixed Image Vocabulary}.
+\newblock In \emph{Proc. 7th European Conference on Computer Vision-Part IV,
+  Copenhagen, Denmark, ECCV'02}, pages 97--112, 2002.
+\newblock \doi{10.1007/3-540-47979-1\_7}.
+
+\bibitem[Fox(2005)]{rcmdr}
+J.~Fox.
+\newblock The {R} {C}ommander: A basic statistics graphical user interface to
+  {R}.
+\newblock \emph{Journal of Statistical Software}, 14\penalty0 (9):\penalty0
+  1--42, 2005.
+\newblock URL \url{http://www.jstatsoft.org/v14/i09}.
+
+\bibitem[Godbole and Sarawagi(2004)]{Godbole}
+S.~Godbole and S.~Sarawagi.
+\newblock {Discriminative Methods for Multi-Labeled Classification}.
+\newblock In \emph{Advances in Knowledge Discovery and Data Mining}, volume
+  3056, pages 22--30, 2004.
+\newblock \doi{10.1007/978-3-540-24775-3\_5}.
+
+\bibitem[Gu et~al.(2014)Gu, Gu, Eils, Schlesner, and Brors]{circlize}
+Z.~Gu, L.~Gu, R.~Eils, M.~Schlesner, and B.~Brors.
+\newblock circlize implements and enhances circular visualization in r.
+\newblock \emph{Bioinformatics}, 30:\penalty0 2811--2812, 2014.
+
+\bibitem[Hornik et~al.(2009)Hornik, Buchta, and Zeileis]{RWeka}
+K.~Hornik, C.~Buchta, and A.~Zeileis.
+\newblock Open-source machine learning: {R} meets {Weka}.
+\newblock \emph{Computational Statistics}, 24\penalty0 (2):\penalty0 225--232,
+  2009.
+\newblock \doi{10.1007/s00180-008-0119-7}.
+
+\bibitem[Klimt and Yang(2004)]{enron}
+B.~Klimt and Y.~Yang.
+\newblock {The Enron Corpus: A New Dataset for Email Classification Research}.
+\newblock In \emph{Proc. 5th European Conference on Machine Learning, Pisa,
+  Italy, ECML'04}, pages 217--226. 2004.
+\newblock \doi{10.1007/978-3-540-30115-8\_22}.
+
+\bibitem[Lang(2013)]{XML}
+D.~T. Lang.
+\newblock \emph{XML: Tools for parsing and generating XML within R and
+  S-Plus.}, 2013.
+\newblock URL \url{http://CRAN.R-project.org/package=XML}.
+\newblock R package version 3.98-1.1.
+
+\bibitem[Read and Reutemann()]{MEKA}
+J.~Read and P.~Reutemann.
+\newblock {MEKA: A Multi-label Extension to WEKA}.
+\newblock URL \url{http://meka.sourceforge.net/}.
+
+\bibitem[Read et~al.(2008)Read, Pfahringer, and Holmes]{read2008multi}
+J.~Read, B.~Pfahringer, and G.~Holmes.
+\newblock Multi-label classification using ensembles of pruned sets.
+\newblock In \emph{8th IEEE International Conference on Data Mining, 2008.
+  ICDM'08.}, pages 995--1000. IEEE, 2008.
+
+\bibitem[Read et~al.(2011)Read, Pfahringer, Holmes, and Frank]{Read}
+J.~Read, B.~Pfahringer, G.~Holmes, and E.~Frank.
+\newblock {Classifier chains for multi-label classification}.
+\newblock \emph{Machine Learning}, 85:\penalty0 333--359, 2011.
+\newblock ISSN 0885-6125.
+\newblock \doi{10.1007/s10994-011-5256-5}.
+
+\bibitem[Robin et~al.(2011)Robin, Turck, Hainard, Tiberti, Lisacek, Sanchez,
+  and M{\" u}ller]{pROC}
+X.~Robin, N.~Turck, A.~Hainard, N.~Tiberti, F.~Lisacek, J.-C. Sanchez, and
+  M.~M{\" u}ller.
+\newblock proc: an open-source package for r and s+ to analyze and compare roc
+  curves.
+\newblock \emph{BMC Bioinformatics}, 12:\penalty0 77, 2011.
+
+\bibitem[Tsoumakas and Vlahavas(2007)]{RAKEL}
+G.~Tsoumakas and I.~Vlahavas.
+\newblock Random k-labelsets: An ensemble method for multilabel classification.
+\newblock In \emph{Proc. 18th European Conference on Machine Learning, Warsaw,
+  Poland, ECML'07}, volume 4701 of \emph{LNCS}, pages 406--417, 2007.
+\newblock ISBN 978-3-540-74957-8.
+\newblock \doi{10.1007/978-3-540-74958-5\_38}.
+
+\bibitem[Tsoumakas et~al.(2010)Tsoumakas, Katakis, and Vlahavas]{Tsoumakas3}
+G.~Tsoumakas, I.~Katakis, and I.~Vlahavas.
+\newblock {Mining Multi-label Data}.
+\newblock In O.~Maimon and L.~Rokach, editors, \emph{Data Mining and Knowledge
+  Discovery Handbook}, chapter~34, pages 667--685. Springer US, Boston, MA,
+  2010.
+\newblock ISBN 978-0-387-09822-7.
+\newblock \doi{10.1007/978-0-387-09823-4\_34}.
+
+\bibitem[Tsoumakas et~al.(2011)Tsoumakas, Spyromitros-Xioufis, Vilcek, and
+  Vlahavas]{MULAN}
+G.~Tsoumakas, E.~Spyromitros-Xioufis, J.~Vilcek, and I.~Vlahavas.
+\newblock {MULAN: A Java Library for Multi-Label Learning}.
+\newblock \emph{Journal of Machine Learning Research}, 12:\penalty0 2411--2414,
+  2011.
+\newblock ISSN 1532-4435.
+
+\bibitem[Williams(2011)]{rattle}
+G.~J. Williams.
+\newblock \emph{Data Mining with {Rattle} and {R}: The art of excavating data
+  for knowledge discovery}.
+\newblock Use R! Springer, 2011.
+\newblock URL
+  \url{http://www.amazon.com/gp/product/1441998896/ref=as_li_qf_sp_asin_tl?ie=UTF8&tag=togaware-20&linkCode=as2&camp=217145&creative=399373&creativeASIN=1441998896}.
+
+\bibitem[Zhang and Zhou(2014)]{Zhang:2013}
+M.~Zhang and Z.~Zhou.
+\newblock A review on multi-label learning algorithms.
+\newblock \emph{IEEE Transanctions on Knowledge and Data Engineering},
+  26\penalty0 (8):\penalty0 1819--1837, Aug 2014.
+\newblock ISSN 1041-4347.
+\newblock \doi{10.1109/TKDE.2013.39}.
+
+\end{thebibliography}
+
+%\address{Francisco Charte\\
+%  Department of Computer Science and Artificial Intelligence\\
+%  University of Granada\\
+%  Granada\\
+%  Spain}
+%\email{fcharte@ugr.es}
+
+%\address{F. David Charte\\
+%  University of Granada\\
+%  Granada\\
+%  Spain}
+%\email{fdavidcl@correo.ugr.es}
+
+\end{document}
