@@ -15,7 +15,6 @@
 \usepackage[a4paper, top=1.5cm, bottom=1.5cm, left=2cm, right=2cm]{geometry}
 
 %% load any required packages here
-\usepackage{tikz}
 \usepackage{color}
 \usepackage{stmaryrd}
 
@@ -68,48 +67,7 @@ The most common characterization measures for MLDs can be grouped into four cate
 
 \begin{figure}[htbp]
 \centering
-\tikzset{
-  basic/.style  = {draw, text width=2cm, font=\sffamily, rectangle},
-  root/.style   = {basic, rounded corners=2pt, thin, align=center, fill=gray!60, text width=18em},
-  level 2/.style = {basic, rounded corners=6pt, thin,align=center, fill=gray!40, text width=8em},
-  level 3/.style = {basic, thin, align=left, fill=gray!10, text width=6.4em, font=\scriptsize}
-}
-\begin{tikzpicture}[
-  level 1/.style={sibling distance=35mm},
-  edge from parent/.style={->,draw},
-  >=latex]
-
-\node[root] {Characterization measures for MLDs}
-  child {node[level 2] (c1) {Basic measures}}
-  child {node[level 2] (c2) {Measuring label distribution}}
-  child {node[level 2] (c3) {Relationship among labels}}
-  child {node[level 2] (c4) {Imbalance level measures}};
-
-\begin{scope}[every node/.style={level 3}]
-\node [below of = c1,  xshift=5pt] (c11) {\#Attributes};
-\node [below of = c11] (c12) {\#Samples};
-\node [below of = c12] (c13) {\#Labels};
-\node [below of = c13] (c14) {\#Labelsets};
-
-\node [below of = c2] (c21) {Card};
-\node [below of = c21] (c22) {Dens};
-\node [below of = c22] (c23) {Frequency};
-
-\node [below of = c3] (c31) {\#UniqLabelsets};
-\node [below of = c31] (c32) {SCUMBLE};
-\node [below of = c32] (c33) {MostFreqLabelset};
-
-\node [below of = c4] (c41) {MaxIR};
-\node [below of = c41] (c42) {MeanIR};
-\node [below of = c42] (c43) {CV};
-\node [below of = c43] (c44) {IRperLabel};
-\end{scope}
-
-\foreach \value in {1,...,4}  \draw[->] (c1.190) |- (c1\value.west);
-\foreach \value in {1,...,3}  \draw[->] (c2.190) |- (c2\value.west);
-\foreach \value in {1,...,3}  \draw[->] (c3.190) |- (c3\value.west);
-\foreach \value in {1,...,4}  \draw[->] (c4.190) |- (c4\value.west);
-\end{tikzpicture}
+\includegraphics[width=0.8\linewidth]{measures-taxonomy.png}
 \caption{Characterization measures taxonomy.}
 \label{Taxonomy}
 \end{figure}
