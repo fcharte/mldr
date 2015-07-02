@@ -52,7 +52,6 @@ mldr <- function(filename,
   no_label_amount <- missing(label_amount)
 
   if (!no_filename) {
-    print("here")
     # Parameter check
     if (!is.character(filename))
       stop("Argument 'filename' must be a character string.")
@@ -92,23 +91,22 @@ mldr <- function(filename,
     #  - MEKA header
 
     if (no_label_indices) {
-      if (use_xml && no_label_names && no_label_amount) {
+      if (use_xml && no_label_amount && no_label_names) {
         # Read labels from XML file
         label_names <- read_xml(xml_file)
       }
 
-      if (use_xml || !no_label_names) {
+      if ((use_xml && no_label_amount) || !no_label_names) {
         label_indices <- which(names(attrs) %in% label_names)
       } else {
         if (no_label_amount) {
           # Read label amount from Meka parameters
           label_indices <- 1:header$toplabel
         } else {
-          label_indices <- (nrow(dataset) - label_amount + 1):nrow(dataset)
+          label_indices <- (ncol(dataset) - label_amount + 1):ncol(dataset)
         }
       }
     }
-
 
     # Convert labels to numeric
     dataset[, label_indices] <- lapply(dataset[, label_indices],
