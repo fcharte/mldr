@@ -5,6 +5,7 @@ sudo: required
 # System dependencies
 apt_packages:
  - libxml2-dev
+ - texlive-math-extra
 
 # R dependencies for mldr
 r_packages:
@@ -14,3 +15,5 @@ r_packages:
 
 # Custom settings
 warnings_are_errors: true
+
+r_build_args: --compact-vignettes=gs+qpdf

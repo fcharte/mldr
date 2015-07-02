@@ -16,6 +16,8 @@ Imports:
     XML,
     circlize
 Suggests:
-    pROC
+    pROC,
+    knitr
 License: LGPL (>= 3) | file LICENSE
 LazyData: true
+VignetteBuilder: knitr
