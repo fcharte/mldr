@@ -393,7 +393,7 @@ $D$ being the MLD, $L$ the full set of labels used in $D$, $Y_i$ the subset of p
 	\item \textbf{Hamming Loss}: It is the most common evaluation metric in multilabel literature, computed (see Equation \ref{HL}) as the simmetric difference between predicted and true labels and divided by the total number of labels in the MLD.
 
 		\begin{equation}
-		HammingLoss = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} \frac{|Y_i \Delta Z_i|}{|L|}  \label{HL}
+		HammingLoss = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} \frac{|Y_i \triangle Z_i|}{|L|}  \label{HL}
 		\end{equation}
 
 	\item \textbf{Subset Accuracy}: This metric is also known as \textit{0/1 Subset Accuracy} and \textit{Classification Accuracy}, and it is the most strict evaluation metric. The $\llbracket expr \rrbracket$ operator (see Equation \ref{SubsetAccuracy}) returns 1 when $expr$ is truthy and 0 otherwise, in this case its value is 1 only if the predicted set of labels equals to the true one.
@@ -425,7 +425,7 @@ Let $rank(x_i, y)$ be a function returning the position of $y$, a certain label,
 	\item \textbf{One Error}: It is a metric (see Equation \ref{OneError}) which determines how many times the best ranked label given by the classifier is not part of the true label set of the instance.
 
 		\begin{equation}
-		\textit{OneError} = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} \left\llbracket \left[\opA\limits_{y \in Z_i} \langle rank(x_i, y) \rangle \notin Y_i\right] \right\rrbracket \label{OneError}
+		\textit{OneError} = \frac{1}{|D|} \displaystyle\sum\limits_{i=1}^{|D|} \left\llbracket \opA\limits_{y \in Z_i} \langle rank(x_i, y) \rangle \notin Y_i \right\rrbracket \label{OneError}
 		\end{equation}
 
 	\item \textbf{Ranking Loss}: This metric (see Equation \ref{RankingLoss}) compares each pair of labels in $L$, computing how many times a relevant label (member of the true labelset) appears ranked lower than a non-relevant label. In the equation, $\overline{Y_i}$ is notation for $L\backslash Y_i$.
