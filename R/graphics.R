@@ -39,6 +39,7 @@
 #' plot(emotions, type = "LSH")
 #' }
 #' @import graphics
+#' @import grDevices
 #' @import circlize
 #' @export
 plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title = NULL, ...)  {
@@ -66,6 +67,8 @@ plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title = NULL, ..
 }
 
 # Generates a circular label concurrence plot
+#' @import grDevices
+#' @import graphics
 #' @import circlize
 labelCoocurrencePlot <- function(mld, title, labelIndices, ...) {
 
@@ -136,6 +139,8 @@ labelCoocurrencePlot <- function(mld, title, labelIndices, ...) {
 }
 
 # Generates a barplot with label counters
+#' @import grDevices
+#' @import graphics
 labelBarPlot <- function(mld, title, labelIndices, ...) {
   labels <- mld$labels[mld$labels$index %in% labelIndices, ]
 
@@ -153,6 +158,7 @@ labelBarPlot <- function(mld, title, labelIndices, ...) {
 }
 
 # Generates a histogram with label counters
+#' @import graphics
 labelHistogram <- function(mld, title, ...) {
   hist(mld$labels$count,
        breaks = length(mld$labels$count) / 3,
@@ -163,6 +169,7 @@ labelHistogram <- function(mld, title, ...) {
 }
 
 # Generates a histogram with cardinality information
+#' @import graphics
 cardinalityHistogram <- function(mld, title, ...) {
   hist(mld$dataset$.labelcount,
        breaks = max(mld$dataset$.labelcount),
@@ -172,7 +179,9 @@ cardinalityHistogram <- function(mld, title, ...) {
        ylab = "Number of instances", ...)
 }
 
-# Generates a pie chart with attribute types distribucion
+# Generates a pie chart with attribute types distribution
+#' @import grDevices
+#' @import graphics
 attributeByType <- function(mld, title, ...) {
   data <- rbind(as.data.frame(table(sapply(mld$dataset[ , mld$attributesIndexes], class))),
                 data.frame(Var1 = "label", Freq = mld$measures$num.labels))
@@ -182,6 +191,8 @@ attributeByType <- function(mld, title, ...) {
 }
 
 # Generates a barplot with labelset counters
+#' @import grDevices
+#' @import graphics
 labelsetBarPlot <- function(mld, title, ...) {
   labelsets <- mld$labelsets
   nls <- length(labelsets)
@@ -204,6 +215,7 @@ labelsetBarPlot <- function(mld, title, ...) {
 }
 
 # Generates a histogram with labelset counters
+#' @import graphics
 labelsetHistogram <- function(mld, title, ...) {
   hist(mld$labelsets,
        col = 'blue', border = 'white',
