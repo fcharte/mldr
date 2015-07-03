@@ -69,7 +69,7 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
 
   MicroROC <- NULL
   if (requireNamespace("pROC", quietly = TRUE))
-    MicroROC <- pROC::roc(unlist(trueLabels), predictions, algorithm = 3)
+    MicroROC <- pROC::roc(unlist(trueLabels), as.numeric(predictions), algorithm = 3)
 
   list(
     Accuracy         = mldr_Accuracy(counters),
@@ -213,7 +213,7 @@ mldr_MicroAUC <- function(trueLabels, predictions) {
   if (!requireNamespace("pROC", quietly = TRUE))
     NULL
   else
-    as.numeric(pROC::auc(unlist(trueLabels), unlist(predictions)))
+    as.numeric(pROC::auc(unlist(trueLabels), as.numeric(predictions)))
 }
 
 # Calculate example based AUC
