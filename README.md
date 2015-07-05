@@ -3,6 +3,7 @@ mldr
 
 [![Travis](https://img.shields.io/travis/fcharte/mldr.svg)](https://travis-ci.org/fcharte/mldr/) 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mldr)](http://cran.r-project.org/web/packages/mldr)
+[![Downloads](http://cranlogs.r-pkg.org/badges/mldr)](http://cran.rstudio.com/web/packages/mldr/index.html)
 
 Exploratory data analysis and manipulation functions for multi-label data sets along
 with an interactive Shiny application to ease their use.
