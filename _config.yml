@@ -1,5 +1,5 @@
 url: "https://fcharte.github.io/mldr"
-baseurl: /
+baseurl: /mldr/
 name: mldr
 
 markdown: kramdown
