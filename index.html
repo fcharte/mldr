@@ -1,0 +1,17 @@
+---
+layout: default
+title: blog
+---
+
+<style>.l-blog { border-bottom-color: #f5f5fa; }</style>
+
+{% for post in paginator.posts %}
+  {% assign content = post.content %}
+  {% if post.content contains '<!--more-->' %}
+		{% assign content = content | split:'<!--more-->' | first %}
+		{% assign content = content | append: '<p><a href="' | append: site.baseurl | append: post.url | append: '">Read more...</a></p>'%}
+	{% endif %}
+  {% include post.ext %}
+{% endfor %}
+
+{% include pagination.ext %}

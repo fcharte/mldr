@@ -1,0 +1,22 @@
+
+<header>
+  <div class="pure-g">
+    <div class="pure-u-1-24 pure-u-md-4-24 pure-u-lg-7-24"></div>
+    <div class="pure-u-22-24 pure-u-md-16-24 pure-u-lg-10-24">
+      <h1>mldr</h1>
+    </div>
+    <div class="pure-u-1-24 pure-u-md-4-24 pure-u-lg-7-24"></div>
+  </div>
+
+  <div class="pure-g">
+    <div class="pure-u-1-24 pure-u-md-4-24 pure-u-lg-7-24"></div>
+    <div class="pure-u-22-24 pure-u-md-16-24 pure-u-lg-10-24">
+      <nav>
+        <a href="/" class="l-blog">Blog</a>
+        <a href="https://github.com/fcharte/mldr">GitHub</a>
+        <a href="http://cran.r-project.org/web/packages/mldr/">CRAN</a>
+      </nav>
+    </div>
+    <div class="pure-u-1-24 pure-u-md-4-24 pure-u-lg-7-24"></div>
+  </div>
+</header>

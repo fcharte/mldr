@@ -1,0 +1,114 @@
+---
+---
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #f5f5fa;
+  font-family: 'Lato', Lato, sans-serif;
+}
+
+header {
+  background: #565667;
+  margin-bottom: 1.8em;
+
+  nav {
+    text-align: center;
+
+    a {
+      display: inline-block;
+      padding: .6em .8em;
+      border-bottom: .2em solid transparent;
+      color: #e0e0e0;
+      text-decoration: none;
+    }
+    a.selected {
+      border-color: #f5f5fa;
+    }
+    a:hover {
+      background: rgba(255,255,255,0.2);
+    }
+  }
+
+  h1 {
+    margin: 0;
+    padding: 0.4em 0;
+    text-align: center;
+    color: #f0f0f4;
+    font-size: 1.4em;
+    font-weight: 400;
+  }
+}
+
+section {
+  padding: 0.8em;
+  margin: 0 auto;
+  text-align: center;
+
+  article {
+    text-align: left;
+    background: #fff;
+    color: #202020;
+    border: 1px solid #eaeaf0;
+    box-shadow: 0 0 3px -1px rgba(0,0,0,0.2), 0 3px 6px -3px rgba(0,0,0,0.2);
+    padding: 0.8em;
+    margin: 0 1.6em 1.6em 0;
+    line-height: 1.4rem;
+
+    h1 {
+      font-size: 1.7em;
+      font-weight: normal;
+      letter-spacing: -1px;
+    }
+    h2 {
+      font-size: 1.35em;
+      letter-spacing: -1px;
+      font-weight: 300;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    code {
+      background: #F8F8F8;
+      padding: 0 .1rem;
+
+      font-family: Source Code Pro, 'Source Code Pro', monospace;
+      font-size: .95rem;
+    }
+
+    pre {
+      background: #F8F8F8;
+    }
+
+    .post-footer {
+      color: #606060;
+      font-size: .8rem;
+
+      .post-date {
+        display: inline-block;
+        vertical-align: baseline;
+        border-right: 1px solid #a0a0a0;
+        padding-right: .6rem;
+        margin-right: .4rem;
+      }
+
+      a {
+        text-decoration: none;
+      }
+    }
+  }
+
+  nav.pagination {
+    margin: 1.2rem 0 0;
+
+    .disabled-link {
+      opacity: .33;
+    }
+    .page-number {
+      font-size: .8rem;
+      color: #606060;
+    }
+  }
+}

@@ -1,0 +1,25 @@
+<nav class="pagination pure-u-1-1">
+  <div class="pure-g">
+    <div class="paginator pure-u-1-3 pure-u-md-1-3 pure-u-lg-2-5">
+      {% if paginator.previous_page %}
+        {% if paginator.previous_page == 1 %}
+          <a href="{{ site.baseurl }}/"><i class="fa fa-arrow-left"></i></a>
+        {% else %}
+          <a href="{{ site.baseurl }}{{ paginator.previous_page_path }}" class="next " ><i class="fa fa-arrow-left"></i></a>
+        {% endif %}
+      {% else %}
+        <span class="disabled-link"><i class="fa fa-arrow-left"></i></span>
+      {% endif %}
+    </div>
+    <div class="paginator pure-u-1-3 pure-u-md-1-3 pure-u-lg-1-5">
+      <span class="page-number">{{paginator.page}} of {{paginator.total_pages}}</span>
+    </div>
+    <div class="paginator pure-u-1-3 pure-u-md-1-3 pure-u-lg-2-5">
+      {% if paginator.next_page <= paginator.total_pages %}
+        <a href="{{ site.baseurl }}{{ paginator.next_page_path }}" class="next "><i class="fa fa-arrow-right"></i></a>
+      {% else %}
+        <span class="disabled-link"><i class="fa fa-arrow-right"></i></span>
+      {% endif %}
+    </div>
+  </div>
+</nav>

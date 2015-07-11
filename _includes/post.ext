@@ -1,0 +1,18 @@
+<article>
+  <h1><a href="{{ post.url }}">{{ post.title }}</a></h1>
+
+  {{ content }}
+
+  <div class="post-footer">
+    <span class="post-date">
+      <i class="fa fa-calendar"></i> {{ post.date | date: "%e-%m-%Y" }}
+    </span>
+
+    <a href="https://twitter.com/intent/tweet?text={{ post.title | escape }}&url={{ site.url | escape }}{{ post.url | escape }}&hashtags=rstats">
+      <i class="fa fa-twitter"></i> Tweet
+    </a>
+    <!--a href="https://twitter.com/intent/tweet?text={{ post.title | escape }}&url={{ post.url | escape }}&hashtags=rstats">
+      <i class="fa fa-twitter"></i>
+    </a-->
+  </div>
+</article>
