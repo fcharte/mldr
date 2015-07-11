@@ -41,8 +41,6 @@ header {
 }
 
 section {
-  padding: 0.8em;
-  margin: 0 auto;
   text-align: center;
 
   article {
@@ -52,7 +50,7 @@ section {
     border: 1px solid #eaeaf0;
     box-shadow: 0 0 3px -1px rgba(0,0,0,0.2), 0 3px 6px -3px rgba(0,0,0,0.2);
     padding: 0.8em;
-    margin: 0 1.6em 1.6em 0;
+    margin: 0 0 1.6em;
     line-height: 1.4rem;
 
     h1 {
