@@ -146,6 +146,7 @@ shinyUI(
                 selectInput("mldrs", "Select a dataset", c()),
                 hr(),
                 h4("Load a dataset"),
+                p("Select an ARFF and a XML file to load a MULAN dataset, or select only an ARFF file to load a MEKA dataset."),
                 fileInput('arffname', 'Select the ARFF file'),
                 fileInput('xmlname', 'Select the XML file'),
                 actionButton("loadButton", "Load dataset")
