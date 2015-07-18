@@ -1,6 +1,9 @@
 # Changelog
 
-## mldr 0.2.25.9000
+## mldr 0.2.33
+
+* New redesigned GUI to ease usability
+* Add ability to read MEKA datasets from GUI
 
 ## mldr 0.2.25
 

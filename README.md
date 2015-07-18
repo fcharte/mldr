@@ -1,7 +1,7 @@
-mldr
+[mldr](https://fcharte.github.io/mldr)
 ====
 
-[![Travis](https://img.shields.io/travis/fcharte/mldr.svg)](https://travis-ci.org/fcharte/mldr/) 
+[![Travis](https://img.shields.io/travis/fcharte/mldr.svg)](https://travis-ci.org/fcharte/mldr/)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mldr)](http://cran.r-project.org/web/packages/mldr)
 [![Downloads](http://cranlogs.r-pkg.org/badges/mldr)](http://cran.rstudio.com/web/packages/mldr/index.html)
 
@@ -16,16 +16,25 @@ Use `install.packages` to install *mldr* and its dependencies:
 install.packages("mldr")
 ```
 
-Alternatively, you can install it via `install_github` from the 
+Alternatively, you can install it via `install_github` from the
 [devtools](https://github.com/hadley/devtools) package.
 
 ```R
 devtools::install_github("fcharte/mldr")
 ```
 
+## Building from source
+
+Use `devtools::build` from [devtools](https://github.com/hadley/devtools)
+to build the package:
+
+```R
+devtools::build(args = "--compact-vignettes=gs+qpdf")
+```
+
 ## Usage and examples
 
-This package provides a web GUI able to load, visualize and manipulate 
+This package provides a web GUI able to load, visualize and manipulate
 multi-label data sets. You can launch it using the R console:
 
 ```R
@@ -46,8 +55,8 @@ summary(genbase)
 plot(birds)
 ```
 
-*mldr* enables you to create new multi-label data sets via the 
-`mldr_from_dataframe` function, and export them to the standard 
+*mldr* enables you to create new multi-label data sets via the
+`mldr_from_dataframe` function, and export them to the standard
 ARFF format using `write_arff`:
 
 ```R
@@ -62,5 +71,5 @@ mymldr <- mldr_from_dataframe(df, labelIndices = c(11, 12), name = "testMLDR")
 write_arff(mymldr, "my_new_mldr")
 ```
 
-For more examples and detailed explanation on available functions, 
+For more examples and detailed explanation on available functions,
 please refer to the documentation.
