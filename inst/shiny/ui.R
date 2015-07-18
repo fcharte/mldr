@@ -72,7 +72,7 @@ shinyUI(
             border: 1px solid #EAEAF0;
             border-radius: 0;
             box-shadow: 0px 0px 3px -1px rgba(0, 0, 0, 0.2), 0px 3px 6px -3px rgba(0, 0, 0, 0.2);
-            padding: 0.8em;
+            padding: 0.8em 1.2em;
             margin: 0px 0px 1.6em;
             line-height: 1.4rem;
             overflow: auto;
@@ -120,6 +120,12 @@ shinyUI(
               graph.css('margin-top', '0px');
             }
           };
+
+          // Set a handler for the Quit button
+          $(\"a[data-value='finish']\").attr('title', 'Quit mldr').click(function(e) {
+            $('h1').html('You can close this tab now.')
+            window.close();
+          });
         });
       ")),
       tags$title("mldr"),
@@ -153,7 +159,7 @@ shinyUI(
                 tags$small(HTML(paste0("<li>Once the MLD has been loaded, you will see its basic traits in this page.</li>"))),
                 tags$small(HTML(paste0("<li>Use the tabs at the top of the page to explore other information, such as label",
                                   " distribution, frequency of labelsets, data about attributes or label concurrence information.</li>"))),
-                tags$small(HTML(paste0("<li>Use the 'EXIT' option to close the application.</li></ul>"
+                tags$small(HTML(paste0("<li>Use the Quit button (<i class='fa fa-power-off'></i>) to close the application.</li></ul>"
                 )))
               )
             ),
@@ -190,7 +196,6 @@ shinyUI(
           )
         ),
         tabPanel("Labels", fluidPage(
-          #titlePanel("Labels information"),
           fluidRow(
             column(6, wellPanel(dataTableOutput("labels"))),
             column(6, wellPanel(
@@ -201,7 +206,6 @@ shinyUI(
           )
         )),
         tabPanel("Labelsets", fluidPage(
-          #titlePanel("Labelsets information"),
           fluidRow(
             column(6, wellPanel(dataTableOutput("labelsets"))),
             column(6, wellPanel(
@@ -211,11 +215,9 @@ shinyUI(
           )
         )),
         tabPanel("Attributes", fluidPage(
-          #titlePanel("Attributes information"),
           wellPanel(dataTableOutput("attributes"))
         )),
         tabPanel("Concurrence", fluidPage(
-          #titlePanel("Label concurrence information"),
           fluidRow(
             column(5,
                    wellPanel(
@@ -230,13 +232,13 @@ shinyUI(
           )
         )),
         tabPanel("About", fluidPage(
-          #titlePanel("About mldrGUI"),
           wellPanel(
             h3("About mldrGUI"),
-            p('mldrGUI is an EDA GUI for multilabel datasets developed on top of the mldr package.'),
-          p(HTML('&copy; 2015 &mdash; Francisco Charte Ojeda (fcharte@ugr.es), David Charte Luque (fdavidcl@outlook.com)')),
-          p('See the package LICENSE file for license information'))
-        ))
+            p(HTML('mldrGUI is an EDA GUI for multilabel datasets developed on top of the <a href="https://github.com/fcharte/mldr">mldr</a> package.')),
+            p(HTML('&copy; 2015 &mdash; Francisco Charte Ojeda (fcharte@ugr.es), David Charte Luque (fdavidcl@outlook.com)')),
+            p('See the package LICENSE file for license information'))
+        )),
+        tabPanel(HTML("<span class='quit-tab'><i class='fa fa-power-off'></i></span>"), value = "finish")
       )
     )
   )
