@@ -12,6 +12,22 @@ header {
   background: #565667;
   margin-bottom: 1.8em;
 
+  h1 {
+    margin: 0;
+    padding: 0.4em 0;
+    text-align: center;
+    color: #f0f0f4;
+    font-size: 1.4em;
+    font-weight: 400;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.85em;
+    margin-bottom: .6em;
+  }
+
   nav {
     text-align: center;
 
@@ -28,15 +44,6 @@ header {
     a:hover {
       background: rgba(255,255,255,0.2);
     }
-  }
-
-  h1 {
-    margin: 0;
-    padding: 0.4em 0;
-    text-align: center;
-    color: #f0f0f4;
-    font-size: 1.4em;
-    font-weight: 400;
   }
 }
 
