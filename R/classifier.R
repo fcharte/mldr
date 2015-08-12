@@ -9,7 +9,7 @@
 #' classifier <- mlcr("mlknn", emotions)
 #'
 #' @export
-mlcr <- function(type) {
+mlcr <- function(type, ...) {
   if (missing(type))
     stop("No type provided for multilabel classifier!")
 
@@ -28,6 +28,8 @@ mlcr <- function(type) {
   classifier$trained <- FALSE
   class(classifier) <- c("mlcr", type)
 
+  classifier <- initializeMlc(classifier, ...)
+
   classifier
 }
 
@@ -44,15 +46,8 @@ mlcr <- function(type) {
 print.mlcr <- function(classifier) {
   cat("Multilabel classifier:", classifier$type, "\n")
 
-  cat("Parameters:\n")
-  pars <- names(classifier)
-  pars <- pars[!(pars %in% c("type", "trainInfo"))]
-
-  for (p in pars) {
-    if (typeof(classifier[[p]]) %in% c("double", "character"))
-      cat("\t", p, ": ", classifier[[p]], "\n", sep="")
-  }
-
+  cat("Parameters: ")
+  str(classifier$parameters)
   cat("\n")
 
   if (classifier$trained)
@@ -74,10 +69,6 @@ test <- function(classifier, testSet) {
 }
 
 # Generics: one method of each type will be defined for each classifier
-trainMlc <- function(classifier, ...) {
-  UseMethod("trainMlc")
-}
-
-predictInstance <- function(classifier, ...) {
-  UseMethod("predictInstance")
-}
+initializeMlc <- function(classifier, ...) UseMethod("initializerMlc")
+trainMlc <- function(classifier, ...) UseMethod("trainMlc")
+predictInstance <- function(classifier, ...) UseMethod("predictInstance")
