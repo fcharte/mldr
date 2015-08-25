@@ -53,7 +53,7 @@ print.mlcr <- function(classifier) {
   if (classifier$trained)
     cat(classifier$trainInfo)
   else
-    cat("Classifier is not trained. Use 'train' function.")
+    cat("Classifier is not trained. Use 'train' function.\n")
 }
 
 #' @export

@@ -4,7 +4,7 @@
 \alias{mlcr}
 \title{Multilabel classifier constructor}
 \usage{
-mlcr(type)
+mlcr(type, ...)
 }
 \arguments{
 \item{type}{String identifying the algorithm to be used}
