@@ -8,6 +8,8 @@ mlcr(type, ...)
 }
 \arguments{
 \item{type}{String identifying the algorithm to be used}
+
+\item{...}{Parameters to be passed to the initializer}
 }
 \description{
 Creates an object of class 'mlcr'. No algorithms are provided within
@@ -15,7 +17,12 @@ Creates an object of class 'mlcr'. No algorithms are provided within
   single code files can be used.
 }
 \examples{
-classifier <- mlcr("mlknn", emotions)
+# Dummy implementation for example classifier
+trainMlc.example <- function(classifier, trainingSet) classifier
+predictInstance.example <- function(classifier, instance) 0
+
+# Create an instance of this type of classifier
+classifier <- mlcr("example", emotions)
 }
 \seealso{
 \code{\link{print.mlcr}}

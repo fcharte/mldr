@@ -4,17 +4,13 @@
 \alias{print.mlcr}
 \title{Print method for multilabel classifiers}
 \usage{
-\method{print}{mlcr}(classifier)
+\method{print}{mlcr}(x, ...)
 }
 \arguments{
 \item{classifier}{`mlcr` object}
 }
 \description{
 Outputs info about the specified classifier when it's trained.
-}
-\examples{
-classifier <- mlcr("mlknn", emotions)
-print(classifier)
 }
 \seealso{
 \code{\link{mlcr}}
