@@ -3,10 +3,16 @@
 #'   the `mldr` package, instead new packages that provide them can be installed or
 #'   single code files can be used.
 #' @param type String identifying the algorithm to be used
+#' @param ... Parameters to be passed to the initializer
 #' @seealso \code{\link{print.mlcr}}
 #' @examples
 #'
-#' classifier <- mlcr("mlknn", emotions)
+#' # Dummy implementation for example classifier
+#' trainMlc.example <- function(classifier, trainingSet) classifier
+#' predictInstance.example <- function(classifier, instance) 0
+#'
+#' # Create an instance of this type of classifier
+#' classifier <- mlcr("example", emotions)
 #'
 #' @export
 mlcr <- function(type, ...) {
@@ -14,21 +20,25 @@ mlcr <- function(type, ...) {
     stop("No type provided for multilabel classifier!")
 
   checkForMethod <- function(generic, type) {
-    if (!exists(paste0(generic, ".", type)) || class(get0(paste0(generic, ".", type))) != "function") {
-      warning("There is no '", generic, "' function defined for type ",
-              type, ". You may not be able to train or test this classifier.")
-    }
+    exists(paste0(generic, ".", type)) && class(get0(paste0(generic, ".", type))) != "function"
   }
 
-  checkForMethod("trainMlc", type)
-  checkForMethod("predictInstance", type)
+  if (!checkForMethod("trainMlc", type))
+    warning("There is no trainMlc function defined for type ",
+            type, ". You may not be able to train this classifier.")
+
+  if (!checkForMethod("predictInstance", type))
+    warning("There is no predictInstance function defined for type ",
+            type, ". You may not be able to test this classifier.")
 
   classifier <- list()
   classifier$type <- type
   classifier$trained <- FALSE
-  class(classifier) <- c("mlcr", type)
+  class(classifier) <- c(type, "mlcr")
 
-  classifier <- initializeMlc(classifier, ...)
+  if (checkForMethod("initializeMlc", type)) {
+    classifier <- initializeMlc(classifier, ...)
+  }
 
   classifier
 }
@@ -37,25 +47,27 @@ mlcr <- function(type, ...) {
 #' @description Outputs info about the specified classifier when it's trained.
 #' @param classifier `mlcr` object
 #' @seealso \code{\link{mlcr}}
-#' @examples
-#'
-#' classifier <- mlcr("mlknn", emotions)
-#' print(classifier)
 #'
 #' @export
-print.mlcr <- function(classifier) {
-  cat("Multilabel classifier:", classifier$type, "\n")
+print.mlcr <- function(x, ...) {
+  cat("Multilabel classifier:", x$type, "\n")
 
   cat("Parameters: ")
-  str(classifier$parameters)
+  str(x$parameters)
   cat("\n")
 
-  if (classifier$trained)
-    cat(classifier$trainInfo)
+  if (x$trained)
+    cat(x$trainInfo)
   else
     cat("Classifier is not trained. Use 'train' function.\n")
 }
 
+#' @title Training method for multilabel classifiers
+#' @description Delegates on methods specific to the algorithm to train the classifier
+#' @param classifier `mlcr` object
+#' @param trainingSet An `mldr` with the training instances
+#' @seealso \code{\link{mlcr}}
+#'
 #' @export
 train <- function(classifier, trainingSet) {
   classifier <- trainMlc(classifier, trainingSet)
@@ -63,6 +75,12 @@ train <- function(classifier, trainingSet) {
   classifier
 }
 
+#' @title Test method for multilabel classifiers
+#' @description Uses methods specific to the algorithm in order to retrieve predictions.
+#' @param classifier `mlcr` object
+#' @param testSet An `mldr` with the test instances
+#' @seealso \code{\link{mlcr}}
+#'
 #' @export
 test <- function(classifier, testSet) {
   sapply(as.data.frame(t(testSet$dataset)), function(instance) predictInstance(classifier, instance))
