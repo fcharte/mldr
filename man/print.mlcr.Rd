@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{`mlcr` object}
 
-\item{...}{Extra parameters. Currwntly ignored}
+\item{...}{Extra parameters. Currently ignored}
 }
 \description{
 Outputs info about the specified classifier when it's trained.

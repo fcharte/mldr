@@ -46,7 +46,7 @@ mlcr <- function(type, ...) {
 #' @title Print method for multilabel classifiers
 #' @description Outputs info about the specified classifier when it's trained.
 #' @param x `mlcr` object
-#' @param ... Extra parameters. Currwntly ignored
+#' @param ... Extra parameters. Currently ignored
 #' @seealso \code{\link{mlcr}}
 #'
 #' @export
