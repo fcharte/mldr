@@ -26,13 +26,12 @@ trainMlc.mlknn <- function(classifier, trainingSet) {
 
   # Apriori probabilities go here
 
-  classifier$priorProbabilities <- c()
-  classifier$condProbabilities <- c()
-
   classifier$priorProbabilities <- sapply(trainingSet$labels$index, function(label) {
     tempCi <- sum(trainingSet$dataset[[label]])
     (classifier$parameters$smoothFactor + tempCi) / (2 * classifier$parameters$smoothFactor + length(trainingSet$dataset[[label]]))
   })
+
+  classifier$priorNProbabilities <- 1 - classifier$priorProbabilities
 
   # Accumulated will be a 2-element list: a matrix with positive accumulated
   # values and another one with the negatives
@@ -97,6 +96,18 @@ trainMlc.mlknn <- function(classifier, trainingSet) {
 }
 
 predictInstance.mlknn <- function(classifier, instance) {
-  # Prediction function MUST return only the predicted values for labels
-  classifier$trainingSet[1]$dataset[,classifier$trainingSet$labels$index]
+  knn <- kNearest(instance, classifier$parameters$numNeighbors)
+
+  wrapper <- sapply(1:classifier$trainingSet$measures$num.labels, function(label) {
+    lIndex <- classifier$trainingSet$labels$index[label]
+    aces <- sum(knn$dataset[[lIndex]])
+
+    probIn <- classifier$priorProbabilities[label] * classifier$condProbabilities[aces, label]
+    probOut <- classifier$priorNProbabilities[label] * classifier$condNProbabilities[aces, label]
+
+    if (probIn != probOut)
+      c(prediction = probIn > probOut, confidence = probIn / (probIn + probOut))
+    else
+      c(prediction = sample(0:1, 1),   confidence = probIn / (probIn + probOut))
+  })
 }
