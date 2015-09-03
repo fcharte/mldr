@@ -1,5 +1,9 @@
 # Changelog
 
+## mldr [dev]
+
+* Fix bug #14 when reading certain sparse datasets (e.g. Yahoo)
+
 ## mldr 0.2.33
 
 * New redesigned GUI to ease usability
