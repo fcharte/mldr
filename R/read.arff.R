@@ -158,7 +158,7 @@ parse_sparse_data <- function(arff_data, num_attrs) {
   # Extract data items
   arff_data <- strsplit(gsub("[\\{\\}]", "", arff_data), ",")
   arff_data <- lapply(arff_data, function(item) {
-    unlist(strsplit(item, " "))
+    unlist(strsplit(gsub("^\\s+|\\s+$", "", item), " "))
   })
 
   # Build complete matrix with data
