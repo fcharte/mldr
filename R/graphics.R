@@ -42,8 +42,13 @@
 #' @import grDevices
 #' @import circlize
 #' @export
-plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title, ...)  {
+plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title, ask = length(type) > prod(par("mfcol")), ...)  {
   if(x$measures$num.instances == 0) return()
+
+  available <- c("LC", "LH", "LB", "CH", "AT", "LSH", "LSB")
+
+  if (!all(type %in% available))
+    stop("type must be a subset of ", do.call(paste, as.list(available)))
 
   if(missing(title))
     title <- substitute(x)
@@ -55,15 +60,22 @@ plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title, ...)  {
       x$labels$index
   }
 
-  switch(type,
-         LC = labelCoocurrencePlot(x, title, labelIndices, ...),
-         LH = labelHistogram(x, title, ...),
-         LB = labelBarPlot(x, title, labelIndices, ...),
-         CH = cardinalityHistogram(x, title, ...),
-         AT = attributeByType(x, title, ...),
-         LSH = labelsetHistogram(x, title, ...),
-         LSB = labelsetBarPlot(x, title, ...)
-  )
+  show <- available %in% type
+
+  if (ask) {
+    original <- devAskNewPage(TRUE)
+    on.exit(devAskNewPage(original))
+  }
+
+  if (show[1]) labelCoocurrencePlot(x, title, labelIndices, ...)
+  if (show[2]) labelHistogram(x, title, ...)
+  if (show[3]) labelBarPlot(x, title, labelIndices, ...)
+  if (show[4]) cardinalityHistogram(x, title, ...)
+  if (show[5]) attributeByType(x, title, ...)
+  if (show[6]) labelsetHistogram(x, title, ...)
+  if (show[7]) labelsetBarPlot(x, title, ...)
+
+  invisible()
 }
 
 # Generates a circular label concurrence plot
