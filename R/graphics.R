@@ -42,7 +42,7 @@
 #' @import grDevices
 #' @import circlize
 #' @export
-plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title = NULL, ...)  {
+plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title, ...)  {
   if(x$measures$num.instances == 0) return()
 
   if(missing(title))
