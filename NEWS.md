@@ -5,6 +5,7 @@
 * Fix bug #14 when reading certain sparse datasets (e.g. Yahoo)
 * Support for multiple plot types in one call
 * Add `num.inputs` measure for input attributes
+* Add color parameters for plotting functions
 
 ## mldr 0.2.33
 
