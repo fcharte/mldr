@@ -61,20 +61,22 @@ plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title, ask = len
       x$labels$index
   }
 
-  show <- available %in% type
-
   if (ask) {
     original <- devAskNewPage(TRUE)
     on.exit(devAskNewPage(original))
   }
 
-  if (show[1]) labelCoocurrencePlot(x, title, labelIndices, ...)
-  if (show[2]) labelHistogram(x, title, ...)
-  if (show[3]) labelBarPlot(x, title, labelIndices, ...)
-  if (show[4]) cardinalityHistogram(x, title, ...)
-  if (show[5]) attributeByType(x, title, ...)
-  if (show[6]) labelsetHistogram(x, title, ...)
-  if (show[7]) labelsetBarPlot(x, title, ...)
+  for (t in type) {
+    switch(t,
+      LC  = labelCoocurrencePlot(x, title, labelIndices, ...),
+      LH  = labelHistogram(x, title, ...),
+      LB  = labelBarPlot(x, title, labelIndices, ...),
+      CH  = cardinalityHistogram(x, title, ...),
+      AT  = attributeByType(x, title, ...),
+      LSH = labelsetHistogram(x, title, ...),
+      LSB = labelsetBarPlot(x, title, ...)
+    )
+  }
 
   invisible()
 }
