@@ -1,7 +1,7 @@
 #' Generates graphic representations of an mldr object
 #' @description Generates graphic representations of an \code{mldr} object
 #' @param x The mldr object whose features are to be drawn
-#' @param type Indicates the type of plot to be produced. Possible types are:\itemize{
+#' @param type Indicates the type(s) of plot to be produced. Possible types are:\itemize{
 #'  \item \code{"LC"} Draws a circular plot with sectors representing each label
 #' and links between them depicting label co-occurrences
 #'  \item \code{"LH"} for label histogram
@@ -14,6 +14,7 @@
 #' @param title A title to be shown above the plot. Defaults to the name of the dataset passed as first argument
 #' @param labelCount Samples the labels in the dataset to show information of only \code{labelCount} of them
 #' @param labelIndices Establishes the labels to be shown in the plot
+#' @param ask Specifies whether to pause the generation of plots after each one
 #' @param ... Additional parameters to be given to barplot, hist, etc.
 #' @examples
 #'
@@ -42,8 +43,13 @@
 #' @import grDevices
 #' @import circlize
 #' @export
-plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title = NULL, ...)  {
+plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title, ask = length(type) > prod(par("mfcol")), ...)  {
   if(x$measures$num.instances == 0) return()
+
+  available <- c("LC", "LH", "LB", "CH", "AT", "LSH", "LSB")
+
+  if (!all(type %in% available))
+    stop("type must be a subset of ", do.call(paste, as.list(available)))
 
   if(missing(title))
     title <- substitute(x)
@@ -55,15 +61,24 @@ plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title = NULL, ..
       x$labels$index
   }
 
-  switch(type,
-         LC = labelCoocurrencePlot(x, title, labelIndices, ...),
-         LH = labelHistogram(x, title, ...),
-         LB = labelBarPlot(x, title, labelIndices, ...),
-         CH = cardinalityHistogram(x, title, ...),
-         AT = attributeByType(x, title, ...),
-         LSH = labelsetHistogram(x, title, ...),
-         LSB = labelsetBarPlot(x, title, ...)
-  )
+  if (ask) {
+    original <- devAskNewPage(TRUE)
+    on.exit(devAskNewPage(original))
+  }
+
+  for (t in type) {
+    switch(t,
+      LC  = labelCoocurrencePlot(x, title, labelIndices, ...),
+      LH  = labelHistogram(x, title, ...),
+      LB  = labelBarPlot(x, title, labelIndices, ...),
+      CH  = cardinalityHistogram(x, title, ...),
+      AT  = attributeByType(x, title, ...),
+      LSH = labelsetHistogram(x, title, ...),
+      LSB = labelsetBarPlot(x, title, ...)
+    )
+  }
+
+  invisible()
 }
 
 # Generates a circular label concurrence plot

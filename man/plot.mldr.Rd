@@ -4,13 +4,13 @@
 \alias{plot.mldr}
 \title{Generates graphic representations of an mldr object}
 \usage{
-\method{plot}{mldr}(x, type = "LC", labelCount, labelIndices, title = NULL,
-  ...)
+\method{plot}{mldr}(x, type = "LC", labelCount, labelIndices, title,
+  ask = length(type) > prod(par("mfcol")), ...)
 }
 \arguments{
 \item{x}{The mldr object whose features are to be drawn}
 
-\item{type}{Indicates the type of plot to be produced. Possible types are:\itemize{
+\item{type}{Indicates the type(s) of plot to be produced. Possible types are:\itemize{
  \item \code{"LC"} Draws a circular plot with sectors representing each label
 and links between them depicting label co-occurrences
  \item \code{"LH"} for label histogram
@@ -26,6 +26,8 @@ and links between them depicting label co-occurrences
 \item{labelIndices}{Establishes the labels to be shown in the plot}
 
 \item{title}{A title to be shown above the plot. Defaults to the name of the dataset passed as first argument}
+
+\item{ask}{Specifies whether to pause the generation of plots after each one}
 
 \item{...}{Additional parameters to be given to barplot, hist, etc.}
 }
