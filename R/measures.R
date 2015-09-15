@@ -10,6 +10,7 @@ measures <- function(mld) {
     list(
       num.attributes = length(names(mld$dataset)) - 2, # 2 columns are measures!
       num.instances = nrow(mld$dataset),
+      num.inputs = length(names(mld$dataset)) - 2 - nrow(mld$labels),
       num.labels = nrow(mld$labels),
 
       # Number of different labelsets
@@ -17,6 +18,7 @@ measures <- function(mld) {
 
       # Number of labelsets appearing only once
       num.single.labelsets = sum(labelsets == 1),
+
 
       # Maximum frequency on a labelset
       max.frequency = max(labelsets),
@@ -30,6 +32,7 @@ measures <- function(mld) {
     list(
       num.attributes = length(names(mld$dataset)) - 2,
       num.instances = nrow(mld$dataset),
+      num.inputs = length(names(mld$dataset)) - 2 - nrow(mld$labels),
       num.labels = nrow(mld$labels),
       num.labelsets = NA,
       num.single.labelsets = NA,
