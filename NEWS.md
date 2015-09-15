@@ -3,6 +3,7 @@
 ## mldr [dev]
 
 * Fix bug #14 when reading certain sparse datasets (e.g. Yahoo)
+* Support for multiple plot types in one call
 
 ## mldr 0.2.33
 
