@@ -56,19 +56,24 @@ section {
     color: #202020;
     border: 1px solid #eaeaf0;
     box-shadow: 0 0 3px -1px rgba(0,0,0,0.2), 0 3px 6px -3px rgba(0,0,0,0.2);
-    padding: 0.8em;
+    padding: 0.8em 1.2em;
     margin: 0 0 1.6em;
     line-height: 1.4rem;
 
     h1 {
-      font-size: 1.7em;
+      font-size: 2em;
+      margin: 0.8em 0;
       font-weight: normal;
       letter-spacing: -1px;
     }
     h2 {
-      font-size: 1.35em;
+      font-size: 1.6em;
       letter-spacing: -1px;
-      font-weight: 300;
+      font-weight: 400;
+    }
+    h3 {
+      font-size: 1.2em;
+      font-weight: 600;
     }
 
     a {
