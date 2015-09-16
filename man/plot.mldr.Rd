@@ -40,9 +40,12 @@ library(mldr)
 # Label concurrence plot
 plot(genbase, type = "LC") # Plots all labels
 plot(genbase) # Same as above
-plot(genbase, title = "genbase dataset") # Changes the title
+plot(genbase, title = "genbase dataset", color.function = heat.colors) # Changes the title and color
 plot(genbase, labelCount = 10) # Randomly selects 10 labels to plot
 plot(genbase, labelIndices = genbase$labels$index[1:10]) # Plots info of first 10 labels
+
+# Label bar plot
+plot(emotions, type = "LB", col = terrain.colors(emotions$measures$num.labels))
 
 # Label histogram plot
 plot(emotions, type = "LH")
