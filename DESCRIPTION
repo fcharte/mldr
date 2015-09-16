@@ -1,7 +1,7 @@
 Package: mldr
 Title: Exploratory Data Analysis and Manipulation of Multi-Label Data Sets
-Version: 0.2.33.9000
-Date: 2015-07-03
+Version: 0.2.51
+Date: 2015-09-16
 Authors@R: c( person("David", "Charte", email = "fdavidcl@outlook.com", role =
     "cre"), person("Francisco", "Charte", email = "francisco@fcharte.com", role
     = "aut"))
