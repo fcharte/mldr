@@ -26,7 +26,7 @@ plot(emotions, color.function = colorspace::rainbow_hcl)
 plot(emotions, color.function = colorspace::heat_hcl)
 ~~~
 
-![New coloring possibilities for plots](images/new_plot_color.png)
+![New coloring possibilities for plots]({{ site.baseurl }}/images/new_plot_color.png)
 
 ## Bug fixes
 
