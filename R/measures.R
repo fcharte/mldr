@@ -73,10 +73,14 @@ dataset_measures <- function(mld) {
     mld$dataset$.SCUMBLE <- ifelse(mld$dataset$.labelcount > 0,
                                    1 - (IRprod)^(1/mld$dataset$.labelcount) / IRmeans,
                                    0)
+
+    # lblSCUMBLE: SCUMBLE mean by label
+    mld$labels$SCUMBLE <- colSums(mld$dataset[labelIndices] * mld$dataset$.SCUMBLE)/colSums(mld$dataset[labelIndices])
   }
   else {
     mld$dataset$.labelcount <- numeric()
     mld$dataset$.SCUMBLE <- numeric()
+    mld$labels$SCUMBLE <- numeric()
   }
 
   mld$dataset
