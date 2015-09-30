@@ -75,13 +75,17 @@ dataset_measures <- function(mld) {
                                    0)
 
     # lblSCUMBLE: SCUMBLE mean by label
-    mld$labels$SCUMBLE <- colSums(mld$dataset[labelIndices] * mld$dataset$.SCUMBLE)/colSums(mld$dataset[labelIndices])
+    mld$labels$SCUMBLE <- colSums(mld$dataset[labelIndices] * mld$dataset$.SCUMBLE) / colSums(mld$dataset[labelIndices])
+    # lblSCUMBLE.CV: Coefficient of variation of the corresponding SCUMBLE mean
+    mld$labels$SCUMBLE.CV <- sqrt(colSums(mld$dataset[labelIndices] * mld$dataset$.SCUMBLE^2) /
+                                    colSums(mld$dataset[labelIndices]) - mld$labels$SCUMBLE^2) / mld$labels$SCUMBLE
   }
   else {
     mld$dataset$.labelcount <- numeric()
     mld$dataset$.SCUMBLE <- numeric()
     mld$labels$SCUMBLE <- numeric()
+    mld$labels$SCUMBLE.CV <- numeric()
   }
 
-  mld$dataset
+  mld
 }

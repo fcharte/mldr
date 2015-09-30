@@ -175,7 +175,7 @@ mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
                            sort(table(as.factor(do.call(paste, c(dataframe[, new_mldr$labels$index], sep = "")))))
                         else
                           array()
-  new_mldr$dataset <- dataset_measures(new_mldr)
+  new_mldr <- dataset_measures(new_mldr)
   new_mldr$measures <- measures(new_mldr)
 
   class(new_mldr) <- "mldr"
