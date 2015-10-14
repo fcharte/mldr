@@ -56,6 +56,7 @@ concurrenceReport <- function(mld, pdfOutput = FALSE, file = "Rconcurrence.pdf")
     plot(mld, type = "LC", labelIndices = as.numeric(c(lblint$indexes, unique(unlist(lapply(lblint$interactions, names))))))
 
     dev.off()
+    cat('Concurrence report save into ', file)
   } else
     plot(mld, type = "LC", labelIndices = as.numeric(c(lblint$indexes, unique(unlist(lapply(lblint$interactions, names))))))
 }
