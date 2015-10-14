@@ -23,6 +23,10 @@ decoupleImbalancedLabels <- function(mld, atkLevel) {
 
 #' @export
 concurrenceReport <- function(mld, pdfOutput = FALSE, file = "Rconcurrence.pdf") {
+  textFile <- tempfile()
+
+  if(pdfOutput) sink(textFile)
+
   # Display dataset scumble
   cat("Dataset ", mld$name, ": Mean SCUMBLE ", mld$measures$scumble, " with CV ", mld$measures$scumble.cv, "\n\n",
       sep = "")
@@ -37,7 +41,23 @@ concurrenceReport <- function(mld, pdfOutput = FALSE, file = "Rconcurrence.pdf")
   lblint <- labelInteractions(mld)
   printInteractions(mld, intList = lblint)
 
-  plot(mld, type = "LC", labelIndices = as.numeric(c(lblint$indexes, unique(unlist(lapply(lblint$interactions, names))))))
+  if(pdfOutput) {
+    sink()
+    pdf(file)
+    par(mar = rep(0, 4))
+    plot.new()
+
+    ytop <- par()$usr[4]
+    cheight <- par()$cxy[2] / 2
+    lines <- readLines(textFile)
+    file.remove(textFile)
+
+    text(0, y = seq(from = ytop - cheight, by = -cheight, length.out = length(lines)), lines, cex = .5, adj = 0)
+    plot(mld, type = "LC", labelIndices = as.numeric(c(lblint$indexes, unique(unlist(lapply(lblint$interactions, names))))))
+
+    dev.off()
+  } else
+    plot(mld, type = "LC", labelIndices = as.numeric(c(lblint$indexes, unique(unlist(lapply(lblint$interactions, names))))))
 }
 
 #' @export
