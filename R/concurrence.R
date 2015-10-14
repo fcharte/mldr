@@ -37,9 +37,10 @@ concurrenceReport <- function(mld, pdfOutput = FALSE, file = "Rconcurrence.pdf")
   lblint <- labelInteractions(mld)
   printInteractions(mld, intList = lblint)
 
-  plot(mld, type = "LC", labelIndices = c())
+  plot(mld, type = "LC", labelIndices = as.numeric(c(lblint$indexes, unique(unlist(lapply(lblint$interactions, names))))))
 }
 
+#' @export
 labelInteractions <- function(mld, labelProportion) {
   # Extract minority labels
   minority <- mld$labels[mld$labels$IRLbl > mld$measures$meanIR,]
