@@ -311,7 +311,7 @@ shinyServer(function(input, output, session) {
       lblint <- labelInteractions(mld)
       titles <- c("Dataset",
                   "Mean SCUMBLE",
-                  "CV SCUMBLE",
+                  "SCUMBLE CV",
                   "Minority labels with high SCUMBLE",
                   names(lblint$interactions)
                 )
