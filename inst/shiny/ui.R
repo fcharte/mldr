@@ -111,11 +111,9 @@ shinyUI(
             }
 
             if ($(window).scrollTop() >= origOffsetY && $(window).width() > ONECOL_WIDTH) {
-              // Prevent graphic from making larger the document
-              if ($(window).scrollTop() < maxScroll)
-                graph.css('margin-top', ($(window).scrollTop() - origOffsetY - 1) + 'px');
-              else
-                graph.css('margin-top', (maxScroll - origOffsetY - 1) + 'px');
+              // Prevent graphic from making the document larger
+              var curOffset = Math.min($(window).scrollTop(), maxScroll) - origOffsetY - 1;
+              graph.css('margin-top', curOffset + 'px');
             } else {
               graph.css('margin-top', '0px');
             }
@@ -221,6 +219,13 @@ shinyUI(
         tabPanel("Concurrence", fluidPage(
           fluidRow(
             column(5,
+                   wellPanel(
+                     h3("Concurrence analysis"),
+                     p("The SCUMBLE level for each label is shown in the table at the left."),
+                     p("In the following table the minority labels most affected by SCUMBLE are shown."),
+                     p("For each one of them, the names of the majority labels with interactions are provided."),
+                     tableOutput("ConcurrenceAnalysis")
+                   ),
                    wellPanel(
                      h3("Select the labels to plot"),
                      dataTableOutput("tblConcurrence"))

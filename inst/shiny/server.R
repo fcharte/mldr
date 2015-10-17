@@ -305,19 +305,42 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  concurrenceAnalysisTable <- reactive({
+    if(!is.null(input$mldrs) && input$mldrs != "") {
+      mld <- get(input$mldrs)
+      lblint <- labelInteractions(mld)
+      titles <- c("Dataset",
+                  "Mean SCUMBLE",
+                  "SCUMBLE CV",
+                  "Minority labels with high SCUMBLE",
+                  names(lblint$interactions)
+                )
+      values <- c(mld$name,
+                  mld$measures$scumble,
+                  mld$measures$scumble.cv,
+                  paste(rownames(mld$labels[mld$labels$index %in% lblint$indexes,]), collapse = ", "),
+                  sapply(lblint$interactions, function(x) paste(rownames(mld$labels[mld$labels$index %in% row.names(x), ]), collapse = ", "))
+                )
+      table <- data.frame(Description = titles, Value = values)
+      table
+    }
+  })
+  output$ConcurrenceAnalysis <- renderTable(concurrenceAnalysisTable(), include.rownames = FALSE)
+
   highScumbleLabels <- reactive({
     if(!is.null(input$mldrs) && input$mldrs != "") {
       mld <- get(input$mldrs)
-      tbl <- data.frame(Label = rownames(mld$labels),
-                        Count = mld$labels$count,
-                        SCUMBLE = mld$labels$SCUMBLE)
-      tbl <- tbl[order(tbl$Count, tbl$SCUMBLE),]
+       tbl <- data.frame(Label = rownames(mld$labels),
+                         Count = mld$labels$count,
+                         SCUMBLE = mld$labels$SCUMBLE)
+       tbl <- tbl[order(tbl$Count, tbl$SCUMBLE),]
 
-      ScumbleList <- sort(tbl$SCUMBLE, decreasing = TRUE)
-      ScumbleList <- ScumbleList[1:10]
-      ScumbleList <- ScumbleList[!is.na(ScumbleList)]
-      ScumbleList <- paste(which(tbl$SCUMBLE %in% ScumbleList) - 1, collapse = ",")
-
+       ScumbleList <- sort(tbl$SCUMBLE, decreasing = TRUE)
+       ScumbleList <- ScumbleList[1:10]
+       ScumbleList <- ScumbleList[!is.na(ScumbleList)]
+       ScumbleList <- paste(which(tbl$SCUMBLE %in% ScumbleList) - 1, collapse = ",")
+#       lblint <- labelInteractions(mld)
+#       ScumbleList <- paste(as.numeric(c(lblint$indexes, unique(unlist(lapply(lblint$interactions, names))))) - mld$labels$index[1], collapse = ",")
       paste("function(settings, json) {
             $('.dataTable').DataTable().rows([", ScumbleList, "]).nodes().to$().addClass('selected');
             Shiny.onInputChange('labels', [", ScumbleList, "]);
