@@ -17,8 +17,8 @@
 remedial <- function(mld) decoupleImbalancedLabels(mld, mld$measures$scumble)
 
 decoupleImbalancedLabels <- function(mld, atkLevel) {
-  mldbase <- mld[.SCUMBLE <= atkLevel]
-  mldhigh <- mld[.SCUMBLE > atkLevel]  # Samples with coocurrence of highly imbalanced labels
+  mldbase <- mld[mld$dataset$.SCUMBLE <= atkLevel]
+  mldhigh <- mld[mld$dataset$.SCUMBLE > atkLevel]  # Samples with coocurrence of highly imbalanced labels
 
   # Indexes of minority and majority labels
   minIndexes <- mld$labels[mld$labels$IRLbl > mld$measures$meanIR, "index"]
