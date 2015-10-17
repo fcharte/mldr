@@ -2,6 +2,11 @@
 
 ## mldr [dev]
 
+* Fix bug in demo code for rebuilding an mldr object
+* Add global `scumble.cv` measure and `SCUMBLE.CV` measure per label
+* Add new concurrence module to ease analysis of concurrence among imbalanced labels
+* Add `remedial` preprocessing algorithm
+
 ## mldr 0.2.51
 
 * Fix bug #14 when reading certain sparse datasets (e.g. Yahoo)
