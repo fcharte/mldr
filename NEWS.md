@@ -6,6 +6,8 @@
 * Add global `scumble.cv` measure and `SCUMBLE.CV` measure per label
 * Add new concurrence module to ease analysis of concurrence among imbalanced labels
 * Add `remedial` preprocessing algorithm
+* Fix bug #18 when reading ARFF with capitalized '@relation' parameters
+* A Citation file (accesible from `citation("mldr")`) has been added
 
 ## mldr 0.2.51
 
