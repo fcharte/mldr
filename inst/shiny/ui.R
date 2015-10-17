@@ -228,7 +228,14 @@ shinyUI(
             column(7,
                    wellPanel(
                      downloadButton("saveConcurrence", "Save plot"),
-                     plotOutput("labelLC",height="auto"))
+                     plotOutput("labelLC",height="auto")),
+                   wellPanel(
+                     h3("Concurrence analysis"),
+                     p("The SCUMBLE leve for each label is shown in the table at the left."),
+                     p("In the following table the minority labels most affected by SCUMBLE are shown."),
+                     p("For each one of them, the names of the majority labels with interactions are provided."),
+                     tableOutput("ConcurrenceAnalysis")
+                   )
             )
           )
         )),
