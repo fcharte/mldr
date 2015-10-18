@@ -143,6 +143,7 @@ mldr <- function(filename,
 #'
 #' summary(mymldr)
 #'
+#' @import stats
 #' @export
 #'
 mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
