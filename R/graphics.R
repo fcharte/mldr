@@ -1,7 +1,7 @@
 #' Generates graphic representations of an mldr object
 #' @description Generates graphic representations of an \code{mldr} object
 #' @param x The mldr object whose features are to be drawn
-#' @param type Indicates the type of plot to be produced. Possible types are:\itemize{
+#' @param type Indicates the type(s) of plot to be produced. Possible types are:\itemize{
 #'  \item \code{"LC"} Draws a circular plot with sectors representing each label
 #' and links between them depicting label co-occurrences
 #'  \item \code{"LH"} for label histogram
@@ -14,6 +14,7 @@
 #' @param title A title to be shown above the plot. Defaults to the name of the dataset passed as first argument
 #' @param labelCount Samples the labels in the dataset to show information of only \code{labelCount} of them
 #' @param labelIndices Establishes the labels to be shown in the plot
+#' @param ask Specifies whether to pause the generation of plots after each one
 #' @param ... Additional parameters to be given to barplot, hist, etc.
 #' @examples
 #'
@@ -22,9 +23,12 @@
 #' # Label concurrence plot
 #' plot(genbase, type = "LC") # Plots all labels
 #' plot(genbase) # Same as above
-#' plot(genbase, title = "genbase dataset") # Changes the title
+#' plot(genbase, title = "genbase dataset", color.function = heat.colors) # Changes the title and color
 #' plot(genbase, labelCount = 10) # Randomly selects 10 labels to plot
 #' plot(genbase, labelIndices = genbase$labels$index[1:10]) # Plots info of first 10 labels
+#'
+#' # Label bar plot
+#' plot(emotions, type = "LB", col = terrain.colors(emotions$measures$num.labels))
 #'
 #' # Label histogram plot
 #' plot(emotions, type = "LH")
@@ -42,8 +46,13 @@
 #' @import grDevices
 #' @import circlize
 #' @export
-plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title = NULL, ...)  {
+plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title, ask = length(type) > prod(par("mfcol")), ...)  {
   if(x$measures$num.instances == 0) return()
+
+  available <- c("LC", "LH", "LB", "CH", "AT", "LSH", "LSB")
+
+  if (!all(type %in% available))
+    stop("type must be a subset of ", do.call(paste, as.list(available)))
 
   if(missing(title))
     title <- substitute(x)
@@ -55,22 +64,31 @@ plot.mldr <- function(x, type = "LC", labelCount, labelIndices, title = NULL, ..
       x$labels$index
   }
 
-  switch(type,
-         LC = labelCoocurrencePlot(x, title, labelIndices, ...),
-         LH = labelHistogram(x, title, ...),
-         LB = labelBarPlot(x, title, labelIndices, ...),
-         CH = cardinalityHistogram(x, title, ...),
-         AT = attributeByType(x, title, ...),
-         LSH = labelsetHistogram(x, title, ...),
-         LSB = labelsetBarPlot(x, title, ...)
-  )
+  if (ask) {
+    original <- devAskNewPage(TRUE)
+    on.exit(devAskNewPage(original))
+  }
+
+  for (t in type) {
+    switch(t,
+      LC  = labelCoocurrencePlot(x, title, labelIndices, ...),
+      LH  = labelHistogram(x, title, ...),
+      LB  = labelBarPlot(x, title, labelIndices, ...),
+      CH  = cardinalityHistogram(x, title, ...),
+      AT  = attributeByType(x, title, ...),
+      LSH = labelsetHistogram(x, title, ...),
+      LSB = labelsetBarPlot(x, title, ...)
+    )
+  }
+
+  invisible()
 }
 
 # Generates a circular label concurrence plot
 #' @import grDevices
 #' @import graphics
 #' @import circlize
-labelCoocurrencePlot <- function(mld, title, labelIndices, ...) {
+labelCoocurrencePlot <- function(mld, title, labelIndices, color.function = rainbow, ...) {
 
   labelIndices <- labelIndices[labelIndices %in% mld$labels$index]
   if(length(labelIndices) == 0) return()
@@ -93,8 +111,8 @@ labelCoocurrencePlot <- function(mld, title, labelIndices, ...) {
 
   if(class(tbl) != "matrix") return() # Nothing to plot
 
-  color.sector <- rainbow(length(union(colnames(tbl), row.names(tbl))))
-  color.links <- rainbow(nrow(tbl) * ncol(tbl))
+  color.sector <- color.function(length(union(colnames(tbl), row.names(tbl))))
+  color.links <- color.function(nrow(tbl) * ncol(tbl))
 
   # Update for newer circlize versions: 'col' cannot be an atomic vector
   color.links <- matrix(color.links, ncol = ncol(tbl), byrow = F)
@@ -141,14 +159,14 @@ labelCoocurrencePlot <- function(mld, title, labelIndices, ...) {
 # Generates a barplot with label counters
 #' @import grDevices
 #' @import graphics
-labelBarPlot <- function(mld, title, labelIndices, ...) {
+labelBarPlot <- function(mld, title, labelIndices, col = rainbow(mld$measures$num.labels), ...) {
   labels <- mld$labels[mld$labels$index %in% labelIndices, ]
 
   end_point = 0.5 + nrow(labels) + nrow(labels)-1
   interval = round(max(labels$count) / 25)
   barplot(labels$count, axes=FALSE,
           ylab = "Number of samples",
-          col = rainbow(length(labels$count)),
+          col = col,
           space = 1, ...)
   axis(2, at = seq(0, max(labels$count), interval), las = 2, cex = 1.25)
   title(main = title, sub = "Instances per label")
@@ -159,10 +177,10 @@ labelBarPlot <- function(mld, title, labelIndices, ...) {
 
 # Generates a histogram with label counters
 #' @import graphics
-labelHistogram <- function(mld, title, ...) {
+labelHistogram <- function(mld, title, col = "blue", ...) {
   hist(mld$labels$count,
        breaks = length(mld$labels$count) / 3,
-       col = 'blue', border = 'white',
+       col = col, border = 'white',
        main = paste(title, "- Labels histogram"),
        xlab = "Number of instances",
        ylab = "Number of labels", ...)
@@ -170,10 +188,10 @@ labelHistogram <- function(mld, title, ...) {
 
 # Generates a histogram with cardinality information
 #' @import graphics
-cardinalityHistogram <- function(mld, title, ...) {
+cardinalityHistogram <- function(mld, title, col = "blue", ...) {
   hist(mld$dataset$.labelcount,
        breaks = max(mld$dataset$.labelcount),
-       col = 'blue', border = 'white',
+       col = col, border = 'white',
        main = paste(title, "- Labels per instance histogram"),
        xlab = "Number of labels per instance",
        ylab = "Number of instances", ...)
@@ -182,18 +200,18 @@ cardinalityHistogram <- function(mld, title, ...) {
 # Generates a pie chart with attribute types distribution
 #' @import grDevices
 #' @import graphics
-attributeByType <- function(mld, title, ...) {
+attributeByType <- function(mld, title, col = heat.colors(5), ...) {
   data <- rbind(as.data.frame(table(sapply(mld$dataset[ , mld$attributesIndexes], class))),
                 data.frame(Var1 = "label", Freq = mld$measures$num.labels))
 
   pie(data$Freq, labels = paste(data$Var1, data$Freq, sep = "\n"),
-      main = title, sub = "Type and number of attributes", col = heat.colors(5), ...)
+      main = title, sub = "Type and number of attributes", col = col, ...)
 }
 
 # Generates a barplot with labelset counters
 #' @import grDevices
 #' @import graphics
-labelsetBarPlot <- function(mld, title, ...) {
+labelsetBarPlot <- function(mld, title, col = rainbow(mld$measures$num.labelsets), ...) {
   labelsets <- mld$labelsets
   nls <- length(labelsets)
 
@@ -205,7 +223,7 @@ labelsetBarPlot <- function(mld, title, ...) {
   interval = round(max(labelsets) / 25)
   barplot(labelsets, axes = FALSE,
           ylab = "Number of samples",
-          col = rainbow(length(labelsets)),
+          col = col,
           space = 1, axisnames = FALSE, ...)
   axis(2, at = seq(0, max(labelsets), interval), las = 2, cex = 1.25)
   title(main = paste(title, "Instances per labelset", sep = "\n"))
@@ -216,9 +234,9 @@ labelsetBarPlot <- function(mld, title, ...) {
 
 # Generates a histogram with labelset counters
 #' @import graphics
-labelsetHistogram <- function(mld, title, ...) {
+labelsetHistogram <- function(mld, title, col = "blue", ...) {
   hist(mld$labelsets,
-       col = 'blue', border = 'white',
+       col = col, border = 'white',
        main = paste(title, "- Labelsets histogram"),
        xlab = "Number of instances",
        ylab = "Number of labelsets", ...)

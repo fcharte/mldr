@@ -10,6 +10,7 @@ measures <- function(mld) {
     list(
       num.attributes = length(names(mld$dataset)) - 2, # 2 columns are measures!
       num.instances = nrow(mld$dataset),
+      num.inputs = length(names(mld$dataset)) - 2 - nrow(mld$labels),
       num.labels = nrow(mld$labels),
 
       # Number of different labelsets
@@ -18,18 +19,21 @@ measures <- function(mld) {
       # Number of labelsets appearing only once
       num.single.labelsets = sum(labelsets == 1),
 
+
       # Maximum frequency on a labelset
       max.frequency = max(labelsets),
 
       cardinality = mean(mld$dataset$.labelcount),
       density = mean(mld$dataset$.labelcount) / nrow(mld$labels),
       meanIR = mean(mld$labels$IRLbl, na.rm = TRUE),  # Avoid NA IRLbls
-      scumble = mean(mld$dataset$.SCUMBLE)
+      scumble = mean(mld$dataset$.SCUMBLE),
+      scumble.cv = sd(mld$dataset$.SCUMBLE)/mean(mld$dataset$.SCUMBLE)
     )
   } else
     list(
       num.attributes = length(names(mld$dataset)) - 2,
       num.instances = nrow(mld$dataset),
+      num.inputs = length(names(mld$dataset)) - 2 - nrow(mld$labels),
       num.labels = nrow(mld$labels),
       num.labelsets = NA,
       num.single.labelsets = NA,
@@ -70,11 +74,19 @@ dataset_measures <- function(mld) {
     mld$dataset$.SCUMBLE <- ifelse(mld$dataset$.labelcount > 0,
                                    1 - (IRprod)^(1/mld$dataset$.labelcount) / IRmeans,
                                    0)
+
+    # lblSCUMBLE: SCUMBLE mean by label
+    mld$labels$SCUMBLE <- colSums(mld$dataset[mld$labels$index] * mld$dataset$.SCUMBLE) / colSums(mld$dataset[mld$labels$index])
+    # lblSCUMBLE.CV: Coefficient of variation of the corresponding SCUMBLE mean
+    mld$labels$SCUMBLE.CV <- sqrt(colSums(mld$dataset[mld$labels$index] * mld$dataset$.SCUMBLE^2) /
+                                    colSums(mld$dataset[mld$labels$index]) - mld$labels$SCUMBLE^2) / mld$labels$SCUMBLE
   }
   else {
     mld$dataset$.labelcount <- numeric()
     mld$dataset$.SCUMBLE <- numeric()
+    mld$labels$SCUMBLE <- numeric()
+    mld$labels$SCUMBLE.CV <- numeric()
   }
 
-  mld$dataset
+  mld
 }

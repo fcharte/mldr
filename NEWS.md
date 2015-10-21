@@ -1,8 +1,21 @@
 # Changelog
 
-## mldr [dev]
+## mldr 0.2.82
+
+* Fix bug in demo code for rebuilding an mldr object
+* Add global `scumble.cv` measure and `SCUMBLE.CV` measure per label
+* Add new concurrence module to ease analysis of concurrence among imbalanced labels
+* Display an analysis of concurrence between labels within the GUI
+* Add `remedial` preprocessing algorithm
+* Fix bug #18 when reading ARFF with capitalized '@relation' parameters
+* A Citation file (accesible from `citation("mldr")`) has been added
+
+## mldr 0.2.51
 
 * Fix bug #14 when reading certain sparse datasets (e.g. Yahoo)
+* Support for multiple plot types in one call
+* Add `num.inputs` measure for input attributes
+* Add color parameters for plotting functions
 
 ## mldr 0.2.33
 

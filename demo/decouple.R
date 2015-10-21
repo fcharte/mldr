@@ -46,7 +46,7 @@ deactivateMajorityLabels <- function(mld) {
   mldbase + mldhigh # Join the instances without changes with the filtered ones
 }
 
-# Test de function with emotions multilabel dataset
+# Test the function with emotions multilabel dataset
 decoupled.emotions <- dilMean(emotions)
 decoupled2.emotions <- dilThirdQ(emotions)
 

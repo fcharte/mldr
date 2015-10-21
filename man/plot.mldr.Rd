@@ -4,13 +4,13 @@
 \alias{plot.mldr}
 \title{Generates graphic representations of an mldr object}
 \usage{
-\method{plot}{mldr}(x, type = "LC", labelCount, labelIndices, title = NULL,
-  ...)
+\method{plot}{mldr}(x, type = "LC", labelCount, labelIndices, title,
+  ask = length(type) > prod(par("mfcol")), ...)
 }
 \arguments{
 \item{x}{The mldr object whose features are to be drawn}
 
-\item{type}{Indicates the type of plot to be produced. Possible types are:\itemize{
+\item{type}{Indicates the type(s) of plot to be produced. Possible types are:\itemize{
  \item \code{"LC"} Draws a circular plot with sectors representing each label
 and links between them depicting label co-occurrences
  \item \code{"LH"} for label histogram
@@ -27,6 +27,8 @@ and links between them depicting label co-occurrences
 
 \item{title}{A title to be shown above the plot. Defaults to the name of the dataset passed as first argument}
 
+\item{ask}{Specifies whether to pause the generation of plots after each one}
+
 \item{...}{Additional parameters to be given to barplot, hist, etc.}
 }
 \description{
@@ -38,9 +40,12 @@ library(mldr)
 # Label concurrence plot
 plot(genbase, type = "LC") # Plots all labels
 plot(genbase) # Same as above
-plot(genbase, title = "genbase dataset") # Changes the title
+plot(genbase, title = "genbase dataset", color.function = heat.colors) # Changes the title and color
 plot(genbase, labelCount = 10) # Randomly selects 10 labels to plot
 plot(genbase, labelIndices = genbase$labels$index[1:10]) # Plots info of first 10 labels
+
+# Label bar plot
+plot(emotions, type = "LB", col = terrain.colors(emotions$measures$num.labels))
 
 # Label histogram plot
 plot(emotions, type = "LH")

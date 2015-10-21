@@ -23,8 +23,8 @@ read_arff <- function(arff_file) {
   close(file_con)
 
   # Split into relation, attributes and data
-  relation_at <- pmatch("@relation", file_data)
-  data_start <- pmatch("@data", file_data)
+  relation_at <- grep("@relation", file_data, ignore.case = TRUE)
+  data_start <- grep("@data", file_data, ignore.case = TRUE)
 
   if (is.na(relation_at)) stop("Missing @relation or not unique.")
   if (is.na(data_start)) stop("Missing @data mark or not unique.")

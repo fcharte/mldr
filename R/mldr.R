@@ -143,6 +143,7 @@ mldr <- function(filename,
 #'
 #' summary(mymldr)
 #'
+#' @import stats
 #' @export
 #'
 mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
@@ -175,10 +176,8 @@ mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
                            sort(table(as.factor(do.call(paste, c(dataframe[, new_mldr$labels$index], sep = "")))))
                         else
                           array()
-  new_mldr$dataset <- dataset_measures(new_mldr)
+  new_mldr <- dataset_measures(new_mldr)
   new_mldr$measures <- measures(new_mldr)
-  new_mldr$labels$SCUMBLE <- sapply(new_mldr$labels$index, function(idx)
-    mean(new_mldr$dataset$.SCUMBLE[new_mldr$dataset[,idx] == 1]))
 
   class(new_mldr) <- "mldr"
 
