@@ -16,6 +16,7 @@
         <a href="{{ site.baseurl }}" class="l-blog">Blog</a>
         <a href="https://github.com/fcharte/mldr">GitHub</a>
         <a href="http://cran.r-project.org/web/packages/mldr/">CRAN</a>
+        <a href="http://fdavidcl.shinyapps.io/mldr">Shinyapps</a>
       </nav>
     </div>
     <div class="pure-u-1-24 pure-u-md-4-24 pure-u-lg-7-24"></div>
