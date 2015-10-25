@@ -1,3 +1,4 @@
 mldrinfo    Demo Shows basic info about the emotions multilabel dataset
 decouple    Demo Shows how to implement a filter over a MLD to decouple highly imbalanced labels
 rebuild_datasets    Demo Rebuilds the included datasets after modifying the data structures
+mlknn - Demo Implements a classifier (in this case, MLkNN) using mldr's 'mlcr' interface
