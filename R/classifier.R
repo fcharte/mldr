@@ -20,7 +20,7 @@ mlcr <- function(type, ...) {
     stop("No type provided for multilabel classifier!")
 
   checkForMethod <- function(generic, type) {
-    exists(paste0(generic, ".", type)) && class(get0(paste0(generic, ".", type))) != "function"
+    exists(paste0(generic, ".", type)) && class(get0(paste0(generic, ".", type))) == "function"
   }
 
   if (!checkForMethod("trainMlc", type))
@@ -88,6 +88,6 @@ test <- function(classifier, testSet) {
 }
 
 # Generics: one method of each type will be defined for each classifier
-initializeMlc <- function(classifier, ...) UseMethod("initializerMlc")
+initializeMlc <- function(classifier, ...) UseMethod("initializeMlc")
 trainMlc <- function(classifier, ...) UseMethod("trainMlc")
 predictInstance <- function(classifier, ...) UseMethod("predictInstance")
