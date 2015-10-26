@@ -17,7 +17,9 @@ initializeMlc.mlknn <- function(baseClassifier, numOfNeighbors = 10, smooth = 1,
   # K nearest neighbors function
   baseClassifier$kNearest <- function(instance, dataset, k) {
     # Calculate distance from each dataset sample to the current instance
-    dataset <- data.frame(dataset, dist = baseClassifier$parameters$distance(dataset, instance))
+    attrVector <- 1:dataset
+    distCol <- apply(dataset, 1, function(x) baseClassifier$parameters$distance(x, instance))
+    dataset <- data.frame(dataset, dist = distCol)
 
     # Reorder dataset according to the measured distance
     dataset <- dataset[order(dataset$dist)]
@@ -31,7 +33,10 @@ initializeMlc.mlknn <- function(baseClassifier, numOfNeighbors = 10, smooth = 1,
 }
 
 trainMlc.mlknn <- function(classifier, trainingSet) {
-  kNearest <- classifier$kNearest
+  classifier$trainingSet <- trainingSet
+
+  indexes <- 1:classifier$trainingSet$measures$num.attributes
+  classifier$attrIndexes <- indexes[!indexes %in% classifier$labels$index]
 
   # Apriori probabilities go here
 
@@ -49,7 +54,7 @@ trainMlc.mlknn <- function(classifier, trainingSet) {
     acc[[2]] <- acc[[2]] + li[[2]]
     acc
   }, apply(trainingSet$dataset, 1, function(instance) {
-    knn <- kNearest(instance, trainingSet$dataset, classifier$parameters$numNeighbors)
+    knn <- classifier$kNearest(instance, trainingSet$dataset[, classifier$attrIndexes], classifier$parameters$numNeighbors)
 
     # This returns a matrix with labels as columns, k nearest instances as rows
     acesByLabels <- sapply(trainingSet$labels$index, function(label) {
@@ -97,7 +102,6 @@ trainMlc.mlknn <- function(classifier, trainingSet) {
     })
   })
 
-  classifier$trainingSet <- trainingSet
   classifier$trainInfo <- paste0("The classifier is trained for ", trainingSet$name, ".")
 
   # Training function MUST return the (possibly modified) classifier object
@@ -105,7 +109,7 @@ trainMlc.mlknn <- function(classifier, trainingSet) {
 }
 
 predictInstance.mlknn <- function(classifier, instance) {
-  knn <- classifier$kNearest(instance, classifier$trainingSet, classifier$parameters$numNeighbors)
+  knn <- classifier$kNearest(instance, classifier$trainingSet$dataset[, classifier$attrIndexes], classifier$parameters$numNeighbors)
 
   wrapper <- sapply(1:classifier$trainingSet$measures$num.labels, function(label) {
     lIndex <- classifier$trainingSet$labels$index[label]
