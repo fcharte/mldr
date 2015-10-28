@@ -1,5 +1,7 @@
 # Changelog
 
+* Fix bug #21 when reading sparse datasets introducing zeroes instead of NAs 
+
 ## mldr 0.2.82
 
 * Fix bug in demo code for rebuilding an mldr object

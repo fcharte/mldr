@@ -163,7 +163,7 @@ parse_sparse_data <- function(arff_data, num_attrs) {
 
   # Build complete matrix with data
   dataset <- sapply(arff_data, function(row) {
-    complete <- NA[1:num_attrs]
+    complete <- rep(0, num_attrs)
     complete[as.integer(row[c(T, F)]) + 1] <- row[c(F, T)]
     complete
   })
