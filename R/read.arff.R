@@ -66,22 +66,28 @@ read_arff <- function(arff_file) {
 parse_attributes <- function(arff_attrs) {
   # Extract attribute definitions
 
-  # Regex matches strings separated by spaces not containing '
-  # or {, }; strings within single quotes or strings within
-  # curly braces
-  rgx <- "([^\\s'\\{\\}]+|'([^']|\\')*'|\\{([^}])*\\})"
-  att_list <- regmatches(arff_attrs, gregexpr(rgx, arff_attrs, perl = T))
+  #-----------------------------------------------------------------------------------------------------
+  # Finding adequate spaces to split the attribute definition into 3 parts:
+  #    @attribute attr_name {0, 1}   -> c("@attribute", "attr_name", "{0, 1}")
+  #    @attribute 'Attr. name' {0,1} -> c("@attribute", "'Attr. name'", "{0,1}")
+  #    @attribute 'David\'s attribute' {0,1} -> c("@attribute", "'David\'s attribute'", "{0,1}")
+  #-----------------------------------------------------------------------------------------------------
+  # Using the technique described under "Perl/PCRE Variation" in this StackOverflow answer:
+  #    (Regex Pattern to Match, Excluding when…) http://stackoverflow.com/a/23589204/5306389
+  # We capture any spacing character ignoring those within braces or single quotes,
+  # allowing the appearance of escaped single quotes (\').
+  #-----------------------------------------------------------------------------------------------------
+  rgx <- "(?:{[^}\\s]*?(\\s+[^}\\s]*?)+}|(?<!\\\\)'[^'\\\\]*(?:\\\\.[^'\\\\]*)*(?<!\\\\)')(*SKIP)(*F)|\\s+"
+  att_list <- strsplit(arff_attrs, rgx, perl = TRUE)
 
   # Structure by rows
   att_mat <- matrix(unlist(att_list[sapply(att_list, function(row){length(row) == 3})]),
                     ncol = 3, byrow = T)
   rm(att_list)
-
   # Filter any data that is not an attribute
   att_mat <- att_mat[grepl("\\s*@attribute", att_mat[, 1]), 2:3]
   att_mat <- gsub("\\'", "'", att_mat, fixed = T)
   att_mat <- gsub("^'(.*?)'$", "\\1", att_mat, perl = T)
-
 
   # Create the named vector
   att_v <- att_mat[, 2]
@@ -103,7 +109,9 @@ read_xml <- function(xml_file) {
   rm(parsed_xml)
 
   # Extract label names
-  unname(unlist(label_list[names(label_list) == "label.name"]))
+  labelnames <- unname(unlist(label_list[names(label_list) == "label.name"]))
+  # Ignore escaped apostrophes in strings to match behavior of 'parse_attributes'
+  gsub("\\'", "'", labelnames, fixed = T)
 }
 
 # Reads the name and Meka parameters in the header of an
