@@ -27,7 +27,8 @@ measures <- function(mld) {
       density = mean(mld$dataset$.labelcount) / nrow(mld$labels),
       meanIR = mean(mld$labels$IRLbl, na.rm = TRUE),  # Avoid NA IRLbls
       scumble = mean(mld$dataset$.SCUMBLE),
-      scumble.cv = sd(mld$dataset$.SCUMBLE)/mean(mld$dataset$.SCUMBLE)
+      scumble.cv = sd(mld$dataset$.SCUMBLE)/mean(mld$dataset$.SCUMBLE),
+      tcs = log((length(names(mld$dataset)) - 2 - nrow(mld$labels)) * nrow(mld$labels) * length(labelsets))
     )
   } else
     list(
