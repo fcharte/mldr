@@ -9,3 +9,6 @@
 .Rproj.user/
 .Rproj.user
 inst/doc
+
+# RSConnect (shinyapps connection)
+inst/shiny/rsconnect
