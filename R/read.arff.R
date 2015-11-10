@@ -85,7 +85,7 @@ parse_attributes <- function(arff_attrs) {
                     ncol = 3, byrow = T)
   rm(att_list)
   # Filter any data that is not an attribute
-  att_mat <- att_mat[grepl("\\s*@attribute", att_mat[, 1]), 2:3]
+  att_mat <- att_mat[grepl("\\s*@attribute", att_mat[, 1], ignore.case = TRUE), 2:3]
   att_mat <- gsub("\\'", "'", att_mat, fixed = T)
   att_mat <- gsub("^'(.*?)'$", "\\1", att_mat, perl = T)
 
