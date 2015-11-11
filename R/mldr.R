@@ -145,7 +145,6 @@ mldr <- function(filename,
 #'
 #' @import stats
 #' @export
-#'
 mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
   if(!is.data.frame(dataframe))
     stop(paste(substitute(dataframe), "is not a valid data.frame"))
