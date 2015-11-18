@@ -116,7 +116,7 @@ mldr <- function(filename,
     dataset[, which(attrs == "numeric")] <-
       lapply(dataset[, which(attrs == "numeric")], as.numeric)
 
-    mldr_from_dataframe(dataset, label_indices, header$name)
+    mldr_from_dataframe(dataset, label_indices, attrs, header$name)
   } else {
     NULL
   }
@@ -146,7 +146,7 @@ mldr <- function(filename,
 #' @import stats
 #' @export
 #'
-mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
+mldr_from_dataframe <- function(dataframe, labelIndices, attributes, name) {
   if(!is.data.frame(dataframe))
     stop(paste(substitute(dataframe), "is not a valid data.frame"))
 
@@ -160,20 +160,30 @@ mldr_from_dataframe <- function(dataframe, labelIndices, name = NULL) {
   new_mldr$name <- if(missing(name)) substitute(dataframe) else name
   new_mldr$dataset <- dataframe
 
-  new_mldr$attributesIndexes <- 1:length(dataframe)
-  new_mldr$attributesIndexes <- new_mldr$attributesIndexes[! new_mldr$attributesIndexes %in% labelIndices]
-  new_mldr$attributes <- sapply(new_mldr$dataset, class)
-  new_mldr$attributes[labelIndices] <- "{0,1}"
-  factorIndexes <- which(new_mldr$attributes == "factor")
-  if(length(factorIndexes > 0))
-    new_mldr$attributes[factorIndexes] <- sapply(factorIndexes,
-                                                 function(idx) paste("{", paste(
-                                                   levels(new_mldr$dataset[, names(new_mldr$attributes)[idx]]),
-                                                   collapse = ","), "}", sep = ""))
+  #new_mldr$attributesIndexes <- 1:length(dataframe)
+  #new_mldr$attributesIndexes <- new_mldr$attributesIndexes[! new_mldr$attributesIndexes %in% labelIndices]
+  new_mldr$attributesIndexes <- which(!1:length(dataframe) %in% labelIndices)
+
+  if (missing(attributes)) {
+    new_mldr$attributes <- sapply(new_mldr$dataset, class)
+    new_mldr$attributes[labelIndices] <- "{0,1}"
+    factorIndexes <- which(new_mldr$attributes == "character")
+
+    if (length(factorIndexes > 0))
+      new_mldr$attributes[factorIndexes] <- sapply(factorIndexes, function(idx)
+          paste("{", paste(
+              levels(as.factor(new_mldr$dataset[, idx])),
+              collapse = ","
+            ), "}", sep = ""
+          )
+        )
+  } else {
+    new_mldr$attributes <- attributes
+  }
 
   new_mldr$labels <- label_measures(dataframe, labelIndices)
   new_mldr$labelsets <- if(nrow(dataframe) > 0)
-                           sort(table(as.factor(do.call(paste, c(dataframe[, new_mldr$labels$index], sep = "")))))
+                          sort(table(as.factor(do.call(paste, c(dataframe[, new_mldr$labels$index], sep = "")))))
                         else
                           array()
   new_mldr <- dataset_measures(new_mldr)
