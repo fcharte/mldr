@@ -28,7 +28,7 @@ summary.mldr <- function(object, ...) {
 #'
 #' @export
 print.mldr <- function(x, ...) {
-  print(x$dataset[ , c(x$attributesIndexes, x$labels$index)], ...)
+  print(x$dataset[ , c(1:x$measures$num.attributes)], ...)
 }
 
 
