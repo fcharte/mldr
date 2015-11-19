@@ -129,6 +129,8 @@ mldr <- function(filename,
 #' @param dataframe The \code{data.frame} containing the dataset attributes and labels.
 #' @param labelIndices Vector containing the indices of attributes acting as labels. Usually the
 #' labels will be at the end (right-most columns) or the beginning (left-most columns) of the \code{data.frame}
+#' @param attributes Vector with the attributes type, as returned by the  \code{attributes} member of an \code{mldr}
+#' object. By default the type of the data.frame columns will be used.
 #' @param name Name of the dataset. The name of the dataset given as first parameter will be used by default
 #' @return An mldr object containing the multilabel dataset
 #' @seealso \code{\link{mldr}}, \code{\link{summary.mldr}}

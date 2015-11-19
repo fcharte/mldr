@@ -4,13 +4,16 @@
 \alias{mldr_from_dataframe}
 \title{Generates an mldr object from a data.frame and a vector with label indices}
 \usage{
-mldr_from_dataframe(dataframe, labelIndices, name = NULL)
+mldr_from_dataframe(dataframe, labelIndices, attributes, name)
 }
 \arguments{
 \item{dataframe}{The \code{data.frame} containing the dataset attributes and labels.}
 
 \item{labelIndices}{Vector containing the indices of attributes acting as labels. Usually the
 labels will be at the end (right-most columns) or the beginning (left-most columns) of the \code{data.frame}}
+
+\item{attributes}{Vector with the attributes type, as returned by the  \code{attributes} member of an \code{mldr}
+object. By default the type of the data.frame columns will be used.}
 
 \item{name}{Name of the dataset. The name of the dataset given as first parameter will be used by default}
 }
