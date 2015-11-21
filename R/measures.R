@@ -79,7 +79,7 @@ dataset_measures <- function(mld) {
     # lblSCUMBLE: SCUMBLE mean by label - Avoid dividing by 0 if there are not appearances of a label
     mld$labels$SCUMBLE <- ifelse(colSums(mld$dataset[mld$labels$index]) == 0,
                                  0,
-                                 colSums(mld$dataset[mld$labels$index] * mld$dataset$.SCUMBLE) / colSums(mld$dataset[mld$labels$index]))
+                                 sapply(mld$labels$index, function(i) mean(mld$dataset[mld$dataset[, i] != 0, ".SCUMBLE"])))
 
     # lblSCUMBLE.CV: Coefficient of variation of the corresponding SCUMBLE mean
     ####################################
