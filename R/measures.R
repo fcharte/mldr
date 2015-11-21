@@ -42,7 +42,9 @@ measures <- function(mld) {
       cardinality = NA,
       density = NA,
       meanIR = NA,
-      scumble = NA
+      scumble = NA,
+      scumble.cv = NA,
+      tcs = 0
     )
 }
 
