@@ -86,10 +86,10 @@ dataset_measures <- function(mld) {
     # If the mean SCUMBLE of a label is 0, then its standard deviation is 0 (since SCUMBLE is always nonnegative),
     # thus we define its CV as 0.
     ####################################
-    mld$labels$SCUMBLE.CV <- ifelse(mld$labels$SCUMBLE == 0 | colSums(mld$dataset[mld$labels$index]) - mld$labels$SCUMBLE^2 == 0,
+    mld$labels$SCUMBLE.CV <- ifelse(mld$labels$SCUMBLE == 0 | colSums(mld$dataset[mld$labels$index]) == 0,
       0,
-      sqrt(colSums(mld$dataset[mld$labels$index] * mld$dataset$.SCUMBLE^2) /
-        colSums(mld$dataset[mld$labels$index]) - mld$labels$SCUMBLE^2) / mld$labels$SCUMBLE)
+      sqrt(abs(colSums(mld$dataset[mld$labels$index] * mld$dataset$.SCUMBLE^2) /
+        colSums(mld$dataset[mld$labels$index]) - mld$labels$SCUMBLE^2 ) / mld$labels$SCUMBLE))
   }
   else {
     mld$dataset$.labelcount <- numeric()
