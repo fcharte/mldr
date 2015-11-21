@@ -88,8 +88,8 @@ dataset_measures <- function(mld) {
     ####################################
     mld$labels$SCUMBLE.CV <- ifelse(mld$labels$SCUMBLE == 0 | colSums(mld$dataset[mld$labels$index]) == 0,
       0,
-      sqrt(abs(colSums(mld$dataset[mld$labels$index] * mld$dataset$.SCUMBLE^2) /
-        colSums(mld$dataset[mld$labels$index]) - mld$labels$SCUMBLE^2)) / mld$labels$SCUMBLE)
+      sapply(mld$labels$index, function(i) sd(mld$dataset[mld$dataset[, i] != 0, ".SCUMBLE"])) / mld$labels$SCUMBLE
+    )
   }
   else {
     mld$dataset$.labelcount <- numeric()
