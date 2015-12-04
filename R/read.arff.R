@@ -3,6 +3,36 @@
 # different formats (MULAN/MEKA, sparse, nonsparse...)
 #
 
+#' @title Read an ARFF file
+#' @description Reads a multilabel dataset from an ARFF file in Mulan or MEKA
+#' and retrieves instances distinguishing attributes corresponding to labels
+#' @param filename Name of the dataset
+#' @param use_xml Specifies whether to use an
+#'  associated XML file to identify the labels. Defaults to TRUE
+#' @param auto_extension Specifies whether to add
+#'  the '.arff' and '.xml' extensions to the filename
+#'  where appropriate. Defaults to TRUE
+#' @param xml_file Path to the XML file. If not
+#'  provided, the filename ending in ".xml" will be
+#'  assumed
+#' @param label_indices Optional vector containing the indices of the attributes
+#'  that should be read as labels
+#' @param label_names Optional vector containing the names of the attributes
+#'  that should be read as labels
+#' @param label_amount Optional parameter indicating the number of labels in the
+#'  dataset, which will be taken from the last attributes of the dataset
+#' @return A list containing four members: dataframe (containing the dataset),
+#'  labelIndices (specifying the indices of the attributes that correspond to
+#'  labels), attributes (containing name and type of each attribute) and name of
+#'  the dataset.
+#' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{mldr}}
+#' @examples
+#'
+#' library(mldr)
+#'\dontrun{
+#' # Read "yeast.arff" and labels from "yeast.xml"
+#' mymld <- read.arff("yeast")
+#'}
 #' @export
 read.arff <- function(filename,
                       use_xml = TRUE,
