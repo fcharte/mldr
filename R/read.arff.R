@@ -195,7 +195,7 @@ parse_attributes <- function(arff_attrs) {
   #    @attribute 'David\'s attribute' {0,1} -> c("@attribute", "'David\'s attribute'", "{0,1}")
   #-----------------------------------------------------------------------------------------------------
   # Using the technique described under "Perl/PCRE Variation" in this StackOverflow answer:
-  #    (Regex Pattern to Match, Excluding when…) http://stackoverflow.com/a/23589204/5306389
+  #    (Regex Pattern to Match, Excluding when...) http://stackoverflow.com/a/23589204/5306389
   # We capture any spacing character ignoring those within braces or single quotes,
   # allowing the appearance of escaped single quotes (\').
   #-----------------------------------------------------------------------------------------------------
