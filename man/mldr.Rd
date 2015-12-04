@@ -6,8 +6,8 @@
 \usage{
 mldr(filename, use_xml = TRUE, auto_extension = TRUE, xml_file,
   label_indices, label_names, label_amount,
-  force_read_from_file = missing(xml_file) && missing(label_indices) &&
-  missing(label_names) && missing(label_amount) && use_xml && auto_extension)
+  force_read_from_file = !all(c(missing(xml_file), missing(label_indices),
+  missing(label_names), missing(label_amount), use_xml, auto_extension)))
 }
 \arguments{
 \item{filename}{Name of the dataset}

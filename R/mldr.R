@@ -46,7 +46,7 @@ mldr <- function(filename,
                  label_indices,
                  label_names,
                  label_amount,
-                 force_read_from_file = missing(xml_file) && missing(label_indices) && missing(label_names) && missing(label_amount) && use_xml && auto_extension) {
+                 force_read_from_file = !all(c(missing(xml_file), missing(label_indices), missing(label_names), missing(label_amount), use_xml, auto_extension))) {
 
   no_filename <- missing(filename)
   no_xml_file <- missing(xml_file)
