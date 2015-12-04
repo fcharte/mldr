@@ -19,7 +19,8 @@ Imports:
     stats
 Suggests:
     pROC,
-    knitr
+    knitr,
+    mldr.datasets
 License: LGPL (>= 3) | file LICENSE
 LazyData: true
 VignetteBuilder: knitr
