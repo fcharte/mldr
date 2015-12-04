@@ -2,6 +2,98 @@
 # Contains necessary functions to read ARFF files in
 # different formats (MULAN/MEKA, sparse, nonsparse...)
 #
+
+#' @export
+read.arff <- function(filename,
+                      use_xml = TRUE,
+                      auto_extension = TRUE,
+                      xml_file,
+                      label_indices,
+                      label_names,
+                      label_amount) {
+
+  no_filename <- missing(filename)
+  no_xml_file <- missing(xml_file)
+  no_label_indices <- missing(label_indices)
+  no_label_names <- missing(label_names)
+  no_label_amount <- missing(label_amount)
+
+  if (!no_filename) {
+    # Parameter check
+    if (!is.character(filename))
+      stop("Argument 'filename' must be a character string.")
+    if (!no_xml_file && !is.character(xml_file))
+      stop("Argument 'xml_file' must be a character string.")
+
+    # Calculate names of files
+    arff_file <- if (auto_extension)
+      paste(filename, ".arff", sep="")
+    else
+      filename
+
+    if (no_xml_file)
+      xml_file <- if (auto_extension)
+        paste(filename, ".xml", sep = "")
+    else {
+      noext <- unlist(strsplit(filename, ".", fixed = TRUE))
+      paste(noext[1:length(noext)], ".xml", sep = "")
+    }
+
+    # Get file contents
+    relation <- NULL
+    attrs <- NULL
+    contents <- read_arff_internal(arff_file)
+    relation <- contents$relation
+    attrs <- contents$attributes
+    dataset <- contents$dataset
+    rm(contents)
+
+    header <- read_header(relation)
+
+    # Finding label indices. Priorities:
+    #  - label_indices
+    #  - label_names
+    #  - label_amount
+    #  - xml_file
+    #  - MEKA header
+
+    if (no_label_indices) {
+      if (use_xml && no_label_amount && no_label_names) {
+        # Read labels from XML file
+        label_names <- read_xml(xml_file)
+      }
+
+      if ((use_xml && no_label_amount) || !no_label_names) {
+        label_indices <- which(names(attrs) %in% label_names)
+      } else {
+        if (no_label_amount) {
+          # Read label amount from Meka parameters
+          label_indices <- 1:header$toplabel
+        } else {
+          label_indices <- (ncol(dataset) - label_amount + 1):ncol(dataset)
+        }
+      }
+    }
+
+    # Convert labels to numeric
+    dataset[, label_indices] <- lapply(dataset[, label_indices],
+                                       function(col) as.numeric(!is.na(as.numeric(col) | NA)))
+
+    # Adjust type of numeric attributes
+    dataset[, which(attrs == "numeric")] <-
+      lapply(dataset[, which(attrs == "numeric")], as.numeric)
+
+    list(
+      dataframe = dataset,
+      labelIndices = label_indices,
+      attributes = attrs,
+      name = header$name
+    )
+  } else {
+    NULL
+  }
+}
+
 #
 # Extracts all useful data from an ARFF file in
 # R objects
@@ -10,7 +102,7 @@
 # @return List containing the relation string,
 #  a named vector for attributes and a data.frame
 #  for the data section
-read_arff <- function(arff_file) {
+read_arff_internal <- function(arff_file) {
   file_con <- file(arff_file, "rb")
 
   if (!isOpen(file_con))
