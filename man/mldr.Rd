@@ -5,7 +5,9 @@
 \title{Creates an object representing a multilabel dataset}
 \usage{
 mldr(filename, use_xml = TRUE, auto_extension = TRUE, xml_file,
-  label_indices, label_names, label_amount)
+  label_indices, label_names, label_amount,
+  force_read_from_file = missing(xml_file) && missing(label_indices) &&
+  missing(label_names) && missing(label_amount) && use_xml && auto_extension)
 }
 \arguments{
 \item{filename}{Name of the dataset}
@@ -29,6 +31,9 @@ that should be read as labels}
 
 \item{label_amount}{Optional parameter indicating the number of labels in the
 dataset, which will be taken from the last attributes of the dataset}
+
+\item{force_read_from_file}{Set this parameter to TRUE to always read from a local file,
+or set it to FALSE to look for the dataset within the `mldr.datasets` package}
 }
 \value{
 An mldr object containing the multilabel dataset
@@ -57,6 +62,6 @@ mymld <- mldr("IMDB.arff", use_xml = FALSE, auto_extension = FALSE)
 }
 }
 \seealso{
-\code{\link{mldr_from_dataframe}}, \code{\link{summary.mldr}}
+\code{\link{mldr_from_dataframe}}, \code{\link{read.arff}}, \code{\link{summary.mldr}}
 }
 

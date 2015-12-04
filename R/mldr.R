@@ -18,8 +18,10 @@
 #'  that should be read as labels
 #' @param label_amount Optional parameter indicating the number of labels in the
 #'  dataset, which will be taken from the last attributes of the dataset
+#' @param force_read_from_file Set this parameter to TRUE to always read from a local file,
+#'  or set it to FALSE to look for the dataset within the `mldr.datasets` package
 #' @return An mldr object containing the multilabel dataset
-#' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{summary.mldr}}
+#' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{read.arff}}, \code{\link{summary.mldr}}
 #' @examples
 #'
 #' library(mldr)
@@ -43,7 +45,8 @@ mldr <- function(filename,
                  xml_file,
                  label_indices,
                  label_names,
-                 label_amount) {
+                 label_amount,
+                 force_read_from_file = missing(xml_file) && missing(label_indices) && missing(label_names) && missing(label_amount) && use_xml && auto_extension) {
 
   no_filename <- missing(filename)
   no_xml_file <- missing(xml_file)
@@ -51,10 +54,29 @@ mldr <- function(filename,
   no_label_names <- missing(label_names)
   no_label_amount <- missing(label_amount)
 
-  if (!no_filename) {
-    do.call(mldr_from_dataframe, read.arff(filename, use_xml, auto_extension, xml_file, label_indices, label_names, label_amount))
+  success <- FALSE
+
+  if (!force_read_from_file) {
+    if (requireNamespace("mldr.datasets", quietly = TRUE)) {
+      if (exists(filename)) {
+        if (existsFunction(filename)) {
+          get(filename)()
+        }
+
+        ret_value <- get(filename)
+        success <- TRUE
+      }
+    }
+  }
+
+  if (success) {
+    ret_value
   } else {
-    NULL
+    if (!no_filename) {
+      do.call(mldr_from_dataframe, read.arff(filename, use_xml, auto_extension, xml_file, label_indices, label_names, label_amount))
+    } else {
+      NULL
+    }
   }
 }
 
