@@ -1,6 +1,15 @@
 # Changelog
 
+## mldr 0.3.18
+
 * Fix bug #21 when reading sparse datasets introducing zeroes instead of NAs 
+* Fix #23 by ignoring case in `@attribute` tags
+* Fix bug #24 in filtering function
+* Improves parsing of attributes to correctly manage escaped apostrophes
+* Fix calculation of SCUMBLE CV to prevent NaN values
+* Optimizes some calculations (mean and CV of SCUMBLE are now 4x faster)
+* Export `read.arff` function to allow reading multilabel data without calculating measures
+* Add ability to load datasets from the [mldr.datasets](https://github.com/fcharte/mldr.datasets) package in `mldr()` function
 
 ## mldr 0.2.82
 

@@ -38,6 +38,7 @@
 #' # Read MEKA style dataset, without XML file and giving extension
 #' mymld <- mldr("IMDB.arff", use_xml = FALSE, auto_extension = FALSE)
 #'}
+#' @import methods
 #' @export
 mldr <- function(filename,
                  use_xml = TRUE,
