@@ -59,11 +59,11 @@ mldr <- function(filename,
 
   if (!force_read_from_file) {
     if (requireNamespace("mldr.datasets", quietly = TRUE)) {
-      if (exists(filename)) {
-        if (existsFunction(filename)) {
-          get(filename)()
-        }
-
+      if (exists(filename, mode = "list")) {
+        ret_value <- get(filename)
+        success <- TRUE
+      } else if (existsFunction(filename)) {
+        get(filename)()
         ret_value <- get(filename)
         success <- TRUE
       }
