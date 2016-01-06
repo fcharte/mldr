@@ -73,3 +73,21 @@ write_arff(mymldr, "my_new_mldr")
 
 For more examples and detailed explanation on available functions,
 please refer to the documentation.
+
+##Citation
+
+Please, cite *mldr* as follows:
+
+```
+@Article{charte-charte:2015,
+  author       = {Francisco Charte and David Charte}, 
+  title        = {Working with Multilabel Datasets in {R}: The mldr Package}, 
+  journal      = {The R Journal},
+  year         = 2015,
+  volume       = 7,
+  number       = 2,
+  pages        = {149--162},
+  month        = dec,
+  url          = {http://journal.r-project.org/archive/2015-2/charte-charte.pdf}
+}
+```
