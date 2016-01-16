@@ -2,7 +2,7 @@
 ====
 
 [![Travis](https://img.shields.io/travis/fcharte/mldr/master.svg)](https://travis-ci.org/fcharte/mldr/)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mldr)](https://cran.r-project.org/web/packages/mldr/)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mldr)](https://cran.r-project.org/package=mldr)
 [![Downloads](http://cranlogs.r-pkg.org/badges/mldr)](https://cran.rstudio.com/web/packages/mldr/)
 
 Exploratory data analysis and manipulation functions for multi-label data sets along

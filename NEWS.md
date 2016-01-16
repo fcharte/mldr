@@ -1,5 +1,10 @@
 # Changelog
 
+## mldr 0.3.22
+
+* Improve how we load available MLD's in `mldr()`
+* Update `CITATION` file
+
 ## mldr 0.3.18
 
 * Fix bug #21 when reading sparse datasets introducing zeroes instead of NAs 
