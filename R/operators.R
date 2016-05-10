@@ -21,10 +21,11 @@
   # Check the two mldr's structure
   if(mldr1 == mldr2)
     mldr_from_dataframe(
-      rbind(subset(mldr1$dataset, select = 1:mldr1$measures$num.attributes),
-            subset(mldr2$dataset, select = 1:mldr1$measures$num.attributes)),
-      mldr1$labels$index,
-      mldr1$name
+      dataframe    = rbind(subset(mldr1$dataset, select = 1:mldr1$measures$num.attributes),
+                           subset(mldr2$dataset, select = 1:mldr1$measures$num.attributes)),
+      labelIndices = mldr1$labels$index,
+      attributes   = mldr1$attributes,
+      name         = mldr1$name
     )
   else
     stop(paste(substitute(mldr1), " and ", substitute(mldr2), " don't have the same structure"))
