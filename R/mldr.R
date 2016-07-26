@@ -20,6 +20,7 @@
 #'  dataset, which will be taken from the last attributes of the dataset
 #' @param force_read_from_file Set this parameter to TRUE to always read from a local file,
 #'  or set it to FALSE to look for the dataset within the `mldr.datasets` package
+#' @param ... Extra parameters to be passed to 'read_arff'
 #' @return An mldr object containing the multilabel dataset
 #' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{read.arff}}, \code{\link{summary.mldr}}
 #' @examples
@@ -47,7 +48,8 @@ mldr <- function(filename,
                  label_indices,
                  label_names,
                  label_amount,
-                 force_read_from_file = !all(c(missing(xml_file), missing(label_indices), missing(label_names), missing(label_amount), use_xml, auto_extension))) {
+                 force_read_from_file = !all(c(missing(xml_file), missing(label_indices), missing(label_names), missing(label_amount), use_xml, auto_extension)),
+                 ...) {
 
   no_filename <- missing(filename)
   no_xml_file <- missing(xml_file)
@@ -74,7 +76,7 @@ mldr <- function(filename,
     ret_value
   } else {
     if (!no_filename) {
-      do.call(mldr_from_dataframe, read.arff(filename, use_xml, auto_extension, xml_file, label_indices, label_names, label_amount))
+      do.call(mldr_from_dataframe, read.arff(filename, use_xml, auto_extension, xml_file, label_indices, label_names, label_amount, ...))
     } else {
       NULL
     }
