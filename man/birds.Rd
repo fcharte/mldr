@@ -19,4 +19,3 @@ summary(birds)
 birds$labels
 }
 \keyword{datasets}
-

@@ -51,4 +51,3 @@ mymld <- read.arff("yeast")
 \seealso{
 \code{\link{mldr_from_dataframe}}, \code{\link{mldr}}
 }
-

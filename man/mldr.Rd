@@ -64,4 +64,3 @@ mymld <- mldr("IMDB.arff", use_xml = FALSE, auto_extension = FALSE)
 \seealso{
 \code{\link{mldr_from_dataframe}}, \code{\link{read.arff}}, \code{\link{summary.mldr}}
 }
-

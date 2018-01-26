@@ -25,4 +25,3 @@ write_arff(emotions, "myemotions")
 \seealso{
 \code{\link{mldr_from_dataframe}}, \code{\link{mldr}}
 }
-
