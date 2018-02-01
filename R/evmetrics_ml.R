@@ -3,9 +3,9 @@
 #' @rdname evmetrics
 #' @title Multi-label evaluation metrics
 #' @description Several evaluation metrics designed for multi-label problems.
-#' @param trueLabels Matrix of true labels, columns corresponding to labels and
+#' @param true_labels Matrix of true labels, columns corresponding to labels and
 #'  rows to instances.
-#' @param predictedLabels Matrix of predicted labels, columns corresponding to
+#' @param predicted_labels Matrix of predicted labels, columns corresponding to
 #'  labels and rows to instances.
 #' @return Resulting value in the range [0, 1]
 #' @details As defined in the multi-label literature, Hamming Loss describes
@@ -15,10 +15,10 @@ NULL
 
 #' @rdname evmetrics
 #' @export
-hammingLoss <- function(trueLabels, predictedLabels)
-  mean(abs(trueLabels - predictedLabels))
+hamming_loss <- function(true_labels, predicted_labels)
+  mean(abs(true_labels - predicted_labels))
 
 #' @rdname evmetrics
 #' @export
-subsetAccuracy <- function(trueLabels, predictedLabels)
-  mean(apply(trueLabels == predictedLabels, 1, all))
+subset_accuracy <- function(true_labels, predicted_labels)
+  mean(apply(true_labels == predicted_labels, 1, all))

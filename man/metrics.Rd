@@ -3,51 +3,51 @@
 \name{Averaged metrics}
 \alias{Averaged metrics}
 \alias{accuracy}
-\alias{recall}
 \alias{precision}
-\alias{Fmeasure}
-\alias{microRecall}
-\alias{microPrecision}
-\alias{macroRecall}
-\alias{macroPrecision}
-\alias{microFmeasure}
-\alias{macroFmeasure}
+\alias{micro_precision}
+\alias{macro_precision}
+\alias{recall}
+\alias{micro_recall}
+\alias{macro_recall}
+\alias{fmeasure}
+\alias{micro_fmeasure}
+\alias{macro_fmeasure}
 \title{Multi-label averaged evaluation metrics}
 \usage{
-accuracy(trueLabels, predictedLabels, ...)
+accuracy(true_labels, predicted_labels, ...)
 
-recall(trueLabels, predictedLabels, undefinedValue = "diagnose")
+precision(true_labels, predicted_labels, undefined_value = "diagnose")
 
-precision(trueLabels, predictedLabels, undefinedValue = "diagnose")
+micro_precision(true_labels, predicted_labels, ...)
 
-Fmeasure(trueLabels, predictedLabels, ...)
+macro_precision(true_labels, predicted_labels, undefined_value = "diagnose")
 
-microRecall(trueLabels, predictedLabels, ...)
+recall(true_labels, predicted_labels, undefined_value = "diagnose")
 
-microPrecision(trueLabels, predictedLabels, ...)
+micro_recall(true_labels, predicted_labels, ...)
 
-macroRecall(trueLabels, predictedLabels, undefinedValue = "diagnose")
+macro_recall(true_labels, predicted_labels, undefined_value = "diagnose")
 
-macroPrecision(trueLabels, predictedLabels, undefinedValue = "diagnose")
+fmeasure(true_labels, predicted_labels, ...)
 
-microFmeasure(trueLabels, predictedLabels, ...)
+micro_fmeasure(true_labels, predicted_labels, ...)
 
-macroFmeasure(trueLabels, predictedLabels, ...)
+macro_fmeasure(true_labels, predicted_labels, ...)
 }
 \arguments{
-\item{trueLabels}{Matrix of true labels, columns corresponding to labels and
+\item{true_labels}{Matrix of true labels, columns corresponding to labels and
 rows to instances.}
 
-\item{predictedLabels}{Matrix of predicted labels, columns corresponding to
+\item{predicted_labels}{Matrix of predicted labels, columns corresponding to
 labels and rows to instances.}
 
-\item{...}{Additional parameters for precision, recall and Fmeasure}
+\item{...}{Additional parameters for precision, recall and Fmeasure.}
 
-\item{undefinedValue}{The value to be returned when a computation results in
+\item{undefined_value}{The value to be returned when a computation results in
 an undefined value due to a division by zero. See details.}
 }
 \value{
-Resulting value in the range [0, 1]
+Resulting value in the range [0, 1].
 }
 \description{
 Evaluation metrics based on simple metrics for the confusion
@@ -56,7 +56,7 @@ Evaluation metrics based on simple metrics for the confusion
 \details{
 \strong{Deciding a value when denominators are zero}
 
-Parameter \code{undefinedValue}: The value to be returned when a computation
+Parameter \code{undefined_value}: The value to be returned when a computation
 results in an undefined value due to a division by zero. Can be a single
 value (e.g. NA, 0), a function with the following signature:
 
@@ -80,7 +80,7 @@ or a string corresponding to one of the predefined strategies. These are:
 }
 }
 \examples{
-trueLabels <- matrix(c(
+true_labels <- matrix(c(
 1,1,1,
 0,0,0,
 1,0,0,
@@ -88,7 +88,7 @@ trueLabels <- matrix(c(
 0,0,0,
 1,0,0
 ), ncol = 3, byrow = TRUE)
-predictedLabels <- matrix(c(
+predicted_labels <- matrix(c(
 1,1,1,
 0,0,0,
 1,0,0,
@@ -97,10 +97,10 @@ predictedLabels <- matrix(c(
 0,1,0
 ), ncol = 3, byrow = TRUE)
 
-precision(trueLabels, predictedLabels, undefinedValue = "diagnose")
-macroRecall(trueLabels, predictedLabels, undefinedValue = 0)
-macroFmeasure(
-  trueLabels, predictedLabels,
-  undefinedValue = function(tp, fp, tn, fn) as.numeric(fp == 0 && fn == 0)
+precision(true_labels, predicted_labels, undefined_value = "diagnose")
+macro_recall(true_labels, predicted_labels, undefined_value = 0)
+macro_fmeasure(
+  true_labels, predicted_labels,
+  undefined_value = function(tp, fp, tn, fn) as.numeric(fp == 0 && fn == 0)
 )
 }

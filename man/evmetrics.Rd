@@ -2,19 +2,19 @@
 % Please edit documentation in R/evmetrics_ml.R
 \name{Evaluation metrics}
 \alias{Evaluation metrics}
-\alias{hammingLoss}
-\alias{subsetAccuracy}
+\alias{hamming_loss}
+\alias{subset_accuracy}
 \title{Multi-label evaluation metrics}
 \usage{
-hammingLoss(trueLabels, predictedLabels)
+hamming_loss(true_labels, predicted_labels)
 
-subsetAccuracy(trueLabels, predictedLabels)
+subset_accuracy(true_labels, predicted_labels)
 }
 \arguments{
-\item{trueLabels}{Matrix of true labels, columns corresponding to labels and
+\item{true_labels}{Matrix of true labels, columns corresponding to labels and
 rows to instances.}
 
-\item{predictedLabels}{Matrix of predicted labels, columns corresponding to
+\item{predicted_labels}{Matrix of predicted labels, columns corresponding to
 labels and rows to instances.}
 }
 \value{

@@ -5,19 +5,19 @@
 #' @description Evaluation metrics based on simple metrics for the confusion
 #'  matrix, averaged through several criteria.
 #'
-#' @param trueLabels Matrix of true labels, columns corresponding to labels and
+#' @param true_labels Matrix of true labels, columns corresponding to labels and
 #'  rows to instances.
-#' @param predictedLabels Matrix of predicted labels, columns corresponding to
+#' @param predicted_labels Matrix of predicted labels, columns corresponding to
 #'  labels and rows to instances.
-#' @param undefinedValue The value to be returned when a computation results in
+#' @param undefined_value The value to be returned when a computation results in
 #'  an undefined value due to a division by zero. See details.
-#' @param ... Additional parameters for precision, recall and Fmeasure
-#' @return Resulting value in the range [0, 1]
+#' @param ... Additional parameters for precision, recall and Fmeasure.
+#' @return Resulting value in the range [0, 1].
 #' @details
 #'
 #' \strong{Deciding a value when denominators are zero}
 #'
-#' Parameter \code{undefinedValue}: The value to be returned when a computation
+#' Parameter \code{undefined_value}: The value to be returned when a computation
 #' results in an undefined value due to a division by zero. Can be a single
 #' value (e.g. NA, 0), a function with the following signature:
 #'
@@ -40,7 +40,7 @@
 #'  \code{NA}).
 #' }
 #' @examples
-#' trueLabels <- matrix(c(
+#' true_labels <- matrix(c(
 #' 1,1,1,
 #' 0,0,0,
 #' 1,0,0,
@@ -48,7 +48,7 @@
 #' 0,0,0,
 #' 1,0,0
 #' ), ncol = 3, byrow = TRUE)
-#' predictedLabels <- matrix(c(
+#' predicted_labels <- matrix(c(
 #' 1,1,1,
 #' 0,0,0,
 #' 1,0,0,
@@ -57,11 +57,11 @@
 #' 0,1,0
 #' ), ncol = 3, byrow = TRUE)
 #'
-#' precision(trueLabels, predictedLabels, undefinedValue = "diagnose")
-#' macroRecall(trueLabels, predictedLabels, undefinedValue = 0)
-#' macroFmeasure(
-#'   trueLabels, predictedLabels,
-#'   undefinedValue = function(tp, fp, tn, fn) as.numeric(fp == 0 && fn == 0)
+#' precision(true_labels, predicted_labels, undefined_value = "diagnose")
+#' macro_recall(true_labels, predicted_labels, undefined_value = 0)
+#' macro_fmeasure(
+#'   true_labels, predicted_labels,
+#'   undefined_value = function(tp, fp, tn, fn) as.numeric(fp == 0 && fn == 0)
 #' )
 NULL
 
@@ -71,25 +71,25 @@ count_by <- function(matrix, cols = TRUE)
   (if (cols) colSums else rowSums)(matrix)
 
 # counts true positives for a classifier output and ground truth
-true_positive <- function(trueLabels, predictedLabels, ...)
-  count_by(trueLabels * predictedLabels, ...)
+true_positive <- function(true_labels, predicted_labels, ...)
+  count_by(true_labels * predicted_labels, ...)
 
 # counts false positives for a classifier output and ground truth
-false_positive <- function(trueLabels, predictedLabels, ...)
-  count_by(predictedLabels * (1 - trueLabels), ...)
+false_positive <- function(true_labels, predicted_labels, ...)
+  count_by(predicted_labels * (1 - true_labels), ...)
 
 # counts true negatives for a classifier output and ground truth
-true_negative <- function(trueLabels, predictedLabels, ...)
-  true_positive(1 - trueLabels, 1 - predictedLabels, ...)
+true_negative <- function(true_labels, predicted_labels, ...)
+  true_positive(1 - true_labels, 1 - predicted_labels, ...)
 
 # counts false negatives for a classifier output and ground truth
-false_negative <- function(trueLabels, predictedLabels, ...)
-  false_positive(1 - trueLabels, 1 - predictedLabels, ...)
+false_negative <- function(true_labels, predicted_labels, ...)
+  false_positive(1 - true_labels, 1 - predicted_labels, ...)
 
 # TREATMENT OF UNDEFINED VALUES ===============================================
-undefinedStrategies <- list()
+undefined_strats <- list()
 # Diagnose undefined results: default behavior for MULAN
-undefinedStrategies$diagnose = function(tp, fp, tn, fn) {
+undefined_strats$diagnose = function(tp, fp, tn, fn) {
   # no positive values predicted are considered a good classification
   # if there were no true positive values
   if (tp + fp + fn == 0)
@@ -99,14 +99,14 @@ undefinedStrategies$diagnose = function(tp, fp, tn, fn) {
 }
 # Ignore undefined results or return NA (ignored results are removed
 # from means in macro-averaged metrics)
-undefinedStrategies$ignore = function(tp, fp, tn, fn) as.numeric(NA)
-undefinedStrategies$na = undefinedStrategies$ignore
+undefined_strats$ignore = function(tp, fp, tn, fn) as.numeric(NA)
+undefined_strats$na = undefined_strats$ignore
 
-ifUndefined <- function(value, tp, fp, tn, fn) {
+treat_undefined <- function(value, tp, fp, tn, fn) {
   if (is.function(value)) {
     value(tp, fp, tn, fn)
-  } else if (is.function(undefinedStrategies[[value]])) {
-    undefinedStrategies[[value]](tp, fp, tn, fn)
+  } else if (is.function(undefined_strats[[value]])) {
+    undefined_strats[[value]](tp, fp, tn, fn)
   } else {
     value
   }
@@ -116,56 +116,56 @@ ifUndefined <- function(value, tp, fp, tn, fn) {
 base_accuracy <- function(tp, fp, tn, fn)
   (tp + tn) / (tp + fp + tn + fn)
 
-base_precision <- function(tp, fp, tn, fn, undefinedValue = "diagnose") {
+base_precision <- function(tp, fp, tn, fn, undefined_value = "diagnose") {
   if (tp + fp == 0)
-    ifUndefined(undefinedValue, tp, fp, tn, fn)
+    treat_undefined(undefined_value, tp, fp, tn, fn)
   else
     tp / (tp + fp)
 }
 
-base_recall <- function(tp, fp, tn, fn, undefinedValue = "diagnose") {
+base_recall <- function(tp, fp, tn, fn, undefined_value = "diagnose") {
   if (tp + fn == 0)
-    ifUndefined(undefinedValue, tp, fp, tn, fn)
+    treat_undefined(undefined_value, tp, fp, tn, fn)
   else
     tp / (tp + fn)
 }
 
-base_fmeasure <- function(precision_f, recall_f) function(trueLabels, predictedLabels, ...) {
-  p <- precision_f(trueLabels, predictedLabels, ...)
-  r <- recall_f(trueLabels, predictedLabels, ...)
+base_fmeasure <- function(precision_f, recall_f) function(true_labels, predicted_labels, ...) {
+  p <- precision_f(true_labels, predicted_labels, ...)
+  r <- recall_f(true_labels, predicted_labels, ...)
   2 * p * r / (p + r)
 }
 
 # AVERAGING FUNCTIONALS =======================================================
 # micro takes a base evaluation metric and returns a label-based micro-averaged
 # evaluation metric
-micro <- function(metric) function(trueLabels, predictedLabels, ...) {
-  tp <- sum(true_positive(trueLabels, predictedLabels))
-  fp <- sum(false_positive(trueLabels, predictedLabels))
-  tn <- sum(true_negative(trueLabels, predictedLabels))
-  fn <- sum(false_negative(trueLabels, predictedLabels))
+micro <- function(metric) function(true_labels, predicted_labels, ...) {
+  tp <- sum(true_positive(true_labels, predicted_labels))
+  fp <- sum(false_positive(true_labels, predicted_labels))
+  tn <- sum(true_negative(true_labels, predicted_labels))
+  fn <- sum(false_negative(true_labels, predicted_labels))
 
   metric(tp, fp, tn, fn, ...)
 }
 
-# averagedMetric generalizes instance-based and macro-averaging
-averagedMetric <- function(label) function(metric)
-  function(trueLabels, predictedLabels, undefinedValue = "diagnose") {
+# averaged_metric generalizes instance-based and macro-averaging
+averaged_metric <- function(label) function(metric)
+  function(true_labels, predicted_labels, undefined_value = "diagnose") {
     matrix <- rbind(
-      true_positive(trueLabels, predictedLabels, cols = label),
-      false_positive(trueLabels, predictedLabels, cols = label),
-      true_negative(trueLabels, predictedLabels, cols = label),
-      false_negative(trueLabels, predictedLabels, cols = label)
+      true_positive(true_labels, predicted_labels, cols = label),
+      false_positive(true_labels, predicted_labels, cols = label),
+      true_negative(true_labels, predicted_labels, cols = label),
+      false_negative(true_labels, predicted_labels, cols = label)
     )
 
     unpacked <-
       function(col, ...)
         do.call(metric, c(as.list(col), list(...)))
     applied <-
-      apply(matrix, 2, unpacked, undefinedValue = undefinedValue)
+      apply(matrix, 2, unpacked, undefined_value = undefined_value)
 
     na.rm <- FALSE
-    if (is.atomic(undefinedValue) && undefinedValue == "ignore") {
+    if (is.atomic(undefined_value) && undefined_value == "ignore") {
       warning("Undefined values will be ignored, mean will be computed with the rest.")
       na.rm <- TRUE
     }
@@ -175,11 +175,11 @@ averagedMetric <- function(label) function(metric)
 
 # macro takes a base evaluation metric and returns a label-based macro-averaged
 # evaluation metric
-macro = averagedMetric(label = TRUE)
+macro = averaged_metric(label = TRUE)
 
-# instanceAvg takes a base evaluation metric and returns an instance-averaged
+# instance_avg takes a base evaluation metric and returns an instance-averaged
 # evaluation metric
-instanceAvg = averagedMetric(label = FALSE)
+instance_avg = averaged_metric(label = FALSE)
 
 # DEFINITION OF MULTI-LABEL METRICS ===========================================
 #' @rdname metrics
@@ -188,36 +188,36 @@ accuracy <- micro(base_accuracy)
 
 #' @rdname metrics
 #' @export
-recall <- instanceAvg(base_recall)
+precision <- instance_avg(base_precision)
 
 #' @rdname metrics
 #' @export
-precision <- instanceAvg(base_precision)
+micro_precision <- micro(base_precision)
 
 #' @rdname metrics
 #' @export
-Fmeasure <- base_fmeasure(precision, recall)
+macro_precision <- macro(base_precision)
 
 #' @rdname metrics
 #' @export
-microRecall <- micro(base_recall)
+recall <- instance_avg(base_recall)
 
 #' @rdname metrics
 #' @export
-microPrecision <- micro(base_precision)
+micro_recall <- micro(base_recall)
 
 #' @rdname metrics
 #' @export
-macroRecall <- macro(base_recall)
+macro_recall <- macro(base_recall)
 
 #' @rdname metrics
 #' @export
-macroPrecision <- macro(base_precision)
+fmeasure <- base_fmeasure(precision, recall)
 
 #' @rdname metrics
 #' @export
-microFmeasure <- base_fmeasure(microPrecision, microRecall)
+micro_fmeasure <- base_fmeasure(micro_precision, micro_recall)
 
 #' @rdname metrics
 #' @export
-macroFmeasure <- base_fmeasure(macroPrecision, macroRecall)
+macro_fmeasure <- base_fmeasure(macro_precision, macro_recall)
