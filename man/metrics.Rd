@@ -16,9 +16,9 @@
 \usage{
 accuracy(trueLabels, predictedLabels, ...)
 
-recall(trueLabels, predictedLabels, ...)
+recall(trueLabels, predictedLabels, undefinedValue = "diagnose")
 
-precision(trueLabels, predictedLabels, ...)
+precision(trueLabels, predictedLabels, undefinedValue = "diagnose")
 
 Fmeasure(trueLabels, predictedLabels, ...)
 
@@ -26,9 +26,9 @@ microRecall(trueLabels, predictedLabels, ...)
 
 microPrecision(trueLabels, predictedLabels, ...)
 
-macroRecall(trueLabels, predictedLabels, ...)
+macroRecall(trueLabels, predictedLabels, undefinedValue = "diagnose")
 
-macroPrecision(trueLabels, predictedLabels, ...)
+macroPrecision(trueLabels, predictedLabels, undefinedValue = "diagnose")
 
 microFmeasure(trueLabels, predictedLabels, ...)
 
@@ -42,6 +42,9 @@ rows to instances.}
 labels and rows to instances.}
 
 \item{...}{Additional parameters for precision, recall and Fmeasure}
+
+\item{undefinedValue}{The value to be returned when a computation results in
+an undefined value due to a division by zero. See details.}
 }
 \value{
 Resulting value in the range [0, 1]
@@ -53,9 +56,9 @@ Evaluation metrics based on simple metrics for the confusion
 \details{
 \strong{Deciding a value when denominators are zero}
 
-Additional parameter \code{undefinedValue}: The value to be returned when a
-computation results in an undefined value due to a division by zero. Can be
-a single value (e.g. NA, 0), a function with the following signature:
+Parameter \code{undefinedValue}: The value to be returned when a computation
+results in an undefined value due to a division by zero. Can be a single
+value (e.g. NA, 0), a function with the following signature:
 
 \code{function(tp, fp, tn, fn)}
 
@@ -84,7 +87,7 @@ trueLabels <- matrix(c(
 1,1,1,
 0,0,0,
 1,0,0
-), ncol = 3, byrow = T)
+), ncol = 3, byrow = TRUE)
 predictedLabels <- matrix(c(
 1,1,1,
 0,0,0,
@@ -92,7 +95,7 @@ predictedLabels <- matrix(c(
 1,1,0,
 1,0,0,
 0,1,0
-), ncol = 3, byrow = T)
+), ncol = 3, byrow = TRUE)
 
 precision(trueLabels, predictedLabels, undefinedValue = "diagnose")
 macroRecall(trueLabels, predictedLabels, undefinedValue = 0)

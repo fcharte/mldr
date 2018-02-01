@@ -9,15 +9,17 @@
 #'  rows to instances.
 #' @param predictedLabels Matrix of predicted labels, columns corresponding to
 #'  labels and rows to instances.
+#' @param undefinedValue The value to be returned when a computation results in
+#'  an undefined value due to a division by zero. See details.
 #' @param ... Additional parameters for precision, recall and Fmeasure
 #' @return Resulting value in the range [0, 1]
 #' @details
 #'
 #' \strong{Deciding a value when denominators are zero}
 #'
-#' Additional parameter \code{undefinedValue}: The value to be returned when a
-#' computation results in an undefined value due to a division by zero. Can be
-#' a single value (e.g. NA, 0), a function with the following signature:
+#' Parameter \code{undefinedValue}: The value to be returned when a computation
+#' results in an undefined value due to a division by zero. Can be a single
+#' value (e.g. NA, 0), a function with the following signature:
 #'
 #' \code{function(tp, fp, tn, fn)}
 #'
@@ -45,7 +47,7 @@
 #' 1,1,1,
 #' 0,0,0,
 #' 1,0,0
-#' ), ncol = 3, byrow = T)
+#' ), ncol = 3, byrow = TRUE)
 #' predictedLabels <- matrix(c(
 #' 1,1,1,
 #' 0,0,0,
@@ -53,7 +55,7 @@
 #' 1,1,0,
 #' 1,0,0,
 #' 0,1,0
-#' ), ncol = 3, byrow = T)
+#' ), ncol = 3, byrow = TRUE)
 #'
 #' precision(trueLabels, predictedLabels, undefinedValue = "diagnose")
 #' macroRecall(trueLabels, predictedLabels, undefinedValue = 0)
@@ -148,7 +150,7 @@ micro <- function(metric) function(trueLabels, predictedLabels, ...) {
 
 # averagedMetric generalizes instance-based and macro-averaging
 averagedMetric <- function(label) function(metric)
-  function(trueLabels, predictedLabels, ...) {
+  function(trueLabels, predictedLabels, undefinedValue = "diagnose") {
     matrix <- rbind(
       true_positive(trueLabels, predictedLabels, cols = label),
       false_positive(trueLabels, predictedLabels, cols = label),
@@ -160,10 +162,10 @@ averagedMetric <- function(label) function(metric)
       function(col, ...)
         do.call(metric, c(as.list(col), list(...)))
     applied <-
-      apply(matrix, 2, unpacked, ...)
+      apply(matrix, 2, unpacked, undefinedValue = undefinedValue)
 
     na.rm <- FALSE
-    if (!is.na(undefinedValue) && undefinedValue == "ignore") {
+    if (is.atomic(undefinedValue) && undefinedValue == "ignore") {
       warning("Undefined values will be ignored, mean will be computed with the rest.")
       na.rm <- TRUE
     }
