@@ -18,10 +18,11 @@ Imports:
     grDevices,
     stats,
     methods
-Suggests:
+Suggests: 
     pROC,
     knitr,
-    mldr.datasets
+    mldr.datasets,
+    testthat
 License: LGPL (>= 3) | file LICENSE
 LazyData: true
 VignetteBuilder: knitr
