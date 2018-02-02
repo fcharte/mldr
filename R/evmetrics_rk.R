@@ -3,6 +3,13 @@
 #' @rdname evmetrics-rk
 #' @title Multi-label ranking-based evaluation metrics
 #' @description ...
+#' @param true_labels Matrix of true labels, columns corresponding to labels and
+#'  rows to instances.
+#' @param predictions Matrix of probabilities predicted by a classifier.
+#' @param ... Additional parameters to be passed to the \code{rank} function.
+#' @return Performance metric value
+#' @details The \code{ties.method} parameter for the \code{rank} function may
+#'  vary results in some edge cases.
 NULL
 
 rank_labels <- function(predicted_labels, ...) {
@@ -18,7 +25,8 @@ relevant_labels <- function(true_labels) {
   apply(X = (true_labels == 1), MARGIN = 1, FUN = which)
 }
 
-#' Calculate example based Average Precision
+#  Calculate example based Average Precision
+#' @rdname evmetrics-rk
 #' @export
 average_precision <- function(true_labels, predictions, ...) {
   rankings <- rank_labels(predictions, ...)
