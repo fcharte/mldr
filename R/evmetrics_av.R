@@ -1,6 +1,6 @@
 #  FILE: AVERAGED EVALUATION METRICS ==========================================
 #' @name Averaged metrics
-#' @rdname metrics
+#' @rdname evmetrics-av
 #' @title Multi-label averaged evaluation metrics
 #' @description Evaluation metrics based on simple metrics for the confusion
 #'  matrix, averaged through several criteria.
@@ -182,42 +182,42 @@ macro = averaged_metric(label = TRUE)
 instance_avg = averaged_metric(label = FALSE)
 
 # DEFINITION OF MULTI-LABEL METRICS ===========================================
-#' @rdname metrics
+#' @rdname evmetrics-av
 #' @export
 accuracy <- micro(base_accuracy)
 
-#' @rdname metrics
+#' @rdname evmetrics-av
 #' @export
 precision <- instance_avg(base_precision)
 
-#' @rdname metrics
+#' @rdname evmetrics-av
 #' @export
 micro_precision <- micro(base_precision)
 
-#' @rdname metrics
+#' @rdname evmetrics-av
 #' @export
 macro_precision <- macro(base_precision)
 
-#' @rdname metrics
+#' @rdname evmetrics-av
 #' @export
 recall <- instance_avg(base_recall)
 
-#' @rdname metrics
+#' @rdname evmetrics-av
 #' @export
 micro_recall <- micro(base_recall)
 
-#' @rdname metrics
+#' @rdname evmetrics-av
 #' @export
 macro_recall <- macro(base_recall)
 
-#' @rdname metrics
+#' @rdname evmetrics-av
 #' @export
 fmeasure <- base_fmeasure(precision, recall)
 
-#' @rdname metrics
+#' @rdname evmetrics-av
 #' @export
 micro_fmeasure <- base_fmeasure(micro_precision, micro_recall)
 
-#' @rdname metrics
+#' @rdname evmetrics-av
 #' @export
 macro_fmeasure <- base_fmeasure(macro_precision, macro_recall)

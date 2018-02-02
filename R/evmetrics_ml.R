@@ -1,6 +1,6 @@
 #  OTHER MULTI-LABEL EVALUATION METRICS ========================================
 #' @name Evaluation metrics
-#' @rdname evmetrics
+#' @rdname evmetrics-ml
 #' @title Multi-label evaluation metrics
 #' @description Several evaluation metrics designed for multi-label problems.
 #' @param true_labels Matrix of true labels, columns corresponding to labels and
@@ -13,12 +13,12 @@
 #'  Subset Accuracy is the ratio of correctly predicted labelsets.
 NULL
 
-#' @rdname evmetrics
+#' @rdname evmetrics-ml
 #' @export
 hamming_loss <- function(true_labels, predicted_labels)
-  mean(abs(true_labels - predicted_labels))
+  mean(true_labels != predicted_labels)
 
-#' @rdname evmetrics
+#' @rdname evmetrics-ml
 #' @export
 subset_accuracy <- function(true_labels, predicted_labels)
   mean(apply(true_labels == predicted_labels, 1, all))
