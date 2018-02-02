@@ -6,18 +6,32 @@
 #' @param true_labels Matrix of true labels, columns corresponding to labels and
 #'  rows to instances.
 #' @param predictions Matrix of probabilities predicted by a classifier.
-#' @param ... Additional parameters to be passed to the \code{rank} function.
+#' @param ... Additional parameters to be passed to the ranking function.
 #' @return Performance metric value
-#' @details The \code{ties.method} parameter for the \code{rank} function may
-#'  vary results in some edge cases.
+#' @details The \code{ties_method} parameter for the ranking function is passed
+#'  to R's own \code{rank}. It accepts the following values:
+#'  \itemize{
+#'  \item \code{"average"}
+#'  \item \code{"first"}
+#'  \item \code{"last"}
+#'  \item \code{"random"}
+#'  \item \code{"max"}
+#'  \item \code{"min"}
+#'  }
+#'  See \code{\link[base]{rank}} for information on the effect of each
+#'  parameter.
+#'
+#'  The default behavior in mldr corresponds to value \code{"last"}, since this
+#'  is the behavior of the ranking method in MULAN, in order to facilitate fair
+#'  comparisons among classifiers over both platforms.
 NULL
 
-rank_labels <- function(predicted_labels, ...) {
+rank_labels <- function(predicted_labels, ties_method = "last") {
   t(apply(
     X = predicted_labels,
     MARGIN = 1,
     FUN = function(row)
-      rank(-row, ...)
+      rank(-row, ties.method = ties_method)
   ))
 }
 
@@ -46,6 +60,17 @@ average_precision <- function(true_labels, predictions, ...) {
   }))
 }
 
+#' @rdname evmetrics-rk
+#' @export
+one_error <- function(true_labels, predictions) {
+  i_max <- apply(predictions, 1, which.max)
+
+  mean(1 - true_labels[cbind(1:length(i_max), i_max)])
+}
+
+coverage <- function(true_labels, predictions) {
+
+}
 
 # Calculate example based Coverage
 mldr_Coverage <- function(trueLabels, predictions) {
@@ -56,12 +81,6 @@ mldr_Coverage <- function(trueLabels, predictions) {
   }))) / nrow(trueLabels)
 }
 
-# Calculate example based One Error
-mldr_OneError <- function(trueLabels, predictions) {
-  maxIndex <- apply(predictions, 1, function(r)
-    order(r)[length(r)])
-  sum(trueLabels[cbind(1:nrow(trueLabels), maxIndex)] != 1) / nrow(trueLabels)
-}
 # Calculate example based Ranking Loss
 mldr_RankingLoss <- function(trueLabels, predictions) {
   sum(unlist(lapply(1:nrow(trueLabels), function(idr) {

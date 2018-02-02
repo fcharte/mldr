@@ -3,9 +3,12 @@
 \name{Ranking-based metrics}
 \alias{Ranking-based metrics}
 \alias{average_precision}
+\alias{one_error}
 \title{Multi-label ranking-based evaluation metrics}
 \usage{
 average_precision(true_labels, predictions, ...)
+
+one_error(true_labels, predictions)
 }
 \arguments{
 \item{true_labels}{Matrix of true labels, columns corresponding to labels and
@@ -13,7 +16,7 @@ rows to instances.}
 
 \item{predictions}{Matrix of probabilities predicted by a classifier.}
 
-\item{...}{Additional parameters to be passed to the \code{rank} function.}
+\item{...}{Additional parameters to be passed to the ranking function.}
 }
 \value{
 Performance metric value
@@ -22,6 +25,20 @@ Performance metric value
 ...
 }
 \details{
-The \code{ties.method} parameter for the \code{rank} function may
- vary results in some edge cases.
+The \code{ties_method} parameter for the ranking function is passed
+ to R's own \code{rank}. It accepts the following values:
+ \itemize{
+ \item \code{"average"}
+ \item \code{"first"}
+ \item \code{"last"}
+ \item \code{"random"}
+ \item \code{"max"}
+ \item \code{"min"}
+ }
+ See \code{\link[base]{rank}} for information on the effect of each
+ parameter.
+
+ The default behavior in mldr corresponds to value \code{"last"}, since this
+ is the behavior of the ranking method in MULAN, in order to facilitate fair
+ comparisons among classifiers over both platforms.
 }
