@@ -4,11 +4,14 @@
 \alias{Ranking-based metrics}
 \alias{average_precision}
 \alias{one_error}
+\alias{coverage}
 \title{Multi-label ranking-based evaluation metrics}
 \usage{
 average_precision(true_labels, predictions, ...)
 
 one_error(true_labels, predictions)
+
+coverage(true_labels, predictions, ...)
 }
 \arguments{
 \item{true_labels}{Matrix of true labels, columns corresponding to labels and

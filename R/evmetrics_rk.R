@@ -68,21 +68,23 @@ one_error <- function(true_labels, predictions) {
   mean(1 - true_labels[cbind(1:length(i_max), i_max)])
 }
 
-coverage <- function(true_labels, predictions) {
+#' @rdname evmetrics-rk
+#' @export
+coverage <- function(true_labels, predictions, ...) {
+  rankings <- rank_labels(predictions, ...)
+  relevant <- relevant_labels(true_labels)
 
-}
-
-# Calculate example based Coverage
-mldr_Coverage <- function(trueLabels, predictions) {
-  sum(unlist(lapply(1:nrow(predictions), function(idr) {
-    idxs <- which(trueLabels[idr,] == TRUE)
-    rk <- order(predictions[idr,], decreasing = TRUE)
-    max(rk[idxs]) - 1
-  }))) / nrow(trueLabels)
+  mean(sapply(1:length(relevant), function(row) {
+    if (length(relevant[[row]]) > 0) {
+      max(rankings[row, relevant[[row]]]) - 1
+    } else {
+      0
+    }
+  }))
 }
 
 # Calculate example based Ranking Loss
-mldr_RankingLoss <- function(trueLabels, predictions) {
+ranking_loss <- function(trueLabels, predictions) {
   sum(unlist(lapply(1:nrow(trueLabels), function(idr) {
     idxT <- which(trueLabels[idr,] == 1)
     idxF <- which(trueLabels[idr,] == 0)
