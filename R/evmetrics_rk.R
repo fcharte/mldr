@@ -36,7 +36,7 @@ rank_labels <- function(predicted_labels, ties_method = "last") {
 }
 
 relevant_labels <- function(true_labels) {
-  apply(X = (true_labels == 1), MARGIN = 1, FUN = which)
+  lapply(split(true_labels == 1, 1:nrow(true_labels)), which)
 }
 
 #  Calculate example based Average Precision
@@ -46,7 +46,7 @@ average_precision <- function(true_labels, predictions, ...) {
   rankings <- rank_labels(predictions, ...)
   relevant <- relevant_labels(true_labels)
 
-  mean(sapply(1:length(relevant), function(row) {
+  mean(sapply(seq_along(relevant), function(row) {
     ratios <- sapply(relevant[[row]], function(label) {
       sum(rankings[row, relevant[[row]]] <= rankings[row, label]) /
         rankings[row, label]
@@ -84,46 +84,61 @@ coverage <- function(true_labels, predictions, ...) {
 }
 
 # Calculate example based Ranking Loss
-ranking_loss <- function(trueLabels, predictions) {
-  sum(unlist(lapply(1:nrow(trueLabels), function(idr) {
-    idxT <- which(trueLabels[idr,] == 1)
-    idxF <- which(trueLabels[idr,] == 0)
+#' @rdname evmetrics-rk
+#' @export
+ranking_loss <- function(true_labels, predictions) {
+  relevant <- relevant_labels(true_labels)
+  nonrelevant <- relevant_labels(1 - true_labels)
 
-    if (length(idxT) > 0 && length(idxF) > 0)
-      sum(mapply(function(k, l)
-        predictions[idr, k] > predictions[idr, l], idxT, idxF)) / (length(idxT) * length(idxF))
-  }))) / nrow(trueLabels)
+  # compute mean across instances
+  mean(sapply(seq_along(relevant), function(row) {
+    if (length(relevant[[row]]) > 0 && length(nonrelevant[[row]]) > 0) {
+      # for each pair of one relevant and one non-relevant label
+      mean(outer(relevant[[row]], nonrelevant[[row]], function(i_rel, i_non) {
+        # detect whether the non-relevant was better ranked
+        predictions[row, i_rel] <= predictions[row, i_non]
+      }))
+    } else {
+      0
+    }
+  }))
 }
 
-
 # Calculate label based MacroAUC
-mldr_MacroAUC <- function(trueLabels, predictions) {
+#' @rdname evmetrics-rk
+#' @export
+macro_auc <- function(true_labels, predictions) {
   if (!requireNamespace("pROC", quietly = TRUE))
     return(NULL)
 
-  mean(unlist(lapply(1:ncol(trueLabels), function(l)
+  mean(sapply(1:ncol(trueLabels), function(l) {
     if (sum(trueLabels[, l]) == 0)
       0.5
     else
-      pROC::auc(trueLabels[, l], predictions[, l]))))
+      pROC::auc(true_labels[, l], predictions[, l])
+  }))
 }
 
 # Calculate label based MicroAUC
-mldr_MicroAUC <- function(trueLabels, predictions) {
+#' @rdname evmetrics-rk
+#' @export
+micro_auc <- function(true_labels, predictions) {
   if (!requireNamespace("pROC", quietly = TRUE))
     return(NULL)
 
-  as.numeric(pROC::auc(unlist(trueLabels), as.numeric(predictions)))
+  as.numeric(pROC::auc(as.integer(true_labels), as.numeric(predictions)))
 }
 
 # Calculate example based AUC
-mldr_AUC <- function(trueLabels, predictions) {
+#' @rdname evmetrics-rk
+#' @export
+example_auc <- function(true_labels, predictions) {
   if (!requireNamespace("pROC", quietly = TRUE))
     return(NULL)
 
-  TL <- as.matrix(trueLabels)
-  idxs <-
-    which(rowSums(trueLabels) != 0 & rowMeans(trueLabels) != 1)
-  (sum(!idxs) * 0.5 + sum(unlist(lapply(idxs, function(r)
-    pROC::auc(TL[r, ], predictions[r,]))))) / nrow(trueLabels)
+  computable <- rowSums(true_labels) != 0 & rowMeans(true_labels) != 1
+
+  mean(sum(!computable) * 0.5 +
+         sum(sapply(which(computable), function(r)
+           pROC::auc(true_labels[r, ], predictions[r, ]))))
 }

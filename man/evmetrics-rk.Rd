@@ -5,6 +5,10 @@
 \alias{average_precision}
 \alias{one_error}
 \alias{coverage}
+\alias{ranking_loss}
+\alias{macro_auc}
+\alias{micro_auc}
+\alias{example_auc}
 \title{Multi-label ranking-based evaluation metrics}
 \usage{
 average_precision(true_labels, predictions, ...)
@@ -12,6 +16,14 @@ average_precision(true_labels, predictions, ...)
 one_error(true_labels, predictions)
 
 coverage(true_labels, predictions, ...)
+
+ranking_loss(true_labels, predictions)
+
+macro_auc(true_labels, predictions)
+
+micro_auc(true_labels, predictions)
+
+example_auc(true_labels, predictions)
 }
 \arguments{
 \item{true_labels}{Matrix of true labels, columns corresponding to labels and
