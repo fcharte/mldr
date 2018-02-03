@@ -165,16 +165,14 @@ macro_auc <- function(true_labels, predictions, undefined_value = 0.5, na.rm = F
   if (!requireNamespace("pROC", quietly = TRUE))
     return(NULL)
 
-  computable <- rowSums(true_labels) != 0 & rowMeans(true_labels) != 1
+  computable <- colSums(true_labels) != 0 & colMeans(true_labels) != 1
+  undefined_vec <- rep(undefined_value, times = sum(!computable))
 
-  mean(sapply(1:ncol(true_labels), function(l) {
-    if (computable[l])
+  results <- sapply(which(computable), function(l) {
       pROC::auc(true_labels[, l], predictions[, l])
-    else
-      undefined_value
-  }), na.rm = na.rm)
+  })
 
-  mean(as.numeric())
+  mean(c(undefined_vec, results), na.rm = na.rm)
 }
 
 # Calculate label based MicroAUC
@@ -196,9 +194,10 @@ example_auc <- function(true_labels, predictions, undefined_value = 0.5, na.rm =
 
   computable <- rowSums(true_labels) != 0 & rowMeans(true_labels) != 1
   undefined_vec <- rep(undefined_value, times = sum(!computable))
-  results <- sum(sapply(which(computable), function(r)
+
+  results <- sapply(which(computable), function(r)
     pROC::auc(true_labels[r,], predictions[r,])
-  ))
+  )
 
   mean(c(undefined_vec, results), na.rm = na.rm)
 }
