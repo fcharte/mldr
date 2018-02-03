@@ -53,19 +53,7 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
   if(any((dim(trueLabels) == dim(predictions)) == FALSE))
     stop("Wrong predictions matrix!")
 
-  bipartition <- predictions
-  active <- bipartition >= threshold
-  bipartition[active] <- 1
-  bipartition[!active] <- 0
-
-  # counters <- data.frame(
-  #   RealPositives      = rowSums(trueLabels),
-  #   RealNegatives      = rowSums(!trueLabels),
-  #   PredictedPositives = rowSums(bipartition),
-  #   PredictedNegatives = rowSums(!bipartition),
-  #   TruePositives      = rowSums(trueLabels & bipartition),
-  #   TrueNegatives      = rowSums(!trueLabels & !bipartition)
-  # )
+  bipartition <- as.integer(predictions >= threshold)
 
   list(
     Accuracy         = accuracy(trueLabels, predictions),
