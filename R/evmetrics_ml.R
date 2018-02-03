@@ -36,6 +36,7 @@
 #'
 #' hamming_loss(true_labels, predicted_labels)
 #' subset_accuracy(true_labels, predicted_labels)
+#' @seealso \code{\link{mldr_evaluate}}
 NULL
 
 #' @rdname evmetrics-ml

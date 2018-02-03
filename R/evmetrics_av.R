@@ -78,6 +78,7 @@
 #'   true_labels, predicted_labels,
 #'   undefined_value = function(tp, fp, tn, fn) as.numeric(fp == 0 && fn == 0)
 #' )
+#' @seealso \code{\link{mldr_evaluate}}
 NULL
 
 # CONFUSION MATRIX ============================================================

@@ -112,6 +112,8 @@ example_auc(true_labels, predicted_probs, undefined_value = 0)
 macro_auc(true_labels, predicted_probs, undefined_value = NA, na.rm = TRUE)
 }
 \seealso{
+\code{\link{mldr_evaluate}}
+
 Other evaluation metrics: \code{\link{Averaged metrics}},
   \code{\link{Basic metrics}}
 }

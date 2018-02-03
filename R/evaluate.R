@@ -7,30 +7,31 @@
 #' should be a value into [0,1] range
 #' @param threshold Threshold to use to generate bipartition of labels. By default the value 0.5 is used
 #' @return A list with multilabel predictive performance measures. The items in the list will be \itemize{
-#'  \item \code{Accuracy}: Example and bipartition based accuracy (averaged by instance)
-#'  \item \code{AUC}: Example and binary partition Area Under the Curve ROC (averaged by instance)
-#'  \item \code{AveragePrecision}: Example and ranking based average precision (how many steps have to be made in the ranking to reach a certain relevant label, averaged by instance)
-#'  \item \code{Coverage}: Example and ranking based coverage (how many steps have to be made in the ranking to cover all the relevant labels, averaged by instance)
-#'  \item \code{FMeasure}:  Example and binary partition F_1 measure (harmonic mean between precision and recall, averaged by instance)
-#'  \item \code{HammingLoss}:  Example and binary partition Hamming Loss (simmetric difference between sets of labels, averaged by instance)
-#'  \item \code{MacroAUC}: Label and ranking based Area Under the Curve ROC (macro-averaged by label)
-#'  \item \code{MacroFMeasure}: Label and bipartition based F_1 measure (harmonic mean between precision and recall, macro-averaged by label)
-#'  \item \code{MacroPrecision}: Label and bipartition based precision (macro-averaged by label)
-#'  \item \code{MacroRecall}: Label and bipartition based recall (macro-averaged by label)
-#'  \item \code{MicroAUC}: Label and ranking based Area Under the Curve ROC (micro-averaged)
-#'  \item \code{MicroFMeasure}: Label and bipartition based F_1 measure (micro-averaged)
-#'  \item \code{MicroPrecision}: Label and bipartition based precision (micro-averaged)
-#'  \item \code{MicroRecall}: Label and bipartition based recall (micro-averaged)
-#'  \item \code{OneError}: Example and ranking based one-error (how many times the top-ranked label is not a relevant label, averaged by instance)
-#'  \item \code{Precision}: Example and bipartition based precision (averaged by instance)
-#'  \item \code{RankingLoss}: Example and ranking based ranking-loss (how many times a non-relevant label is ranked above a relevant one, evaluated for all label pairs and averaged by instance)
-#'  \item \code{Recall}: Example and bipartition based recall (averaged by instance)
-#'  \item \code{SubsetAccuracy}: Example and bipartition based subset accuracy (strict equality between predicted and real labelset, averaged by instance)
-#'  \item \code{ROC}: A \code{roc} object corresponding to the \code{MicroAUC} value. This object can be given as input to \code{plot} for plotting the ROC curve
+#'  \item \code{Accuracy}
+#'  \item \code{AUC}
+#'  \item \code{AveragePrecision}
+#'  \item \code{Coverage}
+#'  \item \code{FMeasure}
+#'  \item \code{HammingLoss}
+#'  \item \code{MacroAUC}
+#'  \item \code{MacroFMeasure}
+#'  \item \code{MacroPrecision}
+#'  \item \code{MacroRecall}
+#'  \item \code{MicroAUC}
+#'  \item \code{MicroFMeasure}
+#'  \item \code{MicroPrecision}
+#'  \item \code{MicroRecall}
+#'  \item \code{OneError}
+#'  \item \code{Precision}
+#'  \item \code{RankingLoss}
+#'  \item \code{Recall}
+#'  \item \code{SubsetAccuracy}
+#'  \item \code{ROC}
 #'  }
+#'  The \code{ROC} element corresponds to a \code{roc} object associated to the \code{MicroAUC} value. This object can be given as input to \code{plot} for plotting the ROC curve
 #'  The \code{AUC}, \code{MacroAUC}, \code{MicroAUC} and \code{ROC} members will be \code{NULL} if the \code{pROC} package is not installed.
 #'
-#' @seealso \code{\link{mldr}}
+#' @seealso \code{\link{mldr}}, \link{Basic metrics}, \link{Averaged metrics}, \link{Ranking-based metrics}, \code{\link{mldr_roc}}
 #' @examples
 #'\dontrun{
 #' library(mldr)
@@ -87,13 +88,15 @@ mldr_evaluate <- function(mldr, predictions, threshold = 0.5) {
 #'  rows to instances.
 #' @param predicted_labels Matrix of predicted labels, columns corresponding to
 #'  labels and rows to instances.
+#' @param ... Additional parameters to be passed to the \code{pROC::roc} function.
 #' @return ROC object from pROC package
+#' @seealso \code{\link{mldr_evaluate}}
 #' @export
-mldr_roc <- function(true_labels, predicted_labels) {
+mldr_roc <- function(true_labels, predicted_labels, ...) {
   if (!requireNamespace("pROC", quietly = TRUE))
     return(NULL)
 
   pROC::roc(unlist(true_labels),
             as.numeric(predicted_labels),
-            algorithm = 3)
+            algorithm = 3, ...)
 }

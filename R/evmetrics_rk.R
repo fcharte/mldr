@@ -77,6 +77,7 @@
 #' # the following will ignore undefined values (not counting them for
 #' # the average)
 #' macro_auc(true_labels, predicted_probs, undefined_value = NA, na.rm = TRUE)
+#' @seealso \code{\link{mldr_evaluate}}
 NULL
 
 rank_labels <- function(predicted_labels, ties_method = "last") {

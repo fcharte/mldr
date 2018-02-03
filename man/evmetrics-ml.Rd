@@ -53,6 +53,8 @@ hamming_loss(true_labels, predicted_labels)
 subset_accuracy(true_labels, predicted_labels)
 }
 \seealso{
+\code{\link{mldr_evaluate}}
+
 Other evaluation metrics: \code{\link{Averaged metrics}},
   \code{\link{Ranking-based metrics}}
 }

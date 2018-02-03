@@ -4,7 +4,7 @@
 \alias{mldr_roc}
 \title{ROC curve}
 \usage{
-mldr_roc(true_labels, predicted_labels)
+mldr_roc(true_labels, predicted_labels, ...)
 }
 \arguments{
 \item{true_labels}{Matrix of true labels, columns corresponding to labels and
@@ -12,6 +12,8 @@ rows to instances.}
 
 \item{predicted_labels}{Matrix of predicted labels, columns corresponding to
 labels and rows to instances.}
+
+\item{...}{Additional parameters to be passed to the \code{pROC::roc} function.}
 }
 \value{
 ROC object from pROC package
@@ -20,4 +22,7 @@ ROC object from pROC package
 Calculates the ROC (Receiver Operating Characteristic) curve
  for given true labels and predicted ones. The pROC package is needed for
  this functionality.
+}
+\seealso{
+\code{\link{mldr_evaluate}}
 }

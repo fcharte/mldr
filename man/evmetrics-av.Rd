@@ -120,6 +120,8 @@ macro_fmeasure(
 )
 }
 \seealso{
+\code{\link{mldr_evaluate}}
+
 Other evaluation metrics: \code{\link{Basic metrics}},
   \code{\link{Ranking-based metrics}}
 }
