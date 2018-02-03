@@ -1,6 +1,7 @@
 #  OTHER MULTI-LABEL EVALUATION METRICS ========================================
-#' @name Evaluation metrics
+#' @name Basic metrics
 #' @rdname evmetrics-ml
+#' @family evaluation metrics
 #' @title Multi-label evaluation metrics
 #' @description Several evaluation metrics designed for multi-label problems.
 #' @param true_labels Matrix of true labels, columns corresponding to labels and
@@ -8,9 +9,33 @@
 #' @param predicted_labels Matrix of predicted labels, columns corresponding to
 #'  labels and rows to instances.
 #' @return Resulting value in the range [0, 1]
-#' @details As defined in the multi-label literature, Hamming Loss describes
+#' @details
+#' \strong{Available metrics in this category}
+#' \itemize{
+#'  \item \code{hamming_loss}: describes
 #'  the average absolute distance between a predicted label and its true value.
-#'  Subset Accuracy is the ratio of correctly predicted labelsets.
+#'  \item \code{subset_accuracy}: the ratio of correctly predicted labelsets.
+#' }
+#' @examples
+#' true_labels <- matrix(c(
+#' 1,1,1,
+#' 0,0,0,
+#' 1,0,0,
+#' 1,1,1,
+#' 0,0,0,
+#' 1,0,0
+#' ), ncol = 3, byrow = TRUE)
+#' predicted_labels <- matrix(c(
+#' 1,1,1,
+#' 0,0,0,
+#' 1,0,0,
+#' 1,1,0,
+#' 1,0,0,
+#' 0,1,0
+#' ), ncol = 3, byrow = TRUE)
+#'
+#' hamming_loss(true_labels, predicted_labels)
+#' subset_accuracy(true_labels, predicted_labels)
 NULL
 
 #' @rdname evmetrics-ml

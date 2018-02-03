@@ -1,15 +1,38 @@
 #  FILE: RANKING EVALUATION METRICS ==========================================
 #' @name Ranking-based metrics
 #' @rdname evmetrics-rk
+#' @family evaluation metrics
 #' @title Multi-label ranking-based evaluation metrics
-#' @description ...
+#' @description Functions that compute ranking-based metrics, given a matrix
+#'  of true labels and a matrix of predicted probabilities.
 #' @param true_labels Matrix of true labels, columns corresponding to labels and
 #'  rows to instances.
 #' @param predictions Matrix of probabilities predicted by a classifier.
 #' @param ... Additional parameters to be passed to the ranking function.
-#' @return Performance metric value
-#' @details The \code{ties_method} parameter for the ranking function is passed
-#'  to R's own \code{rank}. It accepts the following values:
+#' @param undefined_value A default value for the cases when macro-averaged
+#'  and example-averaged AUC encounter undefined (not computable) values, e.g.
+#'  \code{0}, \code{0.5}, or \code{NA}.
+#' @param na.rm Logical specifying whether to ignore undefined values when
+#'  \code{undefined_value} is set to \code{NA}.
+#' @return Atomical numeric vector specifying the resulting performance metric
+#'  value.
+#' @details
+#' \strong{Available metrics in this category}
+#'
+#' \itemize{
+#'  \item \code{average_precision}: Example and ranking based average precision (how many steps have to be made in the ranking to reach a certain relevant label, averaged by instance)
+#'  \item \code{coverage}: Example and ranking based coverage (how many steps have to be made in the ranking to cover all the relevant labels, averaged by instance)
+#'  \item \code{example_auc}: Example based Area Under the Curve ROC (averaged by instance)
+#'  \item \code{macro_auc}: Label and ranking based Area Under the Curve ROC (macro-averaged by label)
+#'  \item \code{micro_auc}: Label and ranking based Area Under the Curve ROC (micro-averaged)
+#'  \item \code{one_error}: Example and ranking based one-error (how many times the top-ranked label is not a relevant label, averaged by instance)
+#'  \item \code{ranking_loss}: Example and ranking based ranking-loss (how many times a non-relevant label is ranked above a relevant one, evaluated for all label pairs and averaged by instance)
+#' }
+#'
+#' \strong{Breaking ties in rankings}
+#'
+#' The additional \code{ties_method} parameter for the ranking
+#'  function is passed to R's own \code{rank}. It accepts the following values:
 #'  \itemize{
 #'  \item \code{"average"}
 #'  \item \code{"first"}
@@ -20,10 +43,40 @@
 #'  }
 #'  See \code{\link[base]{rank}} for information on the effect of each
 #'  parameter.
-#'
 #'  The default behavior in mldr corresponds to value \code{"last"}, since this
 #'  is the behavior of the ranking method in MULAN, in order to facilitate fair
 #'  comparisons among classifiers over both platforms.
+#' @examples
+#' true_labels <- matrix(c(
+#' 1,1,1,
+#' 0,0,0,
+#' 1,0,0,
+#' 1,1,1,
+#' 0,0,0,
+#' 1,0,0
+#' ), ncol = 3, byrow = TRUE)
+#' predicted_probs <- matrix(c(
+#' .6,.5,.9,
+#' .0,.1,.2,
+#' .8,.3,.2,
+#' .7,.9,.1,
+#' .7,.3,.2,
+#' .1,.8,.3
+#' ), ncol = 3, byrow = TRUE)
+#'
+#' # by default, labels with same ranking are assigned ascending rankings
+#' # in the order they are encountered
+#' coverage(true_labels, predicted_probs)
+#' # in the following, labels with same ranking will receive the same,
+#' # averaged ranking
+#' average_precision(true_labels, predicted_probs, ties_method = "average")
+#'
+#' # the following will treat all undefined values as 0 (counting them
+#' # for the average)
+#' example_auc(true_labels, predicted_probs, undefined_value = 0)
+#' # the following will ignore undefined values (not counting them for
+#' # the average)
+#' macro_auc(true_labels, predicted_probs, undefined_value = NA, na.rm = TRUE)
 NULL
 
 rank_labels <- function(predicted_labels, ties_method = "last") {
@@ -107,16 +160,20 @@ ranking_loss <- function(true_labels, predictions) {
 # Calculate label based MacroAUC
 #' @rdname evmetrics-rk
 #' @export
-macro_auc <- function(true_labels, predictions) {
+macro_auc <- function(true_labels, predictions, undefined_value = 0.5, na.rm = FALSE) {
   if (!requireNamespace("pROC", quietly = TRUE))
     return(NULL)
 
-  mean(sapply(1:ncol(trueLabels), function(l) {
-    if (sum(trueLabels[, l]) == 0)
-      0.5
-    else
+  computable <- rowSums(true_labels) != 0 & rowMeans(true_labels) != 1
+
+  mean(sapply(1:ncol(true_labels), function(l) {
+    if (computable[l])
       pROC::auc(true_labels[, l], predictions[, l])
-  }))
+    else
+      undefined_value
+  }), na.rm = na.rm)
+
+  mean(as.numeric())
 }
 
 # Calculate label based MicroAUC
@@ -132,13 +189,15 @@ micro_auc <- function(true_labels, predictions) {
 # Calculate example based AUC
 #' @rdname evmetrics-rk
 #' @export
-example_auc <- function(true_labels, predictions) {
+example_auc <- function(true_labels, predictions, undefined_value = 0.5, na.rm = FALSE) {
   if (!requireNamespace("pROC", quietly = TRUE))
     return(NULL)
 
   computable <- rowSums(true_labels) != 0 & rowMeans(true_labels) != 1
+  undefined_vec <- rep(undefined_value, times = sum(!computable))
+  results <- sum(sapply(which(computable), function(r)
+    pROC::auc(true_labels[r,], predictions[r,])
+  ))
 
-  mean(sum(!computable) * 0.5 +
-         sum(sapply(which(computable), function(r)
-           pROC::auc(true_labels[r, ], predictions[r, ]))))
+  mean(c(undefined_vec, results), na.rm = na.rm)
 }

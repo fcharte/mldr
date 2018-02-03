@@ -1,6 +1,7 @@
 #  FILE: AVERAGED EVALUATION METRICS ==========================================
 #' @name Averaged metrics
 #' @rdname evmetrics-av
+#' @family evaluation metrics
 #' @title Multi-label averaged evaluation metrics
 #' @description Evaluation metrics based on simple metrics for the confusion
 #'  matrix, averaged through several criteria.
@@ -12,8 +13,22 @@
 #' @param undefined_value The value to be returned when a computation results in
 #'  an undefined value due to a division by zero. See details.
 #' @param ... Additional parameters for precision, recall and Fmeasure.
-#' @return Resulting value in the range [0, 1].
+#' @return Atomical numeric vector containing the resulting value in the range
+#'  [0, 1].
 #' @details
+#' \strong{Available metrics in this category}
+#' \itemize{
+#'  \item \code{accuracy}: Bipartition based accuracy
+#'  \item \code{fmeasure}:  Example and binary partition F_1 measure (harmonic mean between precision and recall, averaged by instance)
+#'  \item \code{macro_fmeasure}: Label and bipartition based F_1 measure (harmonic mean between precision and recall, macro-averaged by label)
+#'  \item \code{macro_precision}: Label and bipartition based precision (macro-averaged by label)
+#'  \item \code{macro_recall}: Label and bipartition based recall (macro-averaged by label)
+#'  \item \code{micro_fmeasure}: Label and bipartition based F_1 measure (micro-averaged)
+#'  \item \code{micro_precision}: Label and bipartition based precision (micro-averaged)
+#'  \item \code{micro_recall}: Label and bipartition based recall (micro-averaged)
+#'  \item \code{precision}: Example and bipartition based precision (averaged by instance)
+#'  \item \code{recall}: Example and bipartition based recall (averaged by instance)
+#'  }
 #'
 #' \strong{Deciding a value when denominators are zero}
 #'
