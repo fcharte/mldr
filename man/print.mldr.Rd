@@ -25,4 +25,3 @@ print(emotions) # Same as above
 \seealso{
 \code{\link{mldr}}, \code{\link{summary.mldr}}
 }
-

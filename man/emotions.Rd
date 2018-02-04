@@ -19,4 +19,3 @@ summary(emotions)
 emotions$labels
 }
 \keyword{datasets}
-

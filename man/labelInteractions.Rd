@@ -29,4 +29,3 @@ labelInteractions(birds)
 \seealso{
 \code{\link{remedial}}, \code{\link{concurrenceReport}}
 }
-

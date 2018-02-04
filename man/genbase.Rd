@@ -19,4 +19,3 @@ summary(genbase)
 genbase$labels
 }
 \keyword{datasets}
-

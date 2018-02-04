@@ -61,4 +61,3 @@ plot(res$ROC, main = "ROC curve for emotions")
 \seealso{
 \code{\link{mldr}}
 }
-

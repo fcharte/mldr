@@ -40,4 +40,3 @@ summary(mymldr)
 \seealso{
 \code{\link{mldr}}, \code{\link{summary.mldr}}
 }
-

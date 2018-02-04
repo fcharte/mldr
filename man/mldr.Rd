@@ -53,6 +53,10 @@ library(mldr)
 # Read "yeast.arff" and labels from "yeast.xml"
 mymld <- mldr("yeast")
 
+# Read "yeast.arff" and labels from "yeast.xml", converting categorical
+# attributes to factors
+mymld <- mldr("yeast", stringsAsFactors = TRUE)
+
 # Read "yeast-tra.arff" and labels from "yeast.xml"
 mymld <- mldr("yeast-tra", xml_file = "yeast.xml")
 
@@ -66,4 +70,3 @@ mymld <- mldr("IMDB.arff", use_xml = FALSE, auto_extension = FALSE)
 \seealso{
 \code{\link{mldr_from_dataframe}}, \code{\link{read.arff}}, \code{\link{summary.mldr}}
 }
-

@@ -24,4 +24,3 @@ summary(emotions)
 \seealso{
 \code{\link{mldr}}, \code{\link{print.mldr}}
 }
-

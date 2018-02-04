@@ -34,9 +34,9 @@ dataset, which will be taken from the last attributes of the dataset}
 only the option `stringsAsFactors` is available}
 }
 \value{
-A list containing four members: dataframe (containing the dataset),
- labelIndices (specifying the indices of the attributes that correspond to
- labels), attributes (containing name and type of each attribute) and name of
+A list containing four members: \code{dataframe} containing the dataset,
+ \code{labelIndices} specifying the indices of the attributes that correspond to
+ labels, \code{attributes} containing name and type of each attribute and \code{name} of
  the dataset.
 }
 \description{
@@ -54,4 +54,3 @@ mymld <- read.arff("yeast")
 \seealso{
 \code{\link{mldr_from_dataframe}}, \code{\link{mldr}}
 }
-
