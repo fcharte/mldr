@@ -3,7 +3,7 @@
 
 [![Travis](https://img.shields.io/travis/fcharte/mldr/master.svg)](https://travis-ci.org/fcharte/mldr/)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mldr)](https://cran.r-project.org/package=mldr)
-[![Downloads](http://cranlogs.r-pkg.org/badges/mldr)](https://cran.rstudio.com/web/packages/mldr/)
+[![Downloads](http://cranlogs.r-pkg.org/badges/mldr)](https://cran.r-project.org/package=mldr)
 
 Exploratory data analysis and manipulation functions for multi-label data sets along
 with an interactive Shiny application to ease their use.
@@ -74,7 +74,7 @@ write_arff(mymldr, "my_new_mldr")
 For more examples and detailed explanation on available functions,
 please refer to the documentation.
 
-##Citation
+## Citation
 
 Please, cite *mldr* as follows:
 
@@ -88,6 +88,6 @@ Please, cite *mldr* as follows:
   number       = 2,
   pages        = {149--162},
   month        = dec,
-  url          = {http://journal.r-project.org/archive/2015-2/charte-charte.pdf}
+  url          = {https://journal.r-project.org/archive/2015-2/charte-charte.pdf}
 }
 ```
