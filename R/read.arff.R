@@ -99,9 +99,17 @@ read.arff <- function(filename,
         label_indices <- which(names(attrs) %in% label_names)
       } else {
         if (no_label_amount) {
-          # Read label amount from Meka parameters
-          label_indices <- 1:header$toplabel
-        } else {
+          # Read label amount from Meka parameters, from the end
+          # if the amount is negative
+          if (header$toplabel < 0) {
+            label_amount <- -header$toplabel
+            no_label_amount <- FALSE
+          } else {
+            label_indices <- 1:header$toplabel
+          }
+        }
+
+        if (!no_label_amount) {
           label_indices <- (ncol(dataset) - label_amount + 1):ncol(dataset)
         }
       }
@@ -244,7 +252,7 @@ read_xml <- function(xml_file) {
 # @param arff_relation "relation" line of the ARFF file
 # @return Number of labels in the dataset
 read_header <- function(arff_relation) {
-  rgx <- regexpr("[\\w\\-\\._]+\\s*:\\s*-[Cc]\\s*\\d+", arff_relation, perl = TRUE)
+  rgx <- regexpr("[\\w\\-\\._]+\\s*:\\s*-[Cc]\\s*-?\\d+", arff_relation, perl = TRUE)
   hdr <- strsplit(regmatches(arff_relation, rgx), "\\s*:\\s*-[Cc]\\s*")
 
   if (length(hdr) > 0) {
