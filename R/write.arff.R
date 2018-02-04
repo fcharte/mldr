@@ -1,12 +1,14 @@
-#' @title Writes an \code{mldr} object to a file
-#' @description Save the \code{mldr} content to an ARFF file and the label data to an XML file
-#' @param obj The \code{mldr} object whose content is going to be written
+#' @title Write an \code{"mldr"} object to a file
+#' @description Save the \code{mldr} content to an ARFF file and the label data to an XML file.
+#'  If you need \strong{faster write, more options and support for other formats}, please
+#'  refer to the \code{\link[mldr.datasets]{write.mldr}} function in package mldr.datasets.
+#' @param obj The \code{"mldr"} object whose content is going to be written
 #' @param filename Base name for the files (without extension)
 #' @param write.xml \code{TRUE} or \code{FALSE}, stating if the XML file has to be written
 #' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{mldr}}
-#' @examples
 #'
-#' library(mldr)
+#' In mldr.datasets: \code{\link[mldr.datasets]{write.mldr}}
+#' @examples
 #'
 #' write_arff(emotions, "myemotions")
 #' @export

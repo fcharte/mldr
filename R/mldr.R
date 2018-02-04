@@ -30,6 +30,10 @@
 #' # Read "yeast.arff" and labels from "yeast.xml"
 #' mymld <- mldr("yeast")
 #'
+#' # Read "yeast.arff" and labels from "yeast.xml", converting categorical
+#' # attributes to factors
+#' mymld <- mldr("yeast", stringsAsFactors = TRUE)
+#'
 #' # Read "yeast-tra.arff" and labels from "yeast.xml"
 #' mymld <- mldr("yeast-tra", xml_file = "yeast.xml")
 #'
