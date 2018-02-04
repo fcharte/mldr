@@ -109,10 +109,10 @@ average_precision(true_labels, predicted_probs, ties_method = "average")
 example_auc(true_labels, predicted_probs, undefined_value = 0)
 # the following will ignore undefined values (not counting them for
 # the average)
-macro_auc(true_labels, predicted_probs, undefined_value = NA, na.rm = TRUE)
+example_auc(true_labels, predicted_probs, undefined_value = NA, na.rm = TRUE)
 }
 \seealso{
-\code{\link{mldr_evaluate}}
+\code{\link{mldr_evaluate}}, \code{\link{mldr_to_labels}}
 
 Other evaluation metrics: \code{\link{Averaged metrics}},
   \code{\link{Basic metrics}}

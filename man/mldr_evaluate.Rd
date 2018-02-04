@@ -2,12 +2,12 @@
 % Please edit documentation in R/evaluate.R
 \name{mldr_evaluate}
 \alias{mldr_evaluate}
-\title{Evaluates the predictions made by a multilabel classifier}
+\title{Evaluate predictions made by a multilabel classifier}
 \usage{
 mldr_evaluate(mldr, predictions, threshold = 0.5)
 }
 \arguments{
-\item{mldr}{Object of \code{mldr} type containing the instances to evaluate}
+\item{mldr}{Object of \code{"mldr"} class containing the instances to evaluate}
 
 \item{predictions}{Matrix with the labels predicted for each instance in the \code{mldr} parameter. Each element
 should be a value into [0,1] range}
@@ -16,29 +16,29 @@ should be a value into [0,1] range}
 }
 \value{
 A list with multilabel predictive performance measures. The items in the list will be \itemize{
- \item \code{Accuracy}
- \item \code{AUC}
- \item \code{AveragePrecision}
- \item \code{Coverage}
- \item \code{FMeasure}
- \item \code{HammingLoss}
- \item \code{MacroAUC}
- \item \code{MacroFMeasure}
- \item \code{MacroPrecision}
- \item \code{MacroRecall}
- \item \code{MicroAUC}
- \item \code{MicroFMeasure}
- \item \code{MicroPrecision}
- \item \code{MicroRecall}
- \item \code{OneError}
- \item \code{Precision}
- \item \code{RankingLoss}
- \item \code{Recall}
- \item \code{SubsetAccuracy}
- \item \code{ROC}
+ \item \code{accuracy}
+ \item \code{example_auc}
+ \item \code{average_precision}
+ \item \code{coverage}
+ \item \code{fmeasure}
+ \item \code{hamming_loss}
+ \item \code{macro_auc}
+ \item \code{macro_fmeasure}
+ \item \code{macro_precision}
+ \item \code{macro_recall}
+ \item \code{micro_auc}
+ \item \code{micro_fmeasure}
+ \item \code{micro_precision}
+ \item \code{micro_recall}
+ \item \code{one_error}
+ \item \code{precision}
+ \item \code{ranking_loss}
+ \item \code{recall}
+ \item \code{subset_accuracy}
+ \item \code{roc}
  }
- The \code{ROC} element corresponds to a \code{roc} object associated to the \code{MicroAUC} value. This object can be given as input to \code{plot} for plotting the ROC curve
- The \code{AUC}, \code{MacroAUC}, \code{MicroAUC} and \code{ROC} members will be \code{NULL} if the \code{pROC} package is not installed.
+ The \code{roc} element corresponds to a \code{roc} object associated to the \code{MicroAUC} value. This object can be given as input to \code{plot} for plotting the ROC curve
+ The \code{example_auc}, \code{macro_auc}, \code{micro_auc} and \code{roc} members will be \code{NULL} if the \code{pROC} package is not installed.
 }
 \description{
 Taking as input an \code{mldr} object and a matrix with the predictions
@@ -60,5 +60,5 @@ plot(res$ROC, main = "ROC curve for emotions")
 }
 }
 \seealso{
-\code{\link{mldr}}, \link{Basic metrics}, \link{Averaged metrics}, \link{Ranking-based metrics}, \code{\link{mldr_roc}}
+\code{\link{mldr}}, \link{Basic metrics}, \link{Averaged metrics}, \link{Ranking-based metrics}, \code{\link{roc.mldr}}
 }
