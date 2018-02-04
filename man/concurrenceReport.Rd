@@ -31,4 +31,3 @@ concurrenceReport(birds)
 \seealso{
 \code{\link{remedial}}, \code{\link{labelInteractions}}
 }
-

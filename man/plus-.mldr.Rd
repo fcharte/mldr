@@ -19,4 +19,3 @@ a new \code{mldr} object with all rows in the two parameters
 Generates a new mldr object joining the rows
 in the two mldrs given as input
 }
-

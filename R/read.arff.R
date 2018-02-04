@@ -21,9 +21,11 @@
 #'  that should be read as labels
 #' @param label_amount Optional parameter indicating the number of labels in the
 #'  dataset, which will be taken from the last attributes of the dataset
-#' @return A list containing four members: dataframe (containing the dataset),
-#'  labelIndices (specifying the indices of the attributes that correspond to
-#'  labels), attributes (containing name and type of each attribute) and name of
+#' @param ... Extra parameters that will be passed to the parsers. Currently
+#'  only the option `stringsAsFactors` is available
+#' @return A list containing four members: \code{dataframe} containing the dataset,
+#'  \code{labelIndices} specifying the indices of the attributes that correspond to
+#'  labels, \code{attributes} containing name and type of each attribute and \code{name} of
 #'  the dataset.
 #' @seealso \code{\link{mldr_from_dataframe}}, \code{\link{mldr}}
 #' @examples
@@ -40,7 +42,7 @@ read.arff <- function(filename,
                       xml_file,
                       label_indices,
                       label_names,
-                      label_amount) {
+                      label_amount, ...) {
 
   no_filename <- missing(filename)
   no_xml_file <- missing(xml_file)
@@ -72,7 +74,7 @@ read.arff <- function(filename,
     # Get file contents
     relation <- NULL
     attrs <- NULL
-    contents <- read_arff_internal(arff_file)
+    contents <- read_arff_internal(arff_file, ...)
     relation <- contents$relation
     attrs <- contents$attributes
     dataset <- contents$dataset
@@ -132,7 +134,7 @@ read.arff <- function(filename,
 # @return List containing the relation string,
 #  a named vector for attributes and a data.frame
 #  for the data section
-read_arff_internal <- function(arff_file) {
+read_arff_internal <- function(arff_file, ...) {
   file_con <- file(arff_file, "rb")
 
   if (!isOpen(file_con))
@@ -165,9 +167,9 @@ read_arff_internal <- function(arff_file) {
   # Build data.frame with @data section
   rawdata <- file_data[data_start:length(file_data)]
   dataset <- if (detect_sparsity(rawdata))
-    parse_sparse_data(rawdata, num_attrs)
+    parse_sparse_data(rawdata, num_attrs, ...)
   else
-    parse_nonsparse_data(rawdata, num_attrs)
+    parse_nonsparse_data(rawdata, num_attrs, ...)
 
   rm(rawdata)
   names(dataset) <- names(attributes)
@@ -272,19 +274,19 @@ detect_sparsity <- function(arff_data) {
 #
 # @param arff_data Content of the data section
 # @return data.frame containing data values
-parse_nonsparse_data <- function(arff_data, num_attrs) {
+parse_nonsparse_data <- function(arff_data, num_attrs, stringsAsFactors = F) {
   data.frame(matrix(
     unlist(strsplit(arff_data, ",", fixed = T)),
     ncol = num_attrs,
     byrow = T
-  ), stringsAsFactors = F)
+  ), stringsAsFactors = stringsAsFactors)
 }
 
 # Builds a data.frame out of sparse ARFF data
 #
 # @param arff_data Content of the data section
 # @return data.frame containing data values
-parse_sparse_data <- function(arff_data, num_attrs) {
+parse_sparse_data <- function(arff_data, num_attrs, stringsAsFactors = F) {
   # Extract data items
   arff_data <- strsplit(gsub("[\\{\\}]", "", arff_data), ",")
   arff_data <- lapply(arff_data, function(item) {
@@ -299,5 +301,5 @@ parse_sparse_data <- function(arff_data, num_attrs) {
   })
 
   # Create and return data.frame
-  data.frame(t(dataset), stringsAsFactors = F)
+  data.frame(t(dataset), stringsAsFactors = stringsAsFactors)
 }

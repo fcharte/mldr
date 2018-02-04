@@ -61,4 +61,3 @@ plot(emotions, type = "AT", cex = 0.85)
 plot(emotions, type = "LSH")
 }
 }
-

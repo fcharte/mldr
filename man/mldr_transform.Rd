@@ -28,4 +28,3 @@ library(mldr)
 emotionsbr <- mldr_transform(emotions, type = "BR")
 emotionslp <- mldr_transform(emotions, type = "LP")
 }
-
