@@ -201,7 +201,8 @@ parse_attributes <- function(arff_attrs) {
   # We capture any spacing character ignoring those within braces or single quotes,
   # allowing the appearance of escaped single quotes (\').
   #-----------------------------------------------------------------------------------------------------
-  rgx <- "(?:{[^}\\s]*?(\\s+[^}\\s]*?)+}|(?<!\\\\)'[^'\\\\]*(?:\\\\.[^'\\\\]*)*(?<!\\\\)')(*SKIP)(*F)|\\s+"
+  #rgx <- "(?:{[^}\\s]*?(\\s+[^}\\s]*?)+}|(?<!\\\\)'[^'\\\\]*(?:\\\\.[^'\\\\]*)*(?<!\\\\)')(*SKIP)(*F)|\\s+"
+  rgx <- "(?:{(?:.*?)}\\s*$|(?<!\\\\)'[^'\\\\]*(?:.*?)(?<!\\\\)'|(?<!\\\\)\"(?:.*?)(?<!\\\\)\"|(\\s*?)@)(*SKIP)(*F)|\\s+"
   att_list <- strsplit(arff_attrs, rgx, perl = TRUE)
 
   # Structure by rows
@@ -210,8 +211,10 @@ parse_attributes <- function(arff_attrs) {
   rm(att_list)
   # Filter any data that is not an attribute
   att_mat <- att_mat[grepl("\\s*@attribute", att_mat[, 1], ignore.case = TRUE), 2:3]
-  att_mat <- gsub("\\'", "'", att_mat, fixed = T)
   att_mat <- gsub("^'(.*?)'$", "\\1", att_mat, perl = T)
+  att_mat <- gsub('^"(.*?)"$', "\\1", att_mat, perl = T)
+  att_mat[, 1] <- gsub("\\'", "'", att_mat[, 1], fixed = T)
+  att_mat[, 1] <- gsub('\\"', '"', att_mat[, 1], fixed = T)
 
   # Create the named vector
   att_v <- att_mat[, 2]

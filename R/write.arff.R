@@ -23,7 +23,11 @@ write_arff <- function(obj, filename, write.xml = FALSE) {
   attribute_names <- ifelse(
     grepl("[' ]", names(obj$attributes)),
     paste0("'", gsub("'", "\\\\'", names(obj$attributes)), "'"),
-    names(obj$attributes)
+    ifelse(
+      grepl('[" ]', names(obj$attributes)),
+      paste0('"', gsub('"', '\\\\"', names(obj$attributes)), '"'),
+      names(obj$attributes)
+    )
   )
 
   attributes <- paste("@attribute ", attribute_names, " ", obj$attributes, sep = "")
