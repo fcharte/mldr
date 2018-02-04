@@ -1,8 +1,8 @@
 Package: mldr
 Title: Exploratory Data Analysis and Manipulation of Multi-Label Data Sets
 Version: 0.3.22.9000
-Date: 2016-01-16
-Authors@R: c( person("David", "Charte", email = "fdavidcl@outlook.com", role =
+Date: 2018-02-4
+Authors@R: c( person("David", "Charte", email = "fdavidcl@ugr.es", role =
     "cre"), person("Francisco", "Charte", email = "francisco@fcharte.com", role
     = "aut"))
 Description: Exploratory data analysis and manipulation functions for multi-
@@ -18,10 +18,11 @@ Imports:
     grDevices,
     stats,
     methods
-Suggests:
+Suggests: 
     pROC,
     knitr,
-    mldr.datasets
+    mldr.datasets,
+    testthat
 License: LGPL (>= 3) | file LICENSE
 LazyData: true
 VignetteBuilder: knitr

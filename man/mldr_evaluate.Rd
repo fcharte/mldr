@@ -2,12 +2,12 @@
 % Please edit documentation in R/evaluate.R
 \name{mldr_evaluate}
 \alias{mldr_evaluate}
-\title{Evaluates the predictions made by a multilabel classifier}
+\title{Evaluate predictions made by a multilabel classifier}
 \usage{
 mldr_evaluate(mldr, predictions, threshold = 0.5)
 }
 \arguments{
-\item{mldr}{Object of \code{mldr} type containing the instances to evaluate}
+\item{mldr}{Object of \code{"mldr"} class containing the instances to evaluate}
 
 \item{predictions}{Matrix with the labels predicted for each instance in the \code{mldr} parameter. Each element
 should be a value into [0,1] range}
@@ -16,28 +16,29 @@ should be a value into [0,1] range}
 }
 \value{
 A list with multilabel predictive performance measures. The items in the list will be \itemize{
- \item \code{Accuracy}: Example and bipartition based accuracy (averaged by instance)
- \item \code{AUC}: Example and binary partition Area Under the Curve ROC (averaged by instance)
- \item \code{AveragePrecision}: Example and ranking based average precision (how many steps have to be made in the ranking to reach a certain relevant label, averaged by instance)
- \item \code{Coverage}: Example and ranking based coverage (how many steps have to be made in the ranking to cover all the relevant labels, averaged by instance)
- \item \code{FMeasure}:  Example and binary partition F_1 measure (harmonic mean between precision and recall, averaged by instance)
- \item \code{HammingLoss}:  Example and binary partition Hamming Loss (simmetric difference between sets of labels, averaged by instance)
- \item \code{MacroAUC}: Label and ranking based Area Under the Curve ROC (macro-averaged by label)
- \item \code{MacroFMeasure}: Label and bipartition based F_1 measure (harmonic mean between precision and recall, macro-averaged by label)
- \item \code{MacroPrecision}: Label and bipartition based precision (macro-averaged by label)
- \item \code{MacroRecall}: Label and bipartition based recall (macro-averaged by label)
- \item \code{MicroAUC}: Label and ranking based Area Under the Curve ROC (micro-averaged)
- \item \code{MicroFMeasure}: Label and bipartition based F_1 measure (micro-averaged)
- \item \code{MicroPrecision}: Label and bipartition based precision (micro-averaged)
- \item \code{MicroRecall}: Label and bipartition based recall (micro-averaged)
- \item \code{OneError}: Example and ranking based one-error (how many times the top-ranked label is not a relevant label, averaged by instance)
- \item \code{Precision}: Example and bipartition based precision (averaged by instance)
- \item \code{RankingLoss}: Example and ranking based ranking-loss (how many times a non-relevant label is ranked above a relevant one, evaluated for all label pairs and averaged by instance)
- \item \code{Recall}: Example and bipartition based recall (averaged by instance)
- \item \code{SubsetAccuracy}: Example and bipartition based subset accuracy (strict equality between predicted and real labelset, averaged by instance)
- \item \code{ROC}: A \code{roc} object corresponding to the \code{MicroAUC} value. This object can be given as input to \code{plot} for plotting the ROC curve
+ \item \code{accuracy}
+ \item \code{example_auc}
+ \item \code{average_precision}
+ \item \code{coverage}
+ \item \code{fmeasure}
+ \item \code{hamming_loss}
+ \item \code{macro_auc}
+ \item \code{macro_fmeasure}
+ \item \code{macro_precision}
+ \item \code{macro_recall}
+ \item \code{micro_auc}
+ \item \code{micro_fmeasure}
+ \item \code{micro_precision}
+ \item \code{micro_recall}
+ \item \code{one_error}
+ \item \code{precision}
+ \item \code{ranking_loss}
+ \item \code{recall}
+ \item \code{subset_accuracy}
+ \item \code{roc}
  }
- The \code{AUC}, \code{MacroAUC}, \code{MicroAUC} and \code{ROC} members will be \code{NULL} if the \code{pROC} package is not installed.
+ The \code{roc} element corresponds to a \code{roc} object associated to the \code{MicroAUC} value. This object can be given as input to \code{plot} for plotting the ROC curve
+ The \code{example_auc}, \code{macro_auc}, \code{micro_auc} and \code{roc} members will be \code{NULL} if the \code{pROC} package is not installed.
 }
 \description{
 Taking as input an \code{mldr} object and a matrix with the predictions
@@ -49,15 +50,16 @@ several multilabel metrics.
 library(mldr)
 
 # Get the true labels in emotions
-predictions <- as.matrix(emotions$dataset[,emotions$labels$index])
+predictions <- as.matrix(emotions$dataset[, emotions$labels$index])
 # and introduce some noise (alternatively get the predictions from some classifier)
-predictions[sample(1:593, 100),sample(1:6, 100, replace = TRUE)] <- sample(0:1, 100, replace = TRUE)
+noised_labels <- cbind(sample(1:593, 200, replace = TRUE), sample(1:6, 200, replace = TRUE))
+predictions[noised_labels] <- sample(0:1, 100, replace = TRUE)
 # then evaluate predictive performance
 res <- mldr_evaluate(emotions, predictions)
 str(res)
-plot(res$ROC, main = "ROC curve for emotions")
+plot(res$roc, main = "ROC curve for emotions")
 }
 }
 \seealso{
-\code{\link{mldr}}
+\code{\link{mldr}}, \link{Basic metrics}, \link{Averaged metrics}, \link{Ranking-based metrics}, \code{\link{roc.mldr}}
 }
