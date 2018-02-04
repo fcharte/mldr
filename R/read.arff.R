@@ -201,7 +201,9 @@ parse_attributes <- function(arff_attrs) {
   # We capture any spacing character ignoring those within braces or single quotes,
   # allowing the appearance of escaped single quotes (\').
   #-----------------------------------------------------------------------------------------------------
-  #rgx <- "(?:{[^}\\s]*?(\\s+[^}\\s]*?)+}|(?<!\\\\)'[^'\\\\]*(?:\\\\.[^'\\\\]*)*(?<!\\\\)')(*SKIP)(*F)|\\s+"
+  # Regex tested in https://regex101.com/r/tE5mP1/20
+  #-----------------------------------------------------------------------------------------------------
+
   rgx <- "(?:{(?:.*?)}\\s*$|(?<!\\\\)'[^'\\\\]*(?:.*?)(?<!\\\\)'|(?<!\\\\)\"(?:.*?)(?<!\\\\)\"|(\\s*?)@)(*SKIP)(*F)|\\s+"
   att_list <- strsplit(arff_attrs, rgx, perl = TRUE)
 
