@@ -2,26 +2,28 @@
 % Please edit documentation in R/write.arff.R
 \name{write_arff}
 \alias{write_arff}
-\title{Writes an \code{mldr} object to a file}
+\title{Write an \code{"mldr"} object to a file}
 \usage{
 write_arff(obj, filename, write.xml = FALSE)
 }
 \arguments{
-\item{obj}{The \code{mldr} object whose content is going to be written}
+\item{obj}{The \code{"mldr"} object whose content is going to be written}
 
 \item{filename}{Base name for the files (without extension)}
 
 \item{write.xml}{\code{TRUE} or \code{FALSE}, stating if the XML file has to be written}
 }
 \description{
-Save the \code{mldr} content to an ARFF file and the label data to an XML file
+Save the \code{mldr} content to an ARFF file and the label data to an XML file.
+ If you need \strong{faster write, more options and support for other formats}, please
+ refer to the \code{\link[mldr.datasets]{write.mldr}} function in package mldr.datasets.
 }
 \examples{
-
-library(mldr)
 
 write_arff(emotions, "myemotions")
 }
 \seealso{
 \code{\link{mldr_from_dataframe}}, \code{\link{mldr}}
+
+In mldr.datasets: \code{\link[mldr.datasets]{write.mldr}}
 }

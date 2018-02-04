@@ -7,7 +7,7 @@
 mldr(filename, use_xml = TRUE, auto_extension = TRUE, xml_file,
   label_indices, label_names, label_amount,
   force_read_from_file = !all(c(missing(xml_file), missing(label_indices),
-  missing(label_names), missing(label_amount), use_xml, auto_extension)))
+  missing(label_names), missing(label_amount), use_xml, auto_extension)), ...)
 }
 \arguments{
 \item{filename}{Name of the dataset}
@@ -34,6 +34,8 @@ dataset, which will be taken from the last attributes of the dataset}
 
 \item{force_read_from_file}{Set this parameter to TRUE to always read from a local file,
 or set it to FALSE to look for the dataset within the `mldr.datasets` package}
+
+\item{...}{Extra parameters to be passed to 'read_arff'}
 }
 \value{
 An mldr object containing the multilabel dataset
@@ -50,6 +52,10 @@ library(mldr)
 \dontrun{
 # Read "yeast.arff" and labels from "yeast.xml"
 mymld <- mldr("yeast")
+
+# Read "yeast.arff" and labels from "yeast.xml", converting categorical
+# attributes to factors
+mymld <- mldr("yeast", stringsAsFactors = TRUE)
 
 # Read "yeast-tra.arff" and labels from "yeast.xml"
 mymld <- mldr("yeast-tra", xml_file = "yeast.xml")

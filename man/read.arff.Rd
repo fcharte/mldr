@@ -5,7 +5,7 @@
 \title{Read an ARFF file}
 \usage{
 read.arff(filename, use_xml = TRUE, auto_extension = TRUE, xml_file,
-  label_indices, label_names, label_amount)
+  label_indices, label_names, label_amount, ...)
 }
 \arguments{
 \item{filename}{Name of the dataset}
@@ -29,11 +29,14 @@ that should be read as labels}
 
 \item{label_amount}{Optional parameter indicating the number of labels in the
 dataset, which will be taken from the last attributes of the dataset}
+
+\item{...}{Extra parameters that will be passed to the parsers. Currently
+only the option \code{stringsAsFactors} is available}
 }
 \value{
-A list containing four members: dataframe (containing the dataset),
- labelIndices (specifying the indices of the attributes that correspond to
- labels), attributes (containing name and type of each attribute) and name of
+A list containing four members: \code{dataframe} containing the dataset,
+ \code{labelIndices} specifying the indices of the attributes that correspond to
+ labels, \code{attributes} containing name and type of each attribute and \code{name} of
  the dataset.
 }
 \description{
