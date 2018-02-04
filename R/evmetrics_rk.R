@@ -76,7 +76,7 @@
 #' example_auc(true_labels, predicted_probs, undefined_value = 0)
 #' # the following will ignore undefined values (not counting them for
 #' # the average)
-#' macro_auc(true_labels, predicted_probs, undefined_value = NA, na.rm = TRUE)
+#' example_auc(true_labels, predicted_probs, undefined_value = NA, na.rm = TRUE)
 #' @seealso \code{\link{mldr_evaluate}}
 NULL
 
@@ -168,9 +168,9 @@ macro_auc <- function(true_labels, predictions, undefined_value = 0.5, na.rm = F
   computable <- colSums(true_labels) != 0 & colMeans(true_labels) != 1
   undefined_vec <- rep(undefined_value, times = sum(!computable))
 
-  results <- sapply(which(computable), function(l) {
+  results <- sapply(which(computable), function(l)
       pROC::auc(true_labels[, l], predictions[, l])
-  })
+  )
 
   mean(c(undefined_vec, results), na.rm = na.rm)
 }
