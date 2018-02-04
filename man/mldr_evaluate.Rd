@@ -50,13 +50,14 @@ several multilabel metrics.
 library(mldr)
 
 # Get the true labels in emotions
-predictions <- as.matrix(emotions$dataset[,emotions$labels$index])
+predictions <- as.matrix(emotions$dataset[, emotions$labels$index])
 # and introduce some noise (alternatively get the predictions from some classifier)
-predictions[sample(1:593, 100), 1:6] <- sample(0:1, 600, replace = TRUE)
+noised_labels <- cbind(sample(1:593, 200, replace = TRUE), sample(1:6, 200, replace = TRUE))
+predictions[noised_labels] <- sample(0:1, 100, replace = TRUE)
 # then evaluate predictive performance
 res <- mldr_evaluate(emotions, predictions)
 str(res)
-plot(res$ROC, main = "ROC curve for emotions")
+plot(res$roc, main = "ROC curve for emotions")
 }
 }
 \seealso{
