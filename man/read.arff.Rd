@@ -31,7 +31,7 @@ that should be read as labels}
 dataset, which will be taken from the last attributes of the dataset}
 
 \item{...}{Extra parameters that will be passed to the parsers. Currently
-only the option `stringsAsFactors` is available}
+only the option \code{stringsAsFactors} is available}
 }
 \value{
 A list containing four members: \code{dataframe} containing the dataset,
