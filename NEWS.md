@@ -1,5 +1,14 @@
 # Changelog
 
+## mldr 0.4
+
+* Reimplementation of performance evaluation metrics
+* Customizable treatment of undefined values in evaluation metrics
+* Support for single-quoted/double-quoted attributes in ARFF files
+* Support for `stringsAsFactors`
+* Support for negative `-C` parameter in MEKA header
+* **API changes**: The return value of `mldr_evaluate` has the same structure but different member names.
+
 ## mldr 0.3.22
 
 * Improve how we load available MLD's in `mldr()`
