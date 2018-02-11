@@ -121,7 +121,7 @@ undefined_strats$na = undefined_strats$ignore
 treat_undefined <- function(value, tp, fp, tn, fn) {
   if (is.function(value)) {
     value(tp, fp, tn, fn)
-  } else if (is.function(undefined_strats[[value]])) {
+  } else if (value %in% names(undefined_strats) && is.function(undefined_strats[[value]])) {
     undefined_strats[[value]](tp, fp, tn, fn)
   } else {
     value
