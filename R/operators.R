@@ -6,8 +6,8 @@
 #' @export
 "==.mldr" <- function(mldr1, mldr2) {
   length(mldr1$attributes) == length(mldr2$attributes) &&
-    names(mldr1$attributes) == names(mldr2$attributes) &&
-    mldr1$attributes == mldr2$attributes
+    all(names(mldr1$attributes) == names(mldr2$attributes)) &&
+    all(mldr1$attributes == mldr2$attributes)
 }
 
 #' Generates a new mldr object joining the rows
