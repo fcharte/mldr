@@ -20,7 +20,8 @@ precision(true_labels, predicted_labels, undefined_value = "diagnose")
 
 micro_precision(true_labels, predicted_labels, ...)
 
-macro_precision(true_labels, predicted_labels, undefined_value = "diagnose")
+macro_precision(true_labels, predicted_labels,
+  undefined_value = "diagnose")
 
 recall(true_labels, predicted_labels, undefined_value = "diagnose")
 
@@ -28,11 +29,12 @@ micro_recall(true_labels, predicted_labels, ...)
 
 macro_recall(true_labels, predicted_labels, undefined_value = "diagnose")
 
-fmeasure(true_labels, predicted_labels, ...)
+fmeasure(true_labels, predicted_labels, undefined_value = "diagnose")
 
 micro_fmeasure(true_labels, predicted_labels, ...)
 
-macro_fmeasure(true_labels, predicted_labels, ...)
+macro_fmeasure(true_labels, predicted_labels,
+  undefined_value = "diagnose")
 }
 \arguments{
 \item{true_labels}{Matrix of true labels, columns corresponding to labels and
@@ -125,3 +127,4 @@ macro_fmeasure(
 Other evaluation metrics: \code{\link{Basic metrics}},
   \code{\link{Ranking-based metrics}}
 }
+\concept{evaluation metrics}

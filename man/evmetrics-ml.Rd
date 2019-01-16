@@ -58,3 +58,4 @@ subset_accuracy(true_labels, predicted_labels)
 Other evaluation metrics: \code{\link{Averaged metrics}},
   \code{\link{Ranking-based metrics}}
 }
+\concept{evaluation metrics}

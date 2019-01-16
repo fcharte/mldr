@@ -19,11 +19,13 @@ coverage(true_labels, predictions, ...)
 
 ranking_loss(true_labels, predictions)
 
-macro_auc(true_labels, predictions, undefined_value = 0.5, na.rm = FALSE)
+macro_auc(true_labels, predictions, undefined_value = 0.5,
+  na.rm = FALSE)
 
 micro_auc(true_labels, predictions)
 
-example_auc(true_labels, predictions, undefined_value = 0.5, na.rm = FALSE)
+example_auc(true_labels, predictions, undefined_value = 0.5,
+  na.rm = FALSE)
 }
 \arguments{
 \item{true_labels}{Matrix of true labels, columns corresponding to labels and
@@ -117,3 +119,4 @@ example_auc(true_labels, predicted_probs, undefined_value = NA, na.rm = TRUE)
 Other evaluation metrics: \code{\link{Averaged metrics}},
   \code{\link{Basic metrics}}
 }
+\concept{evaluation metrics}

@@ -3,3 +3,5 @@
 ^NEWS\.md$
 ^cran-comments\.md$
 ^\.travis\.yml$
+^mlr-test\.r$
+^revdep$
