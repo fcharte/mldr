@@ -130,7 +130,7 @@ treat_undefined <- function(value, tp, fp, tn, fn) {
 
 # BASE EVALUATION METRICS =====================================================
 base_accuracy <- function(tp, fp, tn, fn)
-  (tp + tn) / (tp + fp + tn + fn)
+  tp / (tp + fp + fn)
 
 base_precision <- function(tp, fp, tn, fn, undefined_value = "diagnose") {
   if (tp + fp == 0)
