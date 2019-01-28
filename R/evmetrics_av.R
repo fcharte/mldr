@@ -129,8 +129,13 @@ treat_undefined <- function(value, tp, fp, tn, fn) {
 }
 
 # BASE EVALUATION METRICS =====================================================
-base_accuracy <- function(tp, fp, tn, fn)
-  tp / (tp + fp + fn)
+base_accuracy <- function(tp, fp, tn, fn, ...) {
+  if (tp + fp + fn == 0)
+    1
+  else
+    tp / (tp + fp + fn)
+}
+
 
 base_precision <- function(tp, fp, tn, fn, undefined_value = "diagnose") {
   if (tp + fp == 0)
@@ -201,7 +206,7 @@ instance_avg = averaged_metric(label = FALSE)
 # DEFINITION OF MULTI-LABEL METRICS ===========================================
 #' @rdname evmetrics-av
 #' @export
-accuracy <- micro(base_accuracy)
+accuracy <- instance_avg(base_accuracy)
 
 #' @rdname evmetrics-av
 #' @export

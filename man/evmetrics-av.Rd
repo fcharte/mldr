@@ -14,7 +14,7 @@
 \alias{macro_fmeasure}
 \title{Multi-label averaged evaluation metrics}
 \usage{
-accuracy(true_labels, predicted_labels, ...)
+accuracy(true_labels, predicted_labels, undefined_value = "diagnose")
 
 precision(true_labels, predicted_labels, undefined_value = "diagnose")
 
@@ -43,10 +43,10 @@ rows to instances.}
 \item{predicted_labels}{Matrix of predicted labels, columns corresponding to
 labels and rows to instances.}
 
-\item{...}{Additional parameters for precision, recall and Fmeasure.}
-
 \item{undefined_value}{The value to be returned when a computation results in
 an undefined value due to a division by zero. See details.}
+
+\item{...}{Additional parameters for precision, recall and Fmeasure.}
 }
 \value{
 Atomical numeric vector containing the resulting value in the range
