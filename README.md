@@ -4,6 +4,7 @@
 [![Travis](https://img.shields.io/travis/fcharte/mldr/master.svg)](https://travis-ci.org/fcharte/mldr/)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mldr)](https://cran.r-project.org/package=mldr)
 [![Downloads](http://cranlogs.r-pkg.org/badges/mldr)](https://cran.r-project.org/package=mldr)
+[![TotalDownloads](http://cranlogs.r-pkg.org/badges/grand-total/mldr?color=yellow)](https://cran.r-project.org/package=mldr)
 
 Exploratory data analysis and manipulation functions for multi-label data sets along
 with an interactive Shiny application to ease their use.
