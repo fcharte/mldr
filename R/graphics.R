@@ -109,7 +109,7 @@ labelCoocurrencePlot <- function(mld, title, labelIndices, color.function = rain
   tbl <- tbl[apply(tbl, 1, function(r) !all(r == 0)), ]
   tbl <- tbl[,apply(tbl, 2, function(r) !all(r == 0))]
 
-  if(class(tbl) != "matrix") return() # Nothing to plot
+  if(!inherits(tbl, "matrix")) return() # Nothing to plot
 
   color.sector <- color.function(length(union(colnames(tbl), row.names(tbl))))
   color.links <- color.function(nrow(tbl) * ncol(tbl))
